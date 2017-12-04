@@ -1,8 +1,8 @@
 # QueryBuilder
 
-**QueryBuilder** позволяет создавать запросы к базе данных, описывая их в виде объекта, без использования таких средств как LinqToSql, ORM и т.д. и генерировать их SQL код в синтаксисе используемой СУБД 
+**QueryBuilder** allows you to create queries against a database, describing them as an object, without using tools such as LinqToSql, ORM, etc. and generate their SQL code in the syntax of the DBMS used
 
-## Поддерживаемые СУБД
+## Supported DBMS
 * MS SQL
 * MS SQL CE
 * SQLite
@@ -10,11 +10,11 @@
 * MySQL
 * PostgreSQL
 
-## Примеры работы с объектами запросов
+## Examples of working with query objects
 
 ### SELECT
 
-Запрос
+Query
 ```csharp
       Select sel = Qb.Select("*")
         .From("MyTable")
@@ -23,14 +23,14 @@
           Cond.Greater("b", 2)
         );
 ```
-генерация MS SQL
+generation (MS SQL)
 ```SQL
 select * 
 from [MyTable] 
 where (([a] = 1 and [b] > 2))
 ```
 
-Запрос
+Query
 ```csharp
       Select sel = Qb.Select("*")
       .From("tab")
@@ -40,14 +40,14 @@ where (([a] = 1 and [b] > 2))
         ));
 ```
 
-генерация MS SQL
+generation (MS SQL)
 ```SQL
 select * 
 from [tab] 
 where (([a] = 1 or [a] = 2))
 ```
 
-Запрос
+Query
 ```csharp
       From customer = From.Table("Customers", "c");
       From orders = From.Table("Orders", "o");
@@ -61,7 +61,7 @@ where (([a] = 1 or [a] = 2))
         .GroupBy("FirstName", customer)
         .GroupBy("LastName", customer);
 ```
-генерация MS SQL
+generation (MS SQL)
 ```SQL
 select 
     [c].[FirstName], 
@@ -76,7 +76,7 @@ group by
     [c].[LastName]
 ```
 
-Запрос
+Query
 ```csharp
       From customer = From.Table("Customers", "c");
       From orders = From.Table("Orders", "o");
@@ -99,7 +99,7 @@ group by
         .From(From.SubQuery(inner, "t"));
 ```
 
-генерация MS SQL
+generation (MS SQL)
 ```SQL
 select 
     [t].[FirstName], 
@@ -121,7 +121,7 @@ from
 ) [t]
 ```
 
-генерация PostgreSQL
+generation (PostgreSQL)
 ```SQL
 select 
     "t"."FirstName", 
@@ -144,7 +144,7 @@ from
 ```
 ### INSERT
 
-Запрос
+Query
 ```csharp
       Insert ins = Qb.Insert("Customers")
         .Values(
@@ -153,7 +153,7 @@ from
         );
 ```
 
-генерация MS SQL
+generation (MS SQL)
 ```SQL
 insert into [Customers] 
     ([FirstName], [LastName]) 
@@ -163,7 +163,7 @@ values
 
 ### UPDATE
 
-Запрос
+Query
 ```csharp
       Update upd = Qb.Update("Customers")
         .Values(
@@ -172,7 +172,7 @@ values
         .Where(Cond.Equal("FirstName", "Pavel"));
 ```
 
-генерация MS SQL
+generation (MS SQL)
 ```SQL
 update [Customers] 
     set [LastName] = 'Pavlov' 
@@ -182,20 +182,20 @@ where
 
 ### DELETE
 
-Запрос
+Query
 ```csharp
       Delete del = Qb.Delete("Customers")
         .Where(Cond.Equal("Id", 20));
 ```
 
-генерация MS SQL
+generation (MS SQL)
 ```SQL
 delete from [Customers]  
 where 
     (([Id] = 20))
 ```
 
-## Пример использования QueryBuilder совместно с AnyDbFactory и мини-ORM Dapper
+## An example of using QueryBuilder in conjunction with AnyDbFactory and mini-ORM Dapper
 
 ```csharp
   public class Customer
