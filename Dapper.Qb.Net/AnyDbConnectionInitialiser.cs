@@ -10,29 +10,34 @@ namespace Dapper
 {
   public static class AnyDbConnectionInitialiser
   {
+    static bool _initialise = false;
     public static void Initialise()
     {
-      Dapper.Contrib.Extensions.SqlMapperExtensions.GetDatabaseType = (con) =>
+      if (!_initialise)
       {
-        AnyDbConnection any = con as AnyDbConnection;
-        if (any != null)
+        Dapper.Contrib.Extensions.SqlMapperExtensions.GetDatabaseType = (con) =>
         {
-          switch (any.DatabaseProvider)
+          AnyDbConnection any = con as AnyDbConnection;
+          if (any != null)
           {
-            case DatabaseProvider.MySql:
-              return "mysqlconnection";
-            case DatabaseProvider.PostgreSql:
-              return "npgsqlconnection";
-            case DatabaseProvider.SqLite:
-              return "sqliteconnection";
-            case DatabaseProvider.SqlServer:
-              return "sqlconnection";
-            case DatabaseProvider.SqlServerCe:
-              return "sqlceconnection";
+            switch (any.DatabaseProvider)
+            {
+              case DatabaseProvider.MySql:
+                return "mysqlconnection";
+              case DatabaseProvider.PostgreSql:
+                return "npgsqlconnection";
+              case DatabaseProvider.SqLite:
+                return "sqliteconnection";
+              case DatabaseProvider.SqlServer:
+                return "sqlconnection";
+              case DatabaseProvider.SqlServerCe:
+                return "sqlceconnection";
+            }
           }
-        }
-        return con.GetType().Name.ToLower();
-      };
+          return con.GetType().Name.ToLower();
+        };
+        _initialise = true;
+      }
 
     }
   }

@@ -7,21 +7,21 @@ namespace Viten.QueryBuilder
 {
   class ExprUtil
   {
-    public static OmAggregationFunction ConvertAggregationFunction(AggFunction agr)
+    public static OmAggregationFunction ConvertAggregationFunction(AggFunc agr)
     {
       switch (agr)
       {
-        case AggFunction.Avg:
+        case AggFunc.Avg:
           return OmAggregationFunction.Avg;
-        case AggFunction.Count:
+        case AggFunc.Count:
           return OmAggregationFunction.Count;
-        case AggFunction.Grouping:
+        case AggFunc.Grouping:
           return OmAggregationFunction.Grouping;
-        case AggFunction.Max:
+        case AggFunc.Max:
           return OmAggregationFunction.Max;
-        case AggFunction.Min:
+        case AggFunc.Min:
           return OmAggregationFunction.Min;
-        case AggFunction.Sum:
+        case AggFunc.Sum:
           return OmAggregationFunction.Sum;
         default:
           return OmAggregationFunction.None;

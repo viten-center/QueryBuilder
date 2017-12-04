@@ -12,6 +12,15 @@ namespace Viten.QueryBuilder
     {
     }
 
+    /// <summary>Определение константы</summary>
+    internal static Expr Constant(DataType type, object val)
+    {
+      Expr oper = new Expr();
+      oper.Expression = OmExpression.Constant(ExprUtil.ConvertDataType(type), val);
+      return oper;
+    }
+
+    #region Raw
     /// <summary>Произвольный SQL кон</summary>
     public static Expr Raw(string sqlText)
     {
@@ -19,7 +28,9 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.Raw(sqlText);
       return oper;
     }
+    #endregion Raw
 
+    #region Field
     /// <summary>Определение поля</summary>
     public static Expr Field(string fieldName)
     {
@@ -35,23 +46,9 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.Field(fieldName, from != null ? from.Term : null);
       return oper;
     }
+    #endregion Field
 
-    /// <summary>Определение константы</summary>
-    public static Expr Constant(Constant val)
-    {
-      Expr oper = new Expr();
-      oper.Expression = OmExpression.Constant(val.Const);
-      return oper;
-    }
-
-    /// <summary>Определение константы</summary>
-    internal static Expr Constant(DataType type, object val)
-    {
-      Expr oper = new Expr();
-      oper.Expression = OmExpression.Constant(ExprUtil.ConvertDataType(type), val);
-      return oper;
-    }
-
+    #region Date
     /// <summary>Определение константы (DateTime)</summary>
     public static Expr Date(DateTime val)
     {
@@ -59,15 +56,19 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.Date(val);
       return oper;
     }
+    #endregion Date
 
+    #region Function
     /// <summary>Определение функции</summary>
-    public static Expr Function(AggFunction func, Expr param)
+    public static Expr Function(AggFunc func, Expr val)
     {
       Expr oper = new Expr();
-      oper.Expression = OmExpression.Function(ExprUtil.ConvertAggregationFunction(func), param.Expression);
+      oper.Expression = OmExpression.Function(ExprUtil.ConvertAggregationFunction(func), val.Expression);
       return oper;
     }
+    #endregion Function
 
+    #region IfNull
     /// <summary>Определение проверки на NULL</summary>
     public static Expr IfNull(Expr test, Expr val)
     {
@@ -76,6 +77,38 @@ namespace Viten.QueryBuilder
       return oper;
     }
 
+    /// <summary>Определение проверки на NULL</summary>
+    public static Expr IfNull(Expr test, string val)
+    {
+      return IfNull(test, Expr.Constant(DataType.String, val));
+    }
+
+    /// <summary>Определение проверки на NULL</summary>
+    public static Expr IfNull(Expr test, int val)
+    {
+      return IfNull(test, Expr.Constant(DataType.Number, val));
+    }
+
+    /// <summary>Определение проверки на NULL</summary>
+    public static Expr IfNull(Expr test, long val)
+    {
+      return IfNull(test, Expr.Constant(DataType.Number, val));
+    }
+
+    /// <summary>Определение проверки на NULL</summary>
+    public static Expr IfNull(Expr test, double val)
+    {
+      return IfNull(test, Expr.Constant(DataType.Number, val));
+    }
+
+    /// <summary>Определение проверки на NULL</summary>
+    public static Expr IfNull(Expr test, DateTime val)
+    {
+      return IfNull(test, Expr.Constant(DataType.Date, val));
+    }
+    #endregion IfNull
+
+    #region Null
     /// <summary>Определение NULL</summary>
     public static Expr Null()
     {
@@ -83,7 +116,9 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.Null();
       return oper;
     }
+    #endregion Null
 
+    #region Num
     /// <summary>Определение константы (int)</summary>
     public static Expr Num(int val)
     {
@@ -107,7 +142,9 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.Number(val);
       return oper;
     }
+    #endregion Num
 
+    #region Param
     /// <summary>Определение параметра</summary>
     public static Expr Param(string paramName)
     {
@@ -115,7 +152,9 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.Parameter(paramName);
       return oper;
     }
+    #endregion Param
 
+    #region String
     /// <summary>Определение константы (string)</summary>
     public static Expr String(string val)
     {
@@ -123,7 +162,9 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.String(val);
       return oper;
     }
+    #endregion String
 
+    #region SubQuery
     /// <summary>Определение подзапроса</summary>
     public static Expr SubQuery(Select subQuery)
     {
@@ -131,6 +172,6 @@ namespace Viten.QueryBuilder
       oper.Expression = OmExpression.SubQuery(subQuery.Query);
       return oper;
     }
-
+    #endregion SubQuery
   }
 }

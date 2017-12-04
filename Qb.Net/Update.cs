@@ -30,7 +30,7 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Аналог SQL конструкции UPDATE ... VALUES</summary>
-    public Update Values(params UpdateVal[] values)
+    public Update Values(params Value[] values)
     {
       if(this.Query.Terms.Count > 0)
         throw new InvalidQueryException(SR.Err_RepeatValues);

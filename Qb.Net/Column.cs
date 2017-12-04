@@ -7,7 +7,7 @@ using System.Text;
 namespace Viten.QueryBuilder
 {
   /// <summary>Перечисление агрегатов</summary>
-  public enum AggFunction
+  public enum AggFunc
   {
     /// <summary>No function</summary>
     None,
@@ -54,13 +54,13 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Конструктор</summary>
-    internal Column(string columnName, string columnAlias, AggFunction function)
+    internal Column(string columnName, string columnAlias, AggFunc function)
     {
       Col = new SelectColumn(columnName, null, columnAlias, ExprUtil.ConvertAggregationFunction(function));
     }
 
     /// <summary>Конструктор</summary>
-    internal Column(string columnName, From table, string columnAlias, AggFunction function)
+    internal Column(string columnName, From table, string columnAlias, AggFunc function)
     {
       Col = new SelectColumn(columnName, table != null ? table.Term : null, columnAlias, ExprUtil.ConvertAggregationFunction(function));
     }
@@ -71,7 +71,7 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Определить колонку</summary>
-    public static Column New(string columnName, string columnAlias, AggFunction function)
+    public static Column New(string columnName, string columnAlias, AggFunc function)
     {
       return new Column(columnName, columnAlias, function);
     }
@@ -95,19 +95,19 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Определить колонку</summary>
-    public static Column New(string columnName, From table, string columnAlias, AggFunction function)
+    public static Column New(string columnName, From table, string columnAlias, AggFunc function)
     {
       return new Column(columnName, table, columnAlias, function);
     }
 
     /// <summary>Определить колонку</summary>
-    public static Column New(string columnName, AggFunction function)
+    public static Column New(string columnName, AggFunc function)
     {
       return new Column(columnName, null, null, function);
     }
 
     /// <summary>Определить колонку</summary>
-    public static Column New(string columnName, From table, AggFunction function)
+    public static Column New(string columnName, From table, AggFunc function)
     {
       return new Column(columnName, table, null, function);
     }

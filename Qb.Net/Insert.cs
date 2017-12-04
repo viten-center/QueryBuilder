@@ -16,7 +16,7 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Определение значений полей для вставки</summary>
-    public Insert Values(params UpdateVal[] values)
+    public Insert Values(params Value[] values)
     {
       if (this.Query.Terms.Count > 0)
         throw new InvalidQueryException(SR.Err_RepeatValues);
