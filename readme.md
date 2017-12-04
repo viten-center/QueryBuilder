@@ -25,9 +25,9 @@
 ```
 генерация MS SQL
 ```SQL
-"select * 
+select * 
 from [MyTable] 
-where (([a] = 1 and [b] > 2))"
+where (([a] = 1 and [b] > 2))
 ```
 
 Запрос
@@ -89,11 +89,12 @@ group by
         .Join(JoinType.Left, customer, orders, JoinCond.Fields("Id", "CustomerId"))
         .GroupBy("FirstName", customer)
         .GroupBy("LastName", customer);
+
       From t = From.SubQuery(inner, "t");
-      Selectsel = Qb.Select(
+      sel = Qb.Select(
           Column.New("FirstName", t),
           Column.New("LastName", t),
-          Column.New(Expr.IfNull(Expr.Field("sum", t), Expr.Num(0)), "total")
+          Column.New(Expr.IfNull(Expr.Field("sum", t), 0), "total")
         )
         .From(From.SubQuery(inner, "t"));
 ```
@@ -194,7 +195,7 @@ where
     (([Id] = 20))
 ```
 
-## Пример использования совместно с AnyDbFactory и мини-ORM Dapper
+## Пример использования QueryBuilder совместно с AnyDbFactory и мини-ORM Dapper
 
 ```csharp
   public class Customer
