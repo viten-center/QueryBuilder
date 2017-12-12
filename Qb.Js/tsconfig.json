@@ -1,0 +1,40 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "sourceMap": true,
+    "outDir": "./lib"
+  },
+  "files": [
+    "src/CaseClause.ts",
+    "src/CaseTerm.ts",
+    "src/Column.ts",
+    "src/Cond.ts",
+    "src/Constant.ts",
+    "src/Enums.ts",
+    "src/Expr.ts",
+    "src/From.ts",
+    "src/FromClause.ts",
+    "src/FromTerm.ts",
+    "src/GroupByTerm.ts",
+    "src/InvalidQueryError.ts",
+    "src/Join.ts",
+    "src/JoinCond.ts",
+    "src/JoinCondition.ts",
+    "src/Logic.ts",
+    "src/OmConstant.ts",
+    "src/OmExpression.ts",
+    "src/OmUnion.ts",
+    "src/OrderByTerm.ts",
+    "src/Param.ts",
+    "src/Qb.ts",
+    "src/Select.ts",
+    "src/SelectColumn.ts",
+    "src/SelectQuery.ts",
+    "src/Union.ts",
+    "src/Utils.ts",
+    "src/WhereClause.ts",
+    "src/WhereTerm.ts"
+  ]
+}
