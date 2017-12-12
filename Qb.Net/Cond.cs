@@ -636,7 +636,7 @@ namespace Viten.QueryBuilder
     /// <param name="expr">Expression to be looked up</param>
     /// <param name="values">List of values</param>
     /// <returns></returns>
-    public static Cond In(Expr expr, List<Constant> values)
+    static Cond In(Expr expr, List<Constant> values)
     {
       OmConstantCollection col = new OmConstantCollection();
       for (int i = 0; i < values.Count; i++)
@@ -647,37 +647,61 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Операция In</summary>
-    public static Cond In(Expr expr, params Constant[] values)
+    //public static Cond In(Expr expr, params Constant[] values)
+    //{
+    //  List<Constant> col = new List<Constant>();
+    //  if (values != null)
+    //    col.AddRange(values);
+    //  return Cond.In(expr, col);
+    //}
+
+    public static Cond In(Expr expr, params int[] values)
     {
       List<Constant> col = new List<Constant>();
-      if (values != null)
-        col.AddRange(values);
+      for(int i = 0; i < values.Length; i++)
+        col.Add(Constant.Num(values[i]));
+      return Cond.In(expr, col);
+    }
+
+    public static Cond In(Expr expr, params string[] values)
+    {
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.String(values[i]));
+      return Cond.In(expr, col);
+    }
+
+    public static Cond In(Expr expr, params DateTime[] values)
+    {
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.Date(values[i]));
       return Cond.In(expr, col);
     }
 
     /// <summary>Операция In</summary>
-    public static Cond In(string field, From alias, List<Constant> values)
-    {
-      return Cond.In(Expr.Field(field, alias), values);
-    }
+    //public static Cond In(string field, From alias, List<Constant> values)
+    //{
+    //  return Cond.In(Expr.Field(field, alias), values);
+    //}
 
     /// <summary>Операция In</summary>
-    public static Cond In(string field, List<Constant> values)
-    {
-      return In(field, null, values);
-    }
+    //public static Cond In(string field, List<Constant> values)
+    //{
+    //  return In(field, null, values);
+    //}
 
     /// <summary>Операция In</summary>
-    public static Cond In(string field, params Constant[] values)
-    {
-      return Cond.In(field, null, values);
-    }
+    //public static Cond In(string field, params Constant[] values)
+    //{
+    //  return Cond.In(field, null, values);
+    //}
 
     /// <summary>Операция In</summary>
-    public static Cond In(string field, From alias, params Constant[] values)
-    {
-      return Cond.In(Expr.Field(field, alias), values);
-    }
+    //public static Cond In(string field, From alias, params Constant[] values)
+    //{
+    //  return Cond.In(Expr.Field(field, alias), values);
+    //}
 
     /// <summary>Операция In</summary>
     public static Cond In(Expr expr, Select subQuery)

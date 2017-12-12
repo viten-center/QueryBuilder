@@ -20,8 +20,7 @@ namespace Viten.QueryBuilder.SqlOm
 	/// </summary>
   public class OmConstant 
 	{
-		OmDataType type;
-		object val;
+		
     internal OmConstant()
     {
     }
@@ -35,16 +34,27 @@ namespace Viten.QueryBuilder.SqlOm
 		{
       if (val == null && type != OmDataType.String)
         throw new ArgumentNullException("val");
-			this.type = type;
-			this.val = val;
-		}
+      this.Type = type;
+      switch (type)
+      {
+        case OmDataType.Date:
+          this.DateValue = (DateTime)val;
+          break;
+        case OmDataType.Number:
+          this.NumericValue = val;
+          break;
+        default:
+          this.StringValue = Convert.ToString(val);
+          break;
+      }
+    }
 
-		/// <summary>
-		/// Creates a SqlConstant which represents a numeric value.
-		/// </summary>
-		/// <param name="val">Value of the expression</param>
-		/// <returns>A SqlConstant which represents a floating point value</returns>
-		public static OmConstant Number(double val)
+    /// <summary>
+    /// Creates a SqlConstant which represents a numeric value.
+    /// </summary>
+    /// <param name="val">Value of the expression</param>
+    /// <returns>A SqlConstant which represents a floating point value</returns>
+    public static OmConstant Number(double val)
 		{
 			return new OmConstant(OmDataType.Number, val);
 		}
@@ -96,17 +106,31 @@ namespace Viten.QueryBuilder.SqlOm
 			return new OmConstant(OmDataType.Date, val);
 		}
 
+    public string StringValue;
+    public object NumericValue;
+    public DateTime DateValue;
+
+    /// <summary></summary>
+    OmDataType _type;
     /// <summary></summary>
     public OmDataType Type
-		{
-			get { return this.type; }
-		}
+    {
+      get { return _type; }
+      set { _type = value; }
+    }
 
     /// <summary></summary>
     public object Value
-		{
-			get { return this.val; }
-		}
+    {
+      get
+      {
+        if (_type == OmDataType.Date)
+          return DateValue;
+        if (_type == OmDataType.Number)
+          return NumericValue;
+        return StringValue;
+      }
+    }
 
   }
 }
