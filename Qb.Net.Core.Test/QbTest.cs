@@ -11,11 +11,58 @@ namespace Viten.QueryBuilder.Test
     public static void TestAll()
     {
       QbTest t = new QbTest();
+      t.TestJoinCond();
+      t.TestCond();
+      t.TestFrom();
+      t.TestExpr();
+      t.TestLogic();
       t.TestWhere();
       t.TestInsert();
       t.TestUpdate();
       t.TestDelete();
     }
+
+    [Fact]
+    public void TestJoinCond()
+    {
+      JoinCond j = JoinCond.Fields("a");
+    }
+    [Fact]
+    public void TestCond()
+    {
+      Cond c = Cond.Equal(Expr.Field("a"), Expr.Param("p"));
+      c = Cond.Like(Expr.Field("a"), Expr.Param("p"), '!');
+      c = Cond.Like("a", "%");
+      c = Cond.In(Expr.Field("a"), Qb.Select("a"));
+      c = Cond.IsNull(Expr.Field("a"));
+      c = Cond.Between(Expr.Field("a"), Expr.Param("p1"), Expr.Param("p2"));
+      c = Cond.Exists(Qb.Select("a"));
+    }
+    [Fact]
+    public void TestFrom()
+    {
+      From f = From.Table("a", "b", "dbo");
+      f = From.SubQuery(Qb.Select("a"), "t");
+      Union u = Qb.Union();
+      f = From.Union(u, "a");
+    }
+    [Fact]
+    public void TestExpr()
+    {
+      Expr e = Expr.Field("a");
+      e = Expr.Field("a", From.Table("tab"));
+      e = Expr.Function(AggFunc.Max, Expr.Field("a"));
+      e = Expr.IfNull(Expr.Field("a"), Expr.Param("p"));
+      e = Expr.SubQuery(Qb.Select("a"));
+    }
+    [Fact]
+    public void TestLogic()
+    {
+      Logic l0 = Logic.And(Cond.Equal("a", 1), Cond.Greater("b", 1));
+      Logic l1 = Logic.And(Cond.Equal("a", 1), Cond.Greater("b", 1));
+      Logic l2 = Logic.And(l0, l1);
+    }
+
     [Fact]
     public void TestInsert()
     {
