@@ -38,7 +38,7 @@ namespace Viten.QueryBuilder.Renderer
 
       //Render select columns
       if (forRowCount)
-        this.SelectColumn(selectBuilder, new SelectColumn("*", null, "cnt", OmAggregationFunction.Count));
+        this.SelectColumn(selectBuilder, new SelectColumn("*", null, "cnt", AggFunc.Count));
       else
         this.SelectColumns(selectBuilder, query.Columns);
 
@@ -78,7 +78,7 @@ namespace Viten.QueryBuilder.Renderer
       string baseSql = RenderSelect(query);
 
       SelectQuery countQuery = new SelectQuery();
-      SelectColumn col = new SelectColumn("*", null, "cnt", OmAggregationFunction.Count);
+      SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
       countQuery.Columns.Add(col);
       countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
       return RenderSelect(countQuery);

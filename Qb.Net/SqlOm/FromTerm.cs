@@ -1,20 +1,6 @@
 using System;
 namespace Viten.QueryBuilder.SqlOm
 {
-	/// <summary>
-	/// Specifies the type of a FromTerm
-	/// </summary>
-  public enum FromTermType
-	{ 
-		/// <summary>The FromTerm designates a database table or view</summary>
-		Table, 
-		/// <summary>The FromTerm designates a sub-query. Not all databases support sub-queries.</summary>
-		SubQuery,
-		/// <summary></summary>
-		SubQueryObj,
-    /// <summary></summary>
-    Union
-	}
 
   /// <summary>
   /// Represents one term in the the FROM clause of a select statement.
@@ -43,6 +29,35 @@ namespace Viten.QueryBuilder.SqlOm
   /// </example>
   public class FromTerm
   {
+    public string StringValue { get; set; }
+    public SelectQuery QueryValue { get; set; }
+    public OmUnion UnionValue { get; set; }
+
+    /// <summary>
+    /// Gets the alias of the term.
+    /// </summary>
+    /// <remarks>This property can be null for some types of FromTerm</remarks>
+    public string Alias { get; set; }
+
+    /// <summary>
+    /// Gets the type of the FromTerm
+    /// </summary>
+    public FromTermType Type { get; set; }
+
+    /// <summary>
+    /// Gets the reference name of this term.
+    /// </summary>
+    public string RefName
+    {
+      get { return (Alias == null && Type == FromTermType.Table) ? (string)Expression : Alias; }
+    }
+
+    /// <summary></summary>
+    public string Ns1 { get; set; }
+
+    /// <summary></summary>
+    public string Ns2 { get; set; }
+
     public FromTerm()
     {
     }
@@ -158,9 +173,6 @@ namespace Viten.QueryBuilder.SqlOm
       return term;
     }
 
-    public string StringValue { get; set; }
-    public SelectQuery QueryValue { get; set; }
-    public OmUnion UnionValue { get; set; }
 
     /// <summary>
     /// Gets the expression defined for this term.
@@ -185,29 +197,5 @@ namespace Viten.QueryBuilder.SqlOm
       }
     }
 
-    /// <summary>
-    /// Gets the alias of the term.
-    /// </summary>
-    /// <remarks>This property can be null for some types of FromTerm</remarks>
-    public string Alias { get; set; }
-
-    /// <summary>
-    /// Gets the type of the FromTerm
-    /// </summary>
-    public FromTermType Type { get; set; }
-
-    /// <summary>
-    /// Gets the reference name of this term.
-    /// </summary>
-    public string RefName
-    {
-      get { return (Alias == null && Type == FromTermType.Table) ? (string)Expression : Alias; }
-    }
-
-    /// <summary></summary>
-    public string Ns1 { get; set; }
-
-    /// <summary></summary>
-    public string Ns2 { get; set; }
   }
 }

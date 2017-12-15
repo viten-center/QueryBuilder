@@ -7,13 +7,18 @@ namespace Viten.QueryBuilder.SqlOm
     /// </summary>
     public class InsertSelectQuery 
   {
-    SelectQuery selectQuery;
-    string tableName;
+    /// <summary>
+    /// Gets or set the name of a table to be inserted into
+    /// </summary>
+    public string TableName { get; set; }
 
-    		/// <summary>
+    /// <summary>Query</summary>
+    public SelectQuery SelectQuery { get; set; }
+
+    /// <summary>
     /// Create an InsertSelectQuery
-		/// </summary>
-		public InsertSelectQuery() : this(null)
+    /// </summary>
+    public InsertSelectQuery() : this(null)
 		{
 		}
 
@@ -23,33 +28,18 @@ namespace Viten.QueryBuilder.SqlOm
 		/// <param name="tableName">The name of the table to be inseserted into</param>
     public InsertSelectQuery(string tableName)
 		{
-			this.tableName = tableName;
+			this.TableName = tableName;
 		}
 
-    /// <summary>
-    /// Gets or set the name of a table to be inserted into
-    /// </summary>
-    public string TableName
-    {
-      get { return this.tableName; }
-      set { this.tableName = value; }
-    }
-
-    /// <summary>Команда запроса</summary>
-    public SelectQuery SelectQuery
-    {
-      get { return this.selectQuery; }
-      set { selectQuery = value; }
-    }
 
     /// <summary>
     /// Validates InsertQuery
     /// </summary>
     public void Validate()
     {
-      if (tableName == null)
+      if (TableName == null)
         throw new InvalidQueryException("TableName is empty.");
-      if (selectQuery == null)
+      if (SelectQuery == null)
         throw new InvalidQueryException("SelectQuery is empty.");
     }
 

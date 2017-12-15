@@ -4,19 +4,14 @@ using System.Linq;
 
 namespace Viten.QueryBuilder
 {
-    /// <summary>Класс команды удаления информации</summary>
-    public class Delete
+  /// <summary>Класс команды удаления информации</summary>
+  public class Delete
   {
     internal DeleteQuery Query;
 
     internal Delete(string tableName)
     {
       Query = new DeleteQuery(tableName);
-    }
-
-    internal Delete(Select select)
-    {
-      Query = new DeleteQuery(select.Query);
     }
 
     public Delete Where(params Cond[] opers)

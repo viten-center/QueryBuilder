@@ -113,7 +113,7 @@ namespace Viten.QueryBuilder.Renderer
 			string baseSql = RenderSelect(query, false);
 
 			SelectQuery countQuery = new SelectQuery();
-			SelectColumn col = new SelectColumn("*", null, "cnt", OmAggregationFunction.Count);
+			SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
 			countQuery.Columns.Add(col);
 			countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
 			return RenderSelect(countQuery);

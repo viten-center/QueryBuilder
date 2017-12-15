@@ -22,7 +22,7 @@ namespace Viten.QueryBuilder.SqlOm
 	{
     object fromObject;
     FromTermType fromTermType = FromTermType.Table;
-		WhereClause whereClause = new WhereClause(WhereClauseRelationship.And);
+		WhereClause whereClause = new WhereClause(WhereRel.And);
 
 		/// <summary>
 		/// Creates a DeleteQuery
@@ -39,15 +39,6 @@ namespace Viten.QueryBuilder.SqlOm
       this.fromObject = tableName;
 		}
 
-    /// <summary>
-    /// Creates a DeleteQuery
-    /// </summary>
-    /// <param name="select">Name of the table records are to be deleted from</param>
-    public DeleteQuery(SelectQuery select)
-    {
-      this.fromObject = select;
-      this.fromTermType = FromTermType.SubQueryObj;
-    }
 		/// <summary>
 		/// Specifies which rows are to be deleted
 		/// </summary>

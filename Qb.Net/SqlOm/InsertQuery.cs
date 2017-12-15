@@ -25,12 +25,28 @@ namespace Viten.QueryBuilder.SqlOm
 	{
 		UpdateTermCollection terms = new UpdateTermCollection();
 
-    string identityField;
-		string tableName;
-        /// <summary>
-		/// Create an InsertQuery
-		/// </summary>
-		public InsertQuery() : this(null)
+    /// <summary>
+    /// Gets or set the name of a table to be inserted into
+    /// </summary>
+    public string TableName { get; set; }
+
+    /// <summary>
+    /// Имя возвращаемого поля автоинкремента
+    /// </summary>
+    public string IdentityField { get; set; }
+
+    ParamCollection commandParams = new ParamCollection();
+
+    /// <summary>Список параметров команды</summary>
+    public ParamCollection CommandParams
+    {
+      get { return commandParams; }
+    }
+
+    /// <summary>
+    /// Create an InsertQuery
+    /// </summary>
+    public InsertQuery() : this(null)
 		{
 		}
 
@@ -40,7 +56,7 @@ namespace Viten.QueryBuilder.SqlOm
 		/// <param name="tableName">The name of the table to be inseserted into</param>
 		public InsertQuery(string tableName)
 		{
-			this.tableName = tableName;
+			this.TableName = tableName;
 		}
     /// <summary>
 		/// Gets the collection if column-value pairs
@@ -53,23 +69,6 @@ namespace Viten.QueryBuilder.SqlOm
 			get { return this.terms; }
 		}
 
-		/// <summary>
-		/// Gets or set the name of a table to be inserted into
-		/// </summary>
-		public string TableName
-		{
-			get { return this.tableName; }
-			set { this.tableName = value; }
-		}
-
-    /// <summary>
-    /// Имя возвращаемого поля автоинкремента
-    /// </summary>
-    public string IdentityField
-    {
-      get { return identityField; }
-      set { identityField = value; }
-    }
 
 
 		/// <summary>
@@ -77,7 +76,7 @@ namespace Viten.QueryBuilder.SqlOm
 		/// </summary>
 		public void Validate()
 		{
-			if (tableName == null)
+			if (TableName == null)
 				throw new InvalidQueryException("TableName is empty.");
       if (terms.Count == 0)
 				throw new InvalidQueryException("Terms collection is empty.");
@@ -91,13 +90,6 @@ namespace Viten.QueryBuilder.SqlOm
       return query.Query;
     }
 
-    ParamCollection commandParams = new ParamCollection();
-
-    /// <summary>Список параметров команды</summary>
-    public ParamCollection CommandParams
-    {
-      get { return commandParams; }
-    }
 
   }
 }

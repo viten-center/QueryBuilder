@@ -2,16 +2,6 @@
 
 namespace Viten.QueryBuilder
 {
-  /// <summary>
-  /// Переичсление направлений сортировки
-  /// </summary>
-  public enum OrderByDir
-  {
-    /// <summary>Ascending Order</summary>
-    Asc,
-    /// <summary>Descending Order</summary>
-    Desc
-  }
 
   /// <summary>Класс параметров сортировки информации при чтении</summary>
   internal class OrderBy
@@ -21,25 +11,25 @@ namespace Viten.QueryBuilder
     /// <summary>Конструктор</summary>
     internal OrderBy(string field, From table, OrderByDir dir)
     {
-      Term = new OrderByTerm(field, table != null ? table.Term : null, ExprUtil.ConvertOrderByDir(dir));
+      Term = new OrderByTerm(field, table != null ? table.Term : null, dir);
     }
 
     /// <summary>Конструктор</summary>
     internal OrderBy(string field, From table)
     {
-      Term = new OrderByTerm(field, table != null ? table.Term : null, OrderByDirection.Ascending);
+      Term = new OrderByTerm(field, table != null ? table.Term : null, OrderByDir.Asc);
     }
 
     /// <summary>Конструктор</summary>
     internal OrderBy(string field)
     {
-      Term = new OrderByTerm(field, null, OrderByDirection.Ascending);
+      Term = new OrderByTerm(field, null, OrderByDir.Asc);
     }
 
     /// <summary>Конструктор</summary>
     internal OrderBy(string field, OrderByDir dir)
     {
-      Term = new OrderByTerm(field, null, ExprUtil.ConvertOrderByDir(dir));
+      Term = new OrderByTerm(field, null, dir);
     }
 
   }

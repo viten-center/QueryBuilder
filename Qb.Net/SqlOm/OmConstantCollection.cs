@@ -14,7 +14,6 @@ namespace Viten.QueryBuilder.SqlOm
 		/// </summary>
 		public OmConstantCollection()
 		{
-			// empty
 		}
 
 		/// <summary>
@@ -73,7 +72,7 @@ namespace Viten.QueryBuilder.SqlOm
 		/// <remarks>
 		/// This method automatically determins the type of the value and creates the appropriate SqlConstant object.
 		/// </remarks>
-		public void Add(object val)
+		internal void Add(object val)
 		{
 			if (val == null)
 				return;
@@ -81,18 +80,14 @@ namespace Viten.QueryBuilder.SqlOm
 			OmConstant constant;
 			if (val is string)
 				constant = OmConstant.String((string)val);
-			else if (val is int)
-				constant = OmConstant.Number((int)val);
 			else if (val is DateTime)
 				constant = OmConstant.Date((DateTime)val);
-      else if(val is DateTime)
-        constant = OmConstant.Date((DateTime)val);
-			else if (val is double)
+      else if (val is int)
+        constant = OmConstant.Number((int)val);
+      else if (val is double)
 				constant = OmConstant.Number((double)val);
 			else if (val is float)
 				constant = OmConstant.Number((double)val);
-      //else if (val is decimal)
-      //  constant = SqlConstant.Number((decimal)val);
 			else
 				constant = OmConstant.String(val.ToString());
 			

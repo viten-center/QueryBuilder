@@ -21,13 +21,28 @@ namespace Viten.QueryBuilder.SqlOm
   /// </example>
   public class UpdateQuery
 	{
-		UpdateTermCollection terms = new UpdateTermCollection();
-		WhereClause whereClause = new WhereClause(WhereClauseRelationship.And);
-		string tableName;
-		/// <summary>
-		/// Creates a new UpdateQuery
-		/// </summary>
-		public UpdateQuery() : this(null)
+    /// <summary>
+    /// Gets the terms collection for this UpdateQuery
+    /// </summary>
+    /// <remarks>
+    /// Terms specify which columns should be updated and to what values.
+    /// </remarks>
+    public UpdateTermCollection Terms { get; } = new UpdateTermCollection();
+       
+    /// <summary>
+    /// Spicifies which rows are to be updated
+    /// </summary>
+    public WhereClause WhereClause { get; } = new WhereClause(WhereRel.And);
+
+    /// <summary>
+    /// Gets or set the name of a table to be updated
+    /// </summary>
+    public string TableName { get; set; }
+
+    /// <summary>
+    /// Creates a new UpdateQuery
+    /// </summary>
+    public UpdateQuery() : this(null)
 		{
 		}
 
@@ -37,44 +52,19 @@ namespace Viten.QueryBuilder.SqlOm
 		/// <param name="tableName"></param>
 		public UpdateQuery(string tableName)
 		{
-			this.tableName = tableName;
-		}
-		/// <summary>
-		/// Gets the terms collection for this UpdateQuery
-		/// </summary>
-		/// <remarks>
-		/// Terms specify which columns should be updated and to what values.
-		/// </remarks>
-		public UpdateTermCollection Terms
-		{
-			get { return this.terms; }
+			this.TableName = tableName;
 		}
 
-		/// <summary>
-		/// Spicifies which rows are to be updated
-		/// </summary>
-		public WhereClause WhereClause
-		{
-			get { return this.whereClause; }
-		}
 
-		/// <summary>
-		/// Gets or set the name of a table to be updated
-		/// </summary>
-		public string TableName
-		{
-			get { return this.tableName; }
-			set { this.tableName = value; }
-		}
 
 		/// <summary>
 		/// Validates UpdateQuery
 		/// </summary>
 		public void Validate()
 		{
-			if (tableName == null)
+			if (TableName == null)
 				throw new InvalidQueryException("TableName is empty.");
-			if (terms.Count == 0)
+			if (Terms.Count == 0)
 				throw new InvalidQueryException("Terms collection is empty.");
 		}
 

@@ -3,8 +3,8 @@ using System.Linq;
 
 namespace Viten.QueryBuilder
 {
-    /// <summary>Класс описания конструкции SELECT ... FROM</summary>
-    public class From
+  /// <summary>Класс описания конструкции SELECT ... FROM</summary>
+  public class From
   {
     internal FromTerm Term;
 

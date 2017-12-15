@@ -2,105 +2,33 @@ using System;
 
 namespace Viten.QueryBuilder.SqlOm
 {
-	/// <summary>
-	/// Specifies what kind of join should be rendered
-	/// </summary>
-	public enum JoinType 
-	{ 
-		/// <summary>Inner Join</summary>
-		Inner, 
-		/// <summary>Left Outer Join</summary>
-		Left, 
-		/// <summary>Right Outer Join</summary>
-		Right, 
-		/// <summary>Full Join</summary>
-		Full, 
-		/// <summary>Cross Join</summary>
-		Cross 
-	}
 
-	/// <summary>
-	/// Represnts a Join between two tables.
-	/// </summary>
-  public class Join
-	{
-		FromTerm leftTable, rightTable;
-		//string leftField, rightField;
-		WhereClause conditions;
-		JoinType type;
-    internal Join()
-    {
-    }
-
-    /// <summary></summary>
-    public Join(FromTerm leftTable, FromTerm rightTable, WhereClause conditions, JoinType type)
-		{
-			this.leftTable = leftTable;
-			this.rightTable = rightTable;
-//			this.leftField = leftField;
-//			this.rightField = rightField;
-			this.conditions = conditions;
-			this.type = type;
-		}
-
-    /// <summary></summary>
-    public FromTerm LeftTable
-		{
-			get { return this.leftTable; }
-		}
-
-/*		public string LeftField
-		{
-			get { return this.leftField; }
-		}
-		public string RightField
-		{
-			get { return this.rightField; }
-		}
-*/
-    /// <summary></summary>
-    public WhereClause Conditions
-		{
-			get { return conditions; }
-		}
-
-    /// <summary></summary>
-    public FromTerm RightTable
-		{
-			get { return this.rightTable; }
-		}
-
-    /// <summary></summary>
-    public JoinType Type
-		{
-			get { return this.type; }
-		}
-
-  }
-
-	/// <summary>
-	/// Represents the FROM clause of a select statement
-	/// </summary>
-	/// <remarks>
-	/// FromClause consists of a base table set by the <see cref="FromClause.BaseTable">BaseTable</see> property
-	/// and optional joins defined using the FromClause.Join method.
-	/// <para>
-	/// SqlOM supports inner, outer and cross joins. 
-	/// Inner join between two tables returns only rows which exist in both tables.
-	/// Outer (Left, Right and Full) joins return rows when at least one of the tables has a matching row. 
-	/// Left outer joins returns all rows from the left table and while the missing rows from the right are filled with nulls.
-	/// Right outer join is the opposite of left. Full outer join returns all the rows from the left and the right tables while the missing rows from the opposite table are filled with nulls.
-	/// Cross join does not match any keys and returns the cartesian product of both tables.
-	/// For more information about joins consult SQL documentation.
-	/// </para>	
-	/// </remarks>
+  /// <summary>
+  /// Represents the FROM clause of a select statement
+  /// </summary>
+  /// <remarks>
+  /// FromClause consists of a base table set by the <see cref="FromClause.BaseTable">BaseTable</see> property
+  /// and optional joins defined using the FromClause.Join method.
+  /// <para>
+  /// SqlOM supports inner, outer and cross joins. 
+  /// Inner join between two tables returns only rows which exist in both tables.
+  /// Outer (Left, Right and Full) joins return rows when at least one of the tables has a matching row. 
+  /// Left outer joins returns all rows from the left table and while the missing rows from the right are filled with nulls.
+  /// Right outer join is the opposite of left. Full outer join returns all the rows from the left and the right tables while the missing rows from the opposite table are filled with nulls.
+  /// Cross join does not match any keys and returns the cartesian product of both tables.
+  /// For more information about joins consult SQL documentation.
+  /// </para>	
+  /// </remarks>
 
   public class FromClause : ICloneable
 	{
 		JoinCollection joins = new JoinCollection();
-		FromTerm baseTable = null;
-		
-		internal FromClause()
+    public JoinCollection Joins
+    {
+      get { return joins; }
+    }
+
+    public FromClause()
 		{
 		}
     /// <summary>
@@ -111,11 +39,7 @@ namespace Viten.QueryBuilder.SqlOm
 		///	If no joins are specified for the query the base table is the only table in the select statement.
 		///	BaseTable must be set before <see cref="SelectQuery">SelectQuery</see> can be rendered.
 		/// </remarks>
-		public FromTerm BaseTable
-		{
-			get { return baseTable; }
-			set { baseTable = value; }
-		}
+		public FromTerm BaseTable { get; set; }
 
 		/// <summary>
 		/// Checks if a term with the specified RefName already exists in the FromClause.
@@ -127,8 +51,8 @@ namespace Viten.QueryBuilder.SqlOm
 		/// </remarks>
 		public bool TermExists(string alias)
 		{
-			if (joins.Count == 0 && baseTable != null)
-				return string.Compare(baseTable.RefName, alias) == 0;
+			if (joins.Count == 0 && BaseTable != null)
+				return string.Compare(BaseTable.RefName, alias) == 0;
 
 			foreach(Join join in joins)
 			{
@@ -238,9 +162,9 @@ namespace Viten.QueryBuilder.SqlOm
 		/// </remarks>
 		public void Join(JoinType type, FromTerm leftTable, FromTerm rightTable, JoinCondition[] conditions)
 		{
-			WhereClause clause = new WhereClause(WhereClauseRelationship.And);
+			WhereClause clause = new WhereClause(WhereRel.And);
 			foreach(JoinCondition cond in conditions)
-				clause.Terms.Add(WhereTerm.CreateCompare(OmExpression.Field(cond.LeftField, leftTable), OmExpression.Field(cond.RightField, rightTable), CompareOperator.Equal));
+				clause.Terms.Add(WhereTerm.CreateCompare(OmExpression.Field(cond.LeftField, leftTable), OmExpression.Field(cond.RightField, rightTable), CompCond.Equal));
 			
 			Join(type, leftTable, rightTable, clause);
 		}
@@ -270,23 +194,13 @@ namespace Viten.QueryBuilder.SqlOm
 			joins.Add(new Join(leftTable, rightTable, conditions, type));
 		}
 
-		/// <summary>
-		/// Gets the joins for this FromClause
-		/// </summary>
-		/// <remarks>
-		/// Do not use this property to modify a FromClause. Use the FromClause.Join method instead.
-		/// </remarks>
-		public JoinCollection Joins
-		{
-			get { return joins; }
-		}
 
 		/// <summary>
 		/// Returns true if this FromClause has no terms at all
 		/// </summary>
 		public bool IsEmpty
 		{
-			get { return baseTable == null && joins.Count == 0; }
+			get { return BaseTable == null && joins.Count == 0; }
 		}
 
 		object ICloneable.Clone()
@@ -302,7 +216,7 @@ namespace Viten.QueryBuilder.SqlOm
 		{
 			FromClause a = new FromClause();
 			a.joins = new JoinCollection(joins);
-			a.baseTable = baseTable;
+			a.BaseTable = BaseTable;
 			return a;
 		}
 

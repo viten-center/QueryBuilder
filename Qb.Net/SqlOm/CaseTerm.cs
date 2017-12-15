@@ -7,9 +7,7 @@ namespace Viten.QueryBuilder.SqlOm
   /// </summary>
   public class CaseTerm 
   {
-    WhereClause cond;
-    OmExpression val;
-    internal CaseTerm()
+    public CaseTerm()
     {
     }
 
@@ -20,21 +18,14 @@ namespace Viten.QueryBuilder.SqlOm
     /// <param name="val">Value for the THEN clause</param>
     public CaseTerm(WhereClause condition, OmExpression val)
     {
-      this.cond = condition;
-      this.val = val;
+      this.Condition = condition;
+      this.Value = val;
     }
 
     /// <summary></summary>
-    public WhereClause Condition
-    {
-      get { return this.cond; }
-    }
-
+    public WhereClause Condition { get; set; }
     /// <summary></summary>
-    public OmExpression Value
-    {
-      get { return this.val; }
-    }
+    public OmExpression Value { get; set; }
 
   }
 }

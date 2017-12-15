@@ -4,28 +4,6 @@ using System.Collections.Generic;
 
 namespace Viten.QueryBuilder
 {
-  /// <summary>Перечисление операций сравнения</summary>
-  public enum CompCond
-  {
-    /// <summary>Equal</summary>
-    Equal,
-    /// <summary>Different</summary>
-    NotEqual,
-    /// <summary>Left operand is greater</summary>
-    Greater,
-    /// <summary>Left operand is less</summary>
-    Less,
-    /// <summary>Left operand is less or equal</summary>
-    LessOrEqual,
-    /// <summary>Left operand is greater or equal</summary>
-    GreaterOrEqual,
-    /// <summary>Make a bitwise AND and check the result for being not null (ex: (a &amp; b) > 0) ) </summary>
-    BitwiseAnd,
-    /// <summary>Substring. Use '%' signs in the value to match anything</summary>
-    Like,
-    /// <summary>Substring. Use '%' signs in the value not to match anything</summary>
-    NotLike,
-  }
 
   /// <summary>Класс описания операции</summary>
   public class Cond
@@ -35,7 +13,7 @@ namespace Viten.QueryBuilder
     static Cond Compare(Expr expr1, Expr expr2, CompCond op)
     {
       Cond oper = new Cond();
-      oper.Term = WhereTerm.CreateCompare(expr1.Expression, expr2.Expression, ExprUtil.ConvertCompOper(op));
+      oper.Term = WhereTerm.CreateCompare(expr1.Expression, expr2.Expression, op);
       return oper;
     }
 
@@ -646,15 +624,6 @@ namespace Viten.QueryBuilder
       return term;
     }
 
-    /// <summary>Операция In</summary>
-    //public static Cond In(Expr expr, params Constant[] values)
-    //{
-    //  List<Constant> col = new List<Constant>();
-    //  if (values != null)
-    //    col.AddRange(values);
-    //  return Cond.In(expr, col);
-    //}
-
     public static Cond In(Expr expr, params int[] values)
     {
       List<Constant> col = new List<Constant>();
@@ -678,30 +647,6 @@ namespace Viten.QueryBuilder
         col.Add(Constant.Date(values[i]));
       return Cond.In(expr, col);
     }
-
-    /// <summary>Операция In</summary>
-    //public static Cond In(string field, From alias, List<Constant> values)
-    //{
-    //  return Cond.In(Expr.Field(field, alias), values);
-    //}
-
-    /// <summary>Операция In</summary>
-    //public static Cond In(string field, List<Constant> values)
-    //{
-    //  return In(field, null, values);
-    //}
-
-    /// <summary>Операция In</summary>
-    //public static Cond In(string field, params Constant[] values)
-    //{
-    //  return Cond.In(field, null, values);
-    //}
-
-    /// <summary>Операция In</summary>
-    //public static Cond In(string field, From alias, params Constant[] values)
-    //{
-    //  return Cond.In(Expr.Field(field, alias), values);
-    //}
 
     /// <summary>Операция In</summary>
     public static Cond In(Expr expr, Select subQuery)

@@ -3,25 +3,12 @@ using System;
 namespace Viten.QueryBuilder.SqlOm
 {
 	/// <summary>
-	/// Data type of a constant value
-	/// </summary>
-	public enum OmDataType
-	{
-		/// <summary>String value</summary>
-		String, 
-		/// <summary>Numeric value (int, double, float, decimal)</summary>
-		Number, 
-		/// <summary>DateTime object</summary>
-		Date
-	}
-
-	/// <summary>
 	/// Represents a typed constant value.
 	/// </summary>
   public class OmConstant 
 	{
 		
-    internal OmConstant()
+    public OmConstant()
     {
     }
 
@@ -30,17 +17,17 @@ namespace Viten.QueryBuilder.SqlOm
 		/// </summary>
 		/// <param name="type">Constant's date type</param>
 		/// <param name="val">Constant's value</param>
-		public OmConstant(OmDataType type, object val)
+		public OmConstant(DataType type, object val)
 		{
-      if (val == null && type != OmDataType.String)
+      if (val == null && type != DataType.String)
         throw new ArgumentNullException("val");
       this.Type = type;
       switch (type)
       {
-        case OmDataType.Date:
-          this.DateValue = (DateTime)val;
+        case DataType.Date:
+          this.DateValue = Convert.ToDateTime(val);
           break;
-        case OmDataType.Number:
+        case DataType.Number:
           this.NumericValue = val;
           break;
         default:
@@ -56,22 +43,26 @@ namespace Viten.QueryBuilder.SqlOm
     /// <returns>A SqlConstant which represents a floating point value</returns>
     public static OmConstant Number(double val)
 		{
-			return new OmConstant(OmDataType.Number, val);
+			return new OmConstant(DataType.Number, val);
 		}
+    /// <summary>
+    /// Creates a SqlConstant which represents a numeric value.
+    /// </summary>
+    /// <param name="val">Value of the expression</param>
+    /// <returns>A SqlConstant which represents a numeric value</returns>
+    public static OmConstant Number(float val)
+    {
+      return new OmConstant(DataType.Number, val);
+    }
 
-    //public static SqlConstant Number(decimal val)
-    //{
-    //  return new SqlConstant(SqlDataType.Number, val);
-    //}
-
-		/// <summary>
-		/// Creates a SqlConstant which represents a numeric value.
-		/// </summary>
-		/// <param name="val">Value of the expression</param>
-		/// <returns>A SqlConstant which represents a numeric value</returns>
-		public static OmConstant Number(long val)
+    /// <summary>
+    /// Creates a SqlConstant which represents a numeric value.
+    /// </summary>
+    /// <param name="val">Value of the expression</param>
+    /// <returns>A SqlConstant which represents a numeric value</returns>
+    public static OmConstant Number(long val)
 		{
-			return new OmConstant(OmDataType.Number, val);			
+			return new OmConstant(DataType.Number, val);			
 		}
 
     /// <summary>
@@ -81,7 +72,7 @@ namespace Viten.QueryBuilder.SqlOm
     /// <returns>A SqlConstant which represents a numeric value</returns>
     public static OmConstant Number(int val)
     {
-      return new OmConstant(OmDataType.Number, val);
+      return new OmConstant(DataType.Number, val);
     }
 
 
@@ -92,7 +83,7 @@ namespace Viten.QueryBuilder.SqlOm
 		/// <returns>A SqlConstant which represents a textual value</returns>
 		public static OmConstant String(string val)
 		{
-			return new OmConstant(OmDataType.String, val);
+			return new OmConstant(DataType.String, val);
 		}
 
 
@@ -103,30 +94,22 @@ namespace Viten.QueryBuilder.SqlOm
 		/// <returns>A SqlConstant which represents a date value</returns>
 		public static OmConstant Date(DateTime val)
 		{
-			return new OmConstant(OmDataType.Date, val);
+			return new OmConstant(DataType.Date, val);
 		}
 
-    public string StringValue;
-    public object NumericValue;
-    public DateTime DateValue;
-
-    /// <summary></summary>
-    OmDataType _type;
-    /// <summary></summary>
-    public OmDataType Type
-    {
-      get { return _type; }
-      set { _type = value; }
-    }
+    public string StringValue { get; set; }
+    public object NumericValue { get; set; }
+    public DateTime DateValue { get; set; }
+    public DataType Type { get; set; }
 
     /// <summary></summary>
     public object Value
     {
       get
       {
-        if (_type == OmDataType.Date)
+        if (Type == DataType.Date)
           return DateValue;
-        if (_type == OmDataType.Number)
+        if (Type == DataType.Number)
           return NumericValue;
         return StringValue;
       }

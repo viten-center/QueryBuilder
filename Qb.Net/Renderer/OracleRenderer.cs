@@ -113,10 +113,10 @@ namespace Viten.QueryBuilder.Renderer
 
 			this.FromClause(selectBuilder, query.FromClause, query.TableSpace);
 
-			WhereClause fullWhereClause = new WhereClause(WhereClauseRelationship.And);
+			WhereClause fullWhereClause = new WhereClause(WhereRel.And);
 			fullWhereClause.SubClauses.Add(query.WherePhrase);
 			if (limitRows > -1)
-				fullWhereClause.Terms.Add(WhereTerm.CreateCompare(OmExpression.PseudoField("rownum"), OmExpression.Number(limitRows), CompareOperator.LessOrEqual));
+				fullWhereClause.Terms.Add(WhereTerm.CreateCompare(OmExpression.PseudoField("rownum"), OmExpression.Number(limitRows), CompCond.LessOrEqual));
 
 			this.Where(selectBuilder, fullWhereClause);
 			this.WhereClause(selectBuilder, fullWhereClause);
@@ -154,7 +154,7 @@ namespace Viten.QueryBuilder.Renderer
 			string baseSql = RenderSelect(query, -1);
 
 			SelectQuery countQuery = new SelectQuery();
-			SelectColumn col = new SelectColumn("*", null, "cnt", OmAggregationFunction.Count);
+			SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
 			countQuery.Columns.Add(col);
 			countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
 			return RenderSelect(countQuery);

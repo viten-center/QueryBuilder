@@ -8,7 +8,6 @@ namespace Viten.QueryBuilder.SqlOm
   public class StoredProcQuery 
   {
     ParamCollection commandParams = new ParamCollection();
-    string storedProcName;
 
     /// <summary>Список параметров команды</summary>
     public ParamCollection CommandParams
@@ -24,15 +23,12 @@ namespace Viten.QueryBuilder.SqlOm
     /// <summary>Конструктор</summary>
     public StoredProcQuery(string storedProcName)
     {
-      this.storedProcName = storedProcName;
+      this.StoredProcName = storedProcName;
     }
 
     /// <summary>Имя хранимой процедуры</summary>
-    public string StoredProcName
-    {
-      get { return storedProcName; }
-      set { storedProcName = value; }
-    }
+    public string StoredProcName { get; set; }
+
     /// <summary>Получить коллекцию выходных параметров команды</summary>
     /// <param name="paramCollection">Коллекция параметров команды</param>
     /// <returns></returns>

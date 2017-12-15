@@ -6,28 +6,6 @@ using System.Text;
 
 namespace Viten.QueryBuilder
 {
-  /// <summary>Перечисление агрегатов</summary>
-  public enum AggFunc
-  {
-    /// <summary>No function</summary>
-    None,
-    /// <summary>Sum</summary>
-    Sum,
-    /// <summary>Count rows</summary>
-    Count,
-    /// <summary>Avarage</summary>
-    Avg,
-    /// <summary>Minimum</summary>
-    Min,
-    /// <summary>Maximum</summary>
-    Max,
-    /// <summary>Returns true is the current row is a super-aggregate row when used with ROLLUP or CUBE</summary>
-    /// <remarks>Grouping functions is not supported in all databases</remarks>
-    Grouping,
-    /// <summary>SQL text</summary>
-    Raw
-  }
-
   /// <summary>
   /// Класс колонки запроса
   /// </summary>
@@ -56,13 +34,13 @@ namespace Viten.QueryBuilder
     /// <summary>Конструктор</summary>
     internal Column(string columnName, string columnAlias, AggFunc function)
     {
-      Col = new SelectColumn(columnName, null, columnAlias, ExprUtil.ConvertAggregationFunction(function));
+      Col = new SelectColumn(columnName, null, columnAlias, function);
     }
 
     /// <summary>Конструктор</summary>
-    internal Column(string columnName, From table, string columnAlias, AggFunc function)
+    internal Column(string columnName, string columnAlias, From table, AggFunc function)
     {
-      Col = new SelectColumn(columnName, table != null ? table.Term : null, columnAlias, ExprUtil.ConvertAggregationFunction(function));
+      Col = new SelectColumn(columnName, table != null ? table.Term : null, columnAlias, function);
     }
 
     internal Column(Expr expr, string columnAlias)
@@ -95,9 +73,9 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Определить колонку</summary>
-    public static Column New(string columnName, From table, string columnAlias, AggFunc function)
+    public static Column New(string columnName, string columnAlias, From table, AggFunc function)
     {
-      return new Column(columnName, table, columnAlias, function);
+      return new Column(columnName, columnAlias, table, function);
     }
 
     /// <summary>Определить колонку</summary>
@@ -109,7 +87,7 @@ namespace Viten.QueryBuilder
     /// <summary>Определить колонку</summary>
     public static Column New(string columnName, From table, AggFunc function)
     {
-      return new Column(columnName, table, null, function);
+      return new Column(columnName, null, table, function);
     }
 
     /// <summary>Определить колонку</summary>

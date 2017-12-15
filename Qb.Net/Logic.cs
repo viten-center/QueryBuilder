@@ -2,14 +2,6 @@
 
 namespace Viten.QueryBuilder
 {
-  /// <summary>Перечисление логических операций</summary>
-  public enum WhereRel
-  {
-    /// <summary>Logical And</summary>
-    And,
-    /// <summary>Logical Or</summary>
-    Or
-  }
 
   /// <summary>Класс определения логических операций</summary>
   public class Logic
@@ -18,7 +10,7 @@ namespace Viten.QueryBuilder
 
     internal Logic(WhereRel whereRel)
     {
-      Clause = new WhereClause(ExprUtil.ConvertWhereRel(whereRel));
+      Clause = new WhereClause(whereRel);
     }
 
     /// <summary>Определение операции AND</summary>

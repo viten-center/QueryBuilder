@@ -9,8 +9,17 @@ namespace Viten.QueryBuilder.SqlOm
   /// </remarks>
   public class JoinCondition 
 	{
-		string leftField, rightField;
-    internal JoinCondition()
+    /// <summary>
+    /// Gets the name of the field in the left table to join on
+    /// </summary>
+    public string LeftField { get; set; }
+
+    /// <summary>
+    /// Gets the name of the field in the right table to join on
+    /// </summary>
+    public string RightField { get; set; }
+
+    public JoinCondition()
     {
     }
 
@@ -33,24 +42,8 @@ namespace Viten.QueryBuilder.SqlOm
 		/// <param name="rightField">Name of the field in the right table to join on</param>
 		public JoinCondition(string leftField, string rightField)
 		{
-			this.leftField = leftField;
-			this.rightField = rightField;
-		}
-
-		/// <summary>
-		/// Gets the name of the field in the left table to join on
-		/// </summary>
-		public string LeftField
-		{
-			get { return this.leftField; }
-		}
-
-		/// <summary>
-		/// Gets the name of the field in the right table to join on
-		/// </summary>
-		public string RightField
-		{
-			get { return this.rightField; }
+			LeftField = leftField;
+			RightField = rightField;
 		}
 
   }

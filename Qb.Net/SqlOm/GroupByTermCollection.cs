@@ -13,7 +13,6 @@ namespace Viten.QueryBuilder.SqlOm
         /// </summary>
         public GroupByTermCollection()
         {
-            // empty
         }
 
         /// <summary>

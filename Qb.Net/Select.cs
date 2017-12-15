@@ -13,11 +13,11 @@ namespace Viten.QueryBuilder
 
     internal Select(params string[] columnsName)
     {
-      if(columnsName == null)
+      if (columnsName == null)
         throw new ArgumentNullException(nameof(columnsName));
       Query = new SelectQuery();
-        for (int i = 0; i < columnsName.Length; i++)
-          Query.Columns.Add(new SelectColumn(columnsName[i]));
+      for (int i = 0; i < columnsName.Length; i++)
+        Query.Columns.Add(new SelectColumn(columnsName[i]));
     }
 
     internal Select(Column[] columns)
@@ -35,7 +35,7 @@ namespace Viten.QueryBuilder
     {
       if (topCalled)
         throw new InvalidQueryException(SR.Err_RepeatTop);
-      if(pageCalled)
+      if (pageCalled)
         throw new InvalidQueryException(SR.Err_TopWithPage);
       this.Query.Top = top;
       topCalled = true;
@@ -44,16 +44,16 @@ namespace Viten.QueryBuilder
 
     bool pageCalled = false;
     /// <summary>Установка постраничного просмотра</summary>
-    public Select Page(int pageNum, int pageSize)
+    public Select Page(int pageIndex, int pageSize)
     {
       if (pageCalled)
         throw new InvalidQueryException(SR.Err_RepeatPage);
-      if(pageNum < 0 || pageSize < 1)
+      if (pageIndex < 0 || pageSize < 1)
         throw new InvalidQueryException(SR.Err_InvalidPage);
       if (topCalled)
         throw new InvalidQueryException(SR.Err_TopWithPage);
-      this.Query.pageNum = pageNum;
-      this.Query.pageSize = pageSize;
+      this.Query.PageIndex = pageIndex;
+      this.Query.PageSize = pageSize;
       pageCalled = true;
       return this;
     }
@@ -87,6 +87,16 @@ namespace Viten.QueryBuilder
       return this;
     }
 
+    public Select From(Union union, string alias)
+    {
+      if (union == null)
+        throw new ArgumentNullException(nameof(union));
+      if (string.IsNullOrEmpty(alias))
+        throw new ArgumentException("Value should not be defined", nameof(alias));
+      From from = QueryBuilder.From.Union(union, alias);
+      return From(from);
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -105,7 +115,7 @@ namespace Viten.QueryBuilder
     /// <summary>Аналог конструкции SELECT ... JOIN</summary>
     public Select Join(string rightTableName, JoinCond joinCondition)
     {
-      this.Query.FromClause.Join(JoinType.Left, this.Query.FromClause.BaseTable, FromTerm.Table(rightTableName), joinCondition.Condition);
+      this.Query.FromClause.Join(JoinType.Inner, this.Query.FromClause.BaseTable, FromTerm.Table(rightTableName), joinCondition.Condition);
       return this;
     }
 
@@ -190,21 +200,21 @@ namespace Viten.QueryBuilder
     /// <summary>Аналог конструкции SELECT ... ORDER BY</summary>
     public Select OrderBy(string field, From table, OrderByDir dir)
     {
-      this.Query.OrderByTerms.Add(new OrderByTerm(field, table?.Term, ExprUtil.ConvertOrderByDir(dir)));
+      this.Query.OrderByTerms.Add(new OrderByTerm(field, table?.Term, dir));
       return this;
     }
 
     /// <summary>Аналог конструкции SELECT ... ORDER BY</summary>
     public Select OrderBy(string field, OrderByDir dir)
     {
-      this.Query.OrderByTerms.Add(new OrderByTerm(field, ExprUtil.ConvertOrderByDir(dir)));
+      this.Query.OrderByTerms.Add(new OrderByTerm(field, dir));
       return this;
     }
 
     /// <summary>Аналог конструкции SELECT ... ORDER BY</summary>
     public Select OrderBy(string field)
     {
-      this.Query.OrderByTerms.Add(new OrderByTerm(field, OrderByDirection.Ascending));
+      this.Query.OrderByTerms.Add(new OrderByTerm(field, OrderByDir.Asc));
       return this;
     }
 

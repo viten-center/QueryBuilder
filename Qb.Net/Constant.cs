@@ -3,16 +3,6 @@ using System;
 
 namespace Viten.QueryBuilder
 {
-  /// <summary>Перечисление типов данных</summary>
-  internal enum DataType
-  {
-    /// <summary>String value</summary>
-    String,
-    /// <summary>Numeric value (int, double, float, decimal)</summary>
-    Number,
-    /// <summary>DateTime object</summary>
-    Date
-  }
 
   /// <summary>Класс описания константы</summary>
   public class Constant

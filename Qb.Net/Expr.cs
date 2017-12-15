@@ -3,8 +3,8 @@ using System;
 
 namespace Viten.QueryBuilder
 {
-    /// <summary>Класс описания выражения</summary>
-    public class Expr
+  /// <summary>Класс описания выражения</summary>
+  public class Expr
   {
     internal OmExpression Expression;
 
@@ -16,7 +16,7 @@ namespace Viten.QueryBuilder
     internal static Expr Constant(DataType type, object val)
     {
       Expr oper = new Expr();
-      oper.Expression = OmExpression.Constant(ExprUtil.ConvertDataType(type), val);
+      oper.Expression = OmExpression.Constant(type, val);
       return oper;
     }
 
@@ -63,7 +63,7 @@ namespace Viten.QueryBuilder
     public static Expr Function(AggFunc func, Expr val)
     {
       Expr oper = new Expr();
-      oper.Expression = OmExpression.Function(ExprUtil.ConvertAggregationFunction(func), val.Expression);
+      oper.Expression = OmExpression.Function(func, val.Expression);
       return oper;
     }
     #endregion Function

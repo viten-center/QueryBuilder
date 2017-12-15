@@ -174,7 +174,7 @@ namespace Viten.QueryBuilder.Renderer
 			foreach(OmUnionItem item in union.Items)
 			{
 				if (item != union.Items[0])
-					builder.AppendFormat(" union {0} ", (item.RepeatingAction == DistinctModifier.All) ? "all" : "");
+					builder.AppendFormat(" union {0} ", (item.RepeatingAction == UnionMod.All) ? "all" : "");
 				builder.Append(RenderSelect(item.Query));
 			}
 			return builder.ToString();
@@ -209,7 +209,7 @@ namespace Viten.QueryBuilder.Renderer
 			baseQuery.Top = (pageIndex + 1) * pageSize;
 			//baseQuery.Columns.Add(new SelectColumn("*"));
 			foreach(OrderByTerm term in baseQuery.OrderByTerms)
-				baseQuery.Columns.Add(new SelectColumn(term.Field, term.Table, FormatSortFieldName(term.Field), OmAggregationFunction.None));
+				baseQuery.Columns.Add(new SelectColumn(term.Field, term.Table, FormatSortFieldName(term.Field), AggFunc.None));
 
 			string baseSql = RenderSelect(baseQuery);
 			
@@ -252,13 +252,13 @@ namespace Viten.QueryBuilder.Renderer
 		{
 			foreach(OrderByTerm expr in terms)
 			{
-				OrderByDirection dir = expr.Direction;
+        OrderByDir dir = expr.Direction;
 				
 				//Reverse order direction if required
-				if (!forward && dir == OrderByDirection.Ascending) 
-					dir = OrderByDirection.Descending;
-				else if (!forward && dir == OrderByDirection.Descending) 
-					dir = OrderByDirection.Ascending;
+				if (!forward && dir == OrderByDir.Asc) 
+					dir = OrderByDir.Desc;
+				else if (!forward && dir == OrderByDir.Desc) 
+					dir = OrderByDir.Asc;
 					
 				orderQuery.OrderByTerms.Add(new OrderByTerm(FormatSortFieldName(expr.Field.ToString()), table , dir));
 			}
@@ -474,7 +474,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// <param name="term"></param>
 		protected virtual void WhereClause(StringBuilder builder, WhereTerm term)
 		{
-			if (term.Type == WhereTermType.Compare && term.Op == CompareOperator.BitwiseAnd)
+			if (term.Type == WhereTermType.Compare && term.Op == CompCond.BitwiseAnd)
 				BitwiseAnd(builder, term);
 			else if (term.Type == WhereTermType.Compare)
 			{
@@ -483,7 +483,7 @@ namespace Viten.QueryBuilder.Renderer
 				Operator(builder, term.Op);
 				builder.Append(" ");
 				Expression(builder, term.Expr2);
-        if (term.Op == CompareOperator.Like && term.Expr3 != null)
+        if (term.Op == CompCond.Like && term.Expr3 != null)
           builder.AppendFormat(" escape '{0}'", Convert.ToString(((OmConstant)term.Expr3.Value).Value));
 			}
 			else if (term.Type == WhereTermType.In || term.Type == WhereTermType.NotIn || term.Type == WhereTermType.InSubQuery || term.Type == WhereTermType.NotInSubQuery)
@@ -596,7 +596,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// <param name="builder"></param>
 		/// <param name="func"></param>
 		/// <param name="param"></param>
-		protected virtual void Function(StringBuilder builder, OmAggregationFunction func, OmExpression param)
+		protected virtual void Function(StringBuilder builder, AggFunc func, OmExpression param)
 		{
 			builder.AppendFormat("{0}(", func.ToStringFast());// .ToString());
 			Expression(builder, param);
@@ -610,18 +610,18 @@ namespace Viten.QueryBuilder.Renderer
 		/// <param name="expr"></param>
 		protected virtual void Constant(StringBuilder builder, OmConstant expr)
 		{
-			OmDataType type = expr.Type;
+			DataType type = expr.Type;
 
-			if (type == OmDataType.Number)
+			if (type == DataType.Number)
         builder.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "{0}", expr.Value);
-      else if (type == OmDataType.String)
+      else if (type == DataType.String)
       {
         if (expr.Value == null)
           builder.Append("null");
         else
           builder.AppendFormat("'{0}'", expr.Value.ToString());
       }
-      else if (type == OmDataType.Date)
+      else if (type == DataType.Date)
       {
         DateTime val = (DateTime)expr.Value;
         //строка закомментарена т.к. не правильно форматируются ровные даты
@@ -641,23 +641,23 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="builder"></param>
 		/// <param name="op"></param>
-		protected virtual void Operator(StringBuilder builder, CompareOperator op)
+		protected virtual void Operator(StringBuilder builder, CompCond op)
 		{
-			if (op == CompareOperator.Equal)
+			if (op == CompCond.Equal)
 				builder.Append("=");
-			else if (op == CompareOperator.NotEqual)
+			else if (op == CompCond.NotEqual)
 				builder.Append("<>");
-			else if (op == CompareOperator.Greater)
+			else if (op == CompCond.Greater)
 				builder.Append(">");
-			else if (op == CompareOperator.Less)
+			else if (op == CompCond.Less)
 				builder.Append("<");
-			else if (op == CompareOperator.LessOrEqual)
+			else if (op == CompCond.LessOrEqual)
 				builder.Append("<=");
-			else if (op == CompareOperator.GreaterOrEqual)
+			else if (op == CompCond.GreaterOrEqual)
 				builder.Append(">=");
-			else if (op == CompareOperator.Like)
+			else if (op == CompCond.Like)
 				builder.Append("like");
-      else if (op == CompareOperator.NotLike)
+      else if (op == CompCond.NotLike)
         builder.Append("not like");
       else
 				throw new InvalidQueryException("Unkown operator: " + op.ToString());
@@ -696,7 +696,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="builder"></param>
 		/// <param name="relationship"></param>
-		protected virtual void RelationshipOperator(StringBuilder builder, WhereClauseRelationship relationship)
+		protected virtual void RelationshipOperator(StringBuilder builder, WhereRel relationship)
 		{
 			builder.AppendFormat(" {0} ", relationship.ToStringFast());//.ToString().ToLower());
 		}
@@ -775,7 +775,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// <param name="term"></param>
 		protected virtual void OrderByTerm(StringBuilder builder, OrderByTerm term)
 		{
-			string dir = (term.Direction == OrderByDirection.Descending) ? "desc" : "asc";
+			string dir = (term.Direction == OrderByDir.Desc) ? "desc" : "asc";
 			QualifiedIdentifier(builder, term.TableAlias, term.Field);
 			builder.AppendFormat(" {0}", dir);
 		}

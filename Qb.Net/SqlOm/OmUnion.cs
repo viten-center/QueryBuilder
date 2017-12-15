@@ -3,47 +3,16 @@ using System.Collections.Generic;
 
 namespace Viten.QueryBuilder.SqlOm
 {
-  /// <summary>
-  /// Encapsulates SQL DISTINCT or ALL modifiers
-  /// </summary>
-  public enum DistinctModifier
-  {
-    /// <summary>Only distinct rows will be returned</summary>
-    Distinct,
-    /// <summary>All rows will be returned</summary>
-    All
-  }
 
   /// <summary></summary>
-  public class OmUnionItem 
+  public class OmUnionItem
   {
-    SelectQuery query;
     /// <summary></summary>
-    public SelectQuery Query
-    {
-      get
-      {
-        return query;
-      }
-      internal set
-      {
-        query = value;
-      }
-    }
+    public SelectQuery Query { get; set; }
 
-    DistinctModifier repeatingAction;
+
     /// <summary></summary>
-    public DistinctModifier RepeatingAction
-    {
-      get
-      {
-        return repeatingAction;
-      }
-      internal set
-      {
-        repeatingAction = value;
-      }
-    }
+    public UnionMod RepeatingAction { get; set; }
     /// <summary>
     /// 
     /// </summary>
@@ -52,7 +21,7 @@ namespace Viten.QueryBuilder.SqlOm
     }
 
     /// <summary></summary>
-    public OmUnionItem(SelectQuery query, DistinctModifier repeatingAction)
+    public OmUnionItem(SelectQuery query, UnionMod repeatingAction)
     {
       Query = query;
       RepeatingAction = repeatingAction;
@@ -63,10 +32,8 @@ namespace Viten.QueryBuilder.SqlOm
   /// <summary>
   /// Encapsulates SQL UNION statement
   /// </summary>
-  public class OmUnion 
+  public class OmUnion
   {
-    /// <summary></summary>
-    public const string Namespace = "http://est.by/Sys/DB/SqlOm";
     List<OmUnionItem> items = new List<OmUnionItem>(5);
     /// <summary>
     /// Creates a new SqlUnion
@@ -82,7 +49,7 @@ namespace Viten.QueryBuilder.SqlOm
     /// <remarks>Query will be added with DistinctModifier.Distinct </remarks>
     public void Add(SelectQuery query)
     {
-      Add(query, DistinctModifier.Distinct);
+      Add(query, UnionMod.Distinct);
     }
 
     /// <summary>
@@ -90,7 +57,7 @@ namespace Viten.QueryBuilder.SqlOm
     /// </summary>
     /// <param name="query">SelectQuery to be added</param>
     /// <param name="repeatingAction">Distinct modifier</param>
-    public void Add(SelectQuery query, DistinctModifier repeatingAction)
+    public void Add(SelectQuery query, UnionMod repeatingAction)
     {
       items.Add(new OmUnionItem(query, repeatingAction));
     }

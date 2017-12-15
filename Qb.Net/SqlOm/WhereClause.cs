@@ -3,39 +3,6 @@ using System.Collections.Generic;
 
 namespace Viten.QueryBuilder.SqlOm
 {
-
-	/// <summary>
-	/// Describes the logical relationship between terms of a WHERE clause
-	/// </summary>
-	public enum WhereClauseRelationship
-	{
-		/// <summary>Logical And</summary>
-		And,
-		/// <summary>Logical Or</summary>
-		Or
-	}
-
-  /// <summary>
-  /// Класс расширения WhereClauseRelationship
-  /// </summary>
-  public static class WhereClauseRelationshipEx
-  {
-    /// <summary>Перевод в строку нижнего регистра</summary>
-    /// <param name="whereClauseRelationship"></param>
-    /// <returns></returns>
-    public static string ToStringFast(this WhereClauseRelationship whereClauseRelationship)
-    {
-      switch (whereClauseRelationship)
-      {
-        case WhereClauseRelationship.And:
-          return "and";
-        case WhereClauseRelationship.Or:
-          return "or";
-        default: throw new ArgumentException("whereClauseRelationship");
-      }
-    }
-  }
-
 	/// <summary>
 	/// Describes the WHERE clause of a SELECT statement
 	/// </summary>
@@ -80,7 +47,6 @@ namespace Viten.QueryBuilder.SqlOm
 	/// </example>
   public class WhereClause : ICloneable
 	{
-		WhereClauseRelationship relationship = WhereClauseRelationship.And;
 		WhereTermCollection whereTerms = new WhereTermCollection();
 		WhereClauseCollection clauses = new WhereClauseCollection();
 
@@ -102,21 +68,18 @@ namespace Viten.QueryBuilder.SqlOm
 		/// query.WherePhrase.SubClauses.Add(group);
 		/// </code>
 		/// </example>
-		public WhereClause(WhereClauseRelationship relationship)
+		public WhereClause(WhereRel relationship)
 		{
-			this.relationship = relationship;
+			this.Relationship = relationship;
 		}
 
-		/// <summary>
-		/// Gets the relationship for this clause
-		/// </summary>
-		/// <remarks>
-		/// Where clause relationship defines what kind of logical condition exists between all terms and sub clauses of this WhereClause
-		/// </remarks>
-		public WhereClauseRelationship Relationship
-		{
-			get { return relationship; }
-		}
+    /// <summary>
+    /// Gets the relationship for this clause
+    /// </summary>
+    /// <remarks>
+    /// Where clause relationship defines what kind of logical condition exists between all terms and sub clauses of this WhereClause
+    /// </remarks>
+    public WhereRel Relationship { get; set; } = WhereRel.And;
 
 		/// <summary>
 		/// Gets the terms collection for this WherePhrase
@@ -164,7 +127,7 @@ namespace Viten.QueryBuilder.SqlOm
 		{
 			WhereClause a = new WhereClause();
 			
-			a.relationship = relationship;
+			a.Relationship = Relationship;
 			a.whereTerms = new WhereTermCollection(whereTerms);
 			foreach(WhereClause group in clauses)
 				a.clauses.Add(group.Clone());

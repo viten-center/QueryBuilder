@@ -2,42 +2,6 @@ using System;
 
 namespace Viten.QueryBuilder.SqlOm
 {
-	/// <summary>
-	/// Describes the type of a <see cref="OmExpression"/>
-	/// </summary>
-	public enum OmExpressionType 
-	{
-    /// <summary></summary>
-    Function,
-    /// <summary></summary>
-    Field,
-    /// <summary></summary>
-    Constant,
-    /// <summary></summary>
-    SubQueryText,
-    /// <summary></summary>
-    SubQueryObject,
-    /// <summary></summary>
-    PseudoField,
-    /// <summary></summary>
-    Parameter,
-    /// <summary></summary>
-    Raw,
-    /// <summary></summary>
-    Case,
-    /// <summary></summary>
-    IfNull,
-    /// <summary></summary>
-    Null
-	}
-
-  public enum ExprValCode
-  {
-    String = 0,
-    SqlConst = 1,
-    SelQuery = 2,
-  }
-
   /// <summary>
   /// Describes one expression of a <see cref="WhereTerm"/>
   /// </summary>
@@ -59,10 +23,22 @@ namespace Viten.QueryBuilder.SqlOm
   /// </example>
   public class OmExpression
   {
-    public ExprValCode ValueCode;
-    public string StringValue;
-    public OmConstant ConstantValue;
-    public SelectQuery QueryValue;
+    public OmExpressionType Type { get; set; }
+    public AggFunc AggFunction { get; set; }
+    public CaseClause CaseClause
+    {
+      get { return caseClause; }
+    }
+    public OmExpression SubExpr1 { get; set; }
+
+		public OmExpression SubExpr2 { get; set; }
+
+    public FromTerm Table { get; set; }
+
+    public ExprValCode ValueCode { get; set; }
+    public string StringValue { get; set; }
+    public OmConstant ConstantValue { get; set; }
+    public SelectQuery QueryValue { get; set; }
 
     /// <summary></summary>
     public object Value
@@ -126,8 +102,7 @@ namespace Viten.QueryBuilder.SqlOm
     {
       return Constant(OmConstant.String(val));
     }
-
-
+ 
     /// <summary>
     /// Creates a SqlExpression which represents a date value.
     /// </summary>
@@ -158,7 +133,7 @@ namespace Viten.QueryBuilder.SqlOm
     /// <param name="dataType">Value's data type</param>
     /// <param name="val">The value</param>
     /// <returns></returns>
-    public static OmExpression Constant(OmDataType dataType, object val)
+    public static OmExpression Constant(DataType dataType, object val)
     {
       OmExpression expr = new OmExpression();
       expr.ValueCode = ExprValCode.SqlConst;
@@ -220,7 +195,7 @@ namespace Viten.QueryBuilder.SqlOm
     /// <param name="func">Aggregation function to be applied on the supplied expression</param>
     /// <param name="param">Parameter of the aggregation function</param>
     /// <returns></returns>
-    public static OmExpression Function(OmAggregationFunction func, OmExpression param)
+    public static OmExpression Function(AggFunc func, OmExpression param)
     {
       OmExpression expr = new OmExpression();
       expr.Type = OmExpressionType.Function;
@@ -333,29 +308,6 @@ namespace Viten.QueryBuilder.SqlOm
       get { return (Table == null) ? null : Table.RefName; }
     }
 
-    /// <summary></summary>
-    public OmExpressionType Type;
-
-
-
-
-    /// <summary></summary>
-    public OmAggregationFunction AggFunction;
-
-    /// <summary></summary>
-    public CaseClause CaseClause
-    {
-      get { return caseClause; }
-    }
-
-    /// <summary></summary>
-    public OmExpression SubExpr1;
-
-    /// <summary></summary>
-		public OmExpression SubExpr2;
-
-    /// <summary></summary>
-    public FromTerm Table = null;
   }
 
 }

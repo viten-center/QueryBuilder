@@ -6,26 +6,9 @@ using System.Text;
 
 namespace Viten.QueryBuilder
 {
-  /// <summary>
-  /// Перечисление реализации SQL DISTINCT or ALL для UNION
-  /// </summary>
-  public enum UnionModifier
-  {
-    /// <summary>Only distinct rows will be returned</summary>
-    Distinct,
-    /// <summary>All rows will be returned</summary>
-    All
-  }
   /// <summary>Класс реализации SQL UNION оператора</summary>
   public class Union
   {
-    static DistinctModifier ToDistinctModifier(UnionModifier modifier)
-    {
-      if (modifier == UnionModifier.All)
-        return DistinctModifier.All;
-      return DistinctModifier.Distinct;
-    }
-
     internal OmUnion Uni;
 
     internal Union()
@@ -33,16 +16,16 @@ namespace Viten.QueryBuilder
       Uni = new OmUnion();
     }
 
-    /// <summary>Добавить объект запроса. По умолчанию UnionModifier.Distinct</summary>
+    /// <summary>Добавить объект запроса. По умолчанию UnionModifier.All</summary>
     public Union Add(Select query)
     {
-      return Add(query, UnionModifier.Distinct);
+      return Add(query, UnionMod.All);
     }
 
     /// <summary>Добавить объект запроса</summary>
-    public Union Add(Select query, UnionModifier modifier)
+    public Union Add(Select query, UnionMod modifier)
     {
-      Uni.Add(Qb.GetQueryObject(query), ToDistinctModifier(modifier));
+      Uni.Add(Qb.GetQueryObject(query), modifier);
       return this;
     }
   }

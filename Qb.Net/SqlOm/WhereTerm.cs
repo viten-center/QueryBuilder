@@ -3,30 +3,6 @@ using System.Collections.Generic;
 
 namespace Viten.QueryBuilder.SqlOm
 {
-  /// <summary></summary>
-  public enum WhereTermType 
-  {
-    /// <summary></summary>
-    Compare,
-    /// <summary></summary>
-    Between,
-    /// <summary></summary>
-    In,
-    /// <summary></summary>
-    NotIn,
-    /// <summary></summary>
-    InSubQuery,
-    /// <summary></summary>
-    NotInSubQuery,
-    /// <summary></summary>
-    IsNull,
-    /// <summary></summary>
-    IsNotNull,
-    /// <summary></summary>
-    Exists,
-    /// <summary></summary>
-    NotExists
-  }
 
 	/// <summary>
 	/// Represents one term in a WHERE clause
@@ -42,12 +18,9 @@ namespace Viten.QueryBuilder.SqlOm
 	/// </remarks>
   public class WhereTerm : ICloneable
 	{
-		OmExpression expr1, expr2, expr3;
-		CompareOperator op;
-		WhereTermType type;
 		OmConstantCollection values;
-		object subQuery;
-    internal WhereTerm()
+		
+    public WhereTerm()
 		{
 		}
 
@@ -68,13 +41,13 @@ namespace Viten.QueryBuilder.SqlOm
 		/// query.WherePhrase.Terms.Add(WhereTerm.CreateCompare(SqlExpression.Field("name", tCustomers), SqlExpression.String("J%"), CompareOperator.Like));
 		/// </code>
 		/// </example>
-		public static WhereTerm CreateCompare(OmExpression expr1, OmExpression expr2, CompareOperator op)
+		public static WhereTerm CreateCompare(OmExpression expr1, OmExpression expr2, CompCond op)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr1;
-			term.expr2 = expr2;
-			term.op = op;
-			term.type = WhereTermType.Compare;
+			term.Expr1 = expr1;
+			term.Expr2 = expr2;
+			term.Op = op;
+			term.Type = WhereTermType.Compare;
 			return term;
 		}
 
@@ -88,11 +61,11 @@ namespace Viten.QueryBuilder.SqlOm
     public static WhereTerm CreateLikeCompare(OmExpression expr1, OmExpression expr2, char escapeChar)
     {
       WhereTerm term = new WhereTerm();
-      term.expr1 = expr1;
-      term.expr2 = expr2;
-      term.expr3 = OmExpression.Constant(OmDataType.String, new string(escapeChar, 1));
-      term.op = CompareOperator.Like;
-      term.type = WhereTermType.Compare;
+      term.Expr1 = expr1;
+      term.Expr2 = expr2;
+      term.Expr3 = OmExpression.Constant(DataType.String, new string(escapeChar, 1));
+      term.Op = CompCond.Like;
+      term.Type = WhereTermType.Compare;
       return term;
     }
 
@@ -106,11 +79,11 @@ namespace Viten.QueryBuilder.SqlOm
     public static WhereTerm CreateNotLikeCompare(OmExpression expr1, OmExpression expr2, char escapeChar)
     {
       WhereTerm term = new WhereTerm();
-      term.expr1 = expr1;
-      term.expr2 = expr2;
-      term.expr3 = OmExpression.Constant(OmDataType.String, new string(escapeChar, 1));
-      term.op = CompareOperator.NotLike;
-      term.type = WhereTermType.Compare;
+      term.Expr1 = expr1;
+      term.Expr2 = expr2;
+      term.Expr3 = OmExpression.Constant(DataType.String, new string(escapeChar, 1));
+      term.Op = CompCond.NotLike;
+      term.Type = WhereTermType.Compare;
       return term;
     }
 
@@ -123,11 +96,9 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateIn(OmExpression expr, string sql)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr;
-			term.subQuery = sql;
-
-			term.type = WhereTermType.InSubQuery;
-			
+			term.Expr1 = expr;
+			term.SubQuery = sql;
+			term.Type = WhereTermType.InSubQuery;
 			return term;
 		}
 
@@ -140,11 +111,9 @@ namespace Viten.QueryBuilder.SqlOm
     public static WhereTerm CreateIn(OmExpression expr, SelectQuery subQuery)
     {
       WhereTerm term = new WhereTerm();
-      term.expr1 = expr;
-      term.subQuery = subQuery;
-
-      term.type = WhereTermType.InSubQuery;
-
+      term.Expr1 = expr;
+      term.SubQuery = subQuery;
+      term.Type = WhereTermType.InSubQuery;
       return term;
     }
 
@@ -157,11 +126,9 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateIn(OmExpression expr, OmConstantCollection values)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr;
+			term.Expr1 = expr;
 			term.values = values;
-
-			term.type = WhereTermType.In;
-			
+			term.Type = WhereTermType.In;
 			return term;
 		}
 
@@ -174,11 +141,9 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateNotIn(OmExpression expr, string sql)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr;
-			term.subQuery = sql;
-
-			term.type = WhereTermType.NotInSubQuery;
-			
+			term.Expr1 = expr;
+			term.SubQuery = sql;
+			term.Type = WhereTermType.NotInSubQuery;
 			return term;
 		}
 
@@ -191,11 +156,9 @@ namespace Viten.QueryBuilder.SqlOm
     public static WhereTerm CreateNotIn(OmExpression expr, SelectQuery subQuery)
     {
       WhereTerm term = new WhereTerm();
-      term.expr1 = expr;
-      term.subQuery = subQuery;
-
-      term.type = WhereTermType.NotInSubQuery;
-
+      term.Expr1 = expr;
+      term.SubQuery = subQuery;
+      term.Type = WhereTermType.NotInSubQuery;
       return term;
     }
 
@@ -209,11 +172,9 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateNotIn(OmExpression expr, OmConstantCollection values)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr;
+			term.Expr1 = expr;
 			term.values = values;
-
-			term.type = WhereTermType.NotIn;
-			
+			term.Type = WhereTermType.NotIn;
 			return term;
 		}
 
@@ -225,8 +186,8 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateIsNull(OmExpression expr)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr;
-			term.type = WhereTermType.IsNull;
+			term.Expr1 = expr;
+			term.Type = WhereTermType.IsNull;
 			return term;
 		}
 
@@ -238,8 +199,8 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateIsNotNull(OmExpression expr)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr;
-			term.type = WhereTermType.IsNotNull;
+			term.Expr1 = expr;
+			term.Type = WhereTermType.IsNotNull;
 			return term;
 		}
 
@@ -251,8 +212,8 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateExists(string sql)
 		{
 			WhereTerm term = new WhereTerm();
-			term.subQuery = sql;
-			term.type = WhereTermType.Exists;
+			term.SubQuery = sql;
+			term.Type = WhereTermType.Exists;
 			return term;
 		}
 
@@ -264,8 +225,8 @@ namespace Viten.QueryBuilder.SqlOm
     public static WhereTerm CreateExists(SelectQuery subQuery)
     {
       WhereTerm term = new WhereTerm();
-      term.subQuery = subQuery;
-      term.type = WhereTermType.Exists;
+      term.SubQuery = subQuery;
+      term.Type = WhereTermType.Exists;
       return term;
     }
 
@@ -277,8 +238,8 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateNotExists(string sql)
 		{
 			WhereTerm term = new WhereTerm();
-			term.subQuery = sql;
-			term.type = WhereTermType.NotExists;
+			term.SubQuery = sql;
+			term.Type = WhereTermType.NotExists;
 			return term;
 		}
 
@@ -290,8 +251,8 @@ namespace Viten.QueryBuilder.SqlOm
     public static WhereTerm CreateNotExists(SelectQuery subQuery)
     {
       WhereTerm term = new WhereTerm();
-      term.subQuery = subQuery;
-      term.type = WhereTermType.NotExists;
+      term.SubQuery = subQuery;
+      term.Type = WhereTermType.NotExists;
       return term;
     }
 
@@ -309,56 +270,36 @@ namespace Viten.QueryBuilder.SqlOm
 		public static WhereTerm CreateBetween(OmExpression expr, OmExpression lowBound, OmExpression highBound)
 		{
 			WhereTerm term = new WhereTerm();
-			term.expr1 = expr;
-			term.expr2 = lowBound;
-			term.expr3 = highBound;
-			
-			term.type = WhereTermType.Between;			
-			
+			term.Expr1 = expr;
+			term.Expr2 = lowBound;
+			term.Expr3 = highBound;
+			term.Type = WhereTermType.Between;			
 			return term;
 		}
 
     /// <summary></summary>
-    public OmExpression Expr1
-		{
-			get { return expr1; }
-		}
+    public OmExpression Expr1 { get; set; }
 
     /// <summary></summary>
-    public OmExpression Expr2
-		{
-			get { return expr2; }
-		}
+    public OmExpression Expr2 { get; set; }
 
     /// <summary></summary>
-    public OmExpression Expr3
-		{
-			get { return expr3;	}
-		}
+    public OmExpression Expr3 { get; set; }
 
     /// <summary></summary>
-    public CompareOperator Op
-		{
-			get { return op; }
-		}
+    public CompCond Op { get; set; }
 
     /// <summary></summary>
-    public WhereTermType Type
-		{
-			get { return type; }
-		}
+    public WhereTermType Type { get; set; }
 
     /// <summary></summary>
     public OmConstantCollection Values
 		{
 			get { return values; }
-		}
+    }
 
     /// <summary></summary>
-    public object SubQuery
-		{
-			get { return this.subQuery; }
-		}
+    public object SubQuery { get; set; }
 		
 		object ICloneable.Clone()
 		{
@@ -373,13 +314,13 @@ namespace Viten.QueryBuilder.SqlOm
 		{
 			WhereTerm a = new WhereTerm();
 
-			a.expr1 = expr1;
-			a.expr2 = expr2;
-			a.expr3 = expr3;
-			a.op = op;
-			a.type = type;
+			a.Expr1 = Expr1;
+			a.Expr2 = Expr2;
+			a.Expr3 = Expr3;
+			a.Op = Op;
+			a.Type = Type;
 			//a.subQuery = a.subQuery;
-      a.subQuery = subQuery;
+      a.SubQuery = SubQuery;
 			a.values = new OmConstantCollection(values);
 			
 			return a;
