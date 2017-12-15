@@ -1,29 +1,29 @@
 ﻿import { OmExpression } from "./OmExpression"
 import { OmConstant } from "./OmConstant"
-import { CompareOperator, WhereTermType } from "./Enums"
+import { CompOper, WhereTermType } from "./Enums"
 import { SelectQuery } from "./SelectQuery"
 
 
-interface IWhereTerm {
-  Expr1: OmExpression;
-  Expr2: OmExpression;
-  Expr3: OmExpression;
-  Op: CompareOperator;
-  Type: WhereTermType;
-  Values: Array<OmConstant>;
-  SubQuery: any;
-}
+// interface IWhereTerm {
+//   Expr1: OmExpression;
+//   Expr2: OmExpression;
+//   Expr3: OmExpression;
+//   Op: CompareOperator;
+//   Type: WhereTermType;
+//   Values: Array<OmConstant>;
+//   SubQuery: any;
+// }
 
-export class WhereTerm implements IWhereTerm {
+export class WhereTerm /*implements IWhereTerm*/ {
   Expr1: OmExpression;
   Expr2: OmExpression;
   Expr3: OmExpression;
-  Op: CompareOperator;
+  Op: CompOper;
   Type: WhereTermType;
   Values = new Array<OmConstant>();
   SubQuery: any;
 
-  static CreateCompare(expr1: OmExpression, expr2: OmExpression, op: CompareOperator): WhereTerm {
+  static CreateCompare(expr1: OmExpression, expr2: OmExpression, op: CompOper): WhereTerm {
     var term = new WhereTerm();
     term.Expr1 = expr1;
     term.Expr2 = expr2;
@@ -37,7 +37,7 @@ export class WhereTerm implements IWhereTerm {
     term.Expr1 = expr1;
     term.Expr2 = expr2;
     term.Expr3 = OmExpression.String(escapeChar);
-    term.Op = CompareOperator.Like;
+    term.Op = CompOper.Like;
     term.Type = WhereTermType.Compare;
     return term;
   }
@@ -47,7 +47,7 @@ export class WhereTerm implements IWhereTerm {
     term.Expr1 = expr1;
     term.Expr2 = expr2;
     term.Expr3 = OmExpression.String(escapeChar);
-    term.Op = CompareOperator.NotLike;
+    term.Op = CompOper.NotLike;
     term.Type = WhereTermType.Compare;
     return term;
   }

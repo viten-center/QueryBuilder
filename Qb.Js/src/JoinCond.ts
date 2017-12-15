@@ -6,10 +6,11 @@ export class JoinCond {
     this.Condition = new JoinCondition(leftField, rightField);
   }
 
-  static Field(leftField: string, rightField: string): JoinCond;
-  static Field(field: string): JoinCond;
-  static Field(): JoinCond {
-    var leftField, rightField: string;
+  static Fields(leftField: string, rightField: string): JoinCond;
+  static Fields(field: string): JoinCond;
+  static Fields(): JoinCond {
+    var leftField: string;
+    var rightField: string;
     if (arguments.length >= 1) {
       leftField = arguments[0];
       rightField = arguments[0];
@@ -17,6 +18,6 @@ export class JoinCond {
     if (arguments.length >= 2) {
       rightField = arguments[1];
     }
-    return new JoinCond(leftField, rightField);
+    return new JoinCond(leftField!, rightField!);
   }
 }

@@ -1,22 +1,23 @@
 ﻿import {FromTerm} from "./FromTerm"
 
-interface IGroupByTerm {
+// interface IGroupByTerm {
+//     Field: string;
+//     Table: FromTerm;
+//     TableAlias: string;
+//   }
+
+  export class GroupByTerm /*implements IGroupByTerm*/ {
     Field: string;
     Table: FromTerm;
-    TableAlias: string;
-  }
 
-  export class GroupByTerm implements IGroupByTerm {
-    Field: string;
-    Table: FromTerm;
-
-    constructor(field: string, table: FromTerm ) {
+    constructor(field: string, table: FromTerm|undefined ) {
       this.Field = field;
-      this.Table = table;
+      if(table)
+        this.Table = table;
     }
 
-    get TableAlias(): string {
-      return (this.Table == null) ? null : this.Table.RefName;
+    get TableAlias(): string|undefined {
+      return (this.Table instanceof FromTerm) ? this.Table.RefName : undefined;
     }
 
   }

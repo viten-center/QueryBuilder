@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import { Qb, Select, Column, Param, Cond, Logic, Constant } from "../src/qb";
+import { Qb, Select, Column, Param, Cond, Logic } from "../src/index";
+import { Constant } from "../src/Constant";
 
 import { SelectQuery } from "../src/SelectQuery";
-import { OmExpressionType, FromTermType, CompareOperator, WhereClauseRelationship, OmDataType } from "../src/Enums";
+import { OmExpressionType, FromTermType, CompOper, WhereRel, DataType } from "../src/Enums";
 import { WhereTerm } from '../src/WhereTerm';
 import { OmConstant } from '../src/OmConstant';
 
@@ -15,43 +16,43 @@ describe("SELECT", () => {
     let conds = [Cond.Equal("a", 1), Cond.Greater("b", 1)]
 
     let l0: Logic = Logic.And(conds);
-    expect(l0.Clause.Relationship).equal(WhereClauseRelationship.And);
+    expect(l0.Clause.Relationship).equal(WhereRel.And);
     expect(l0.Clause.Terms.length).equal(2);
 
-    expect(l0.Clause.Terms[0].Op).equal(CompareOperator.Equal);
+    expect(l0.Clause.Terms[0].Op).equal(CompOper.Equal);
     expect(l0.Clause.Terms[0].Expr1.Type).equal(OmExpressionType.Field);
     expect(l0.Clause.Terms[0].Expr1.Value).equal("a");
     expect(l0.Clause.Terms[0].Expr2.Type).equal(OmExpressionType.Constant);
     expect(l0.Clause.Terms[0].Expr2.Value).instanceof(OmConstant);
-    expect((l0.Clause.Terms[0].Expr2.Value as OmConstant).Type).equal(OmDataType.Numeric);
+    expect((l0.Clause.Terms[0].Expr2.Value as OmConstant).Type).equal(DataType.Numeric);
     expect((l0.Clause.Terms[0].Expr2.Value as OmConstant).Value).equal(1);
 
-    expect(l0.Clause.Terms[1].Op).equal(CompareOperator.Greater);
+    expect(l0.Clause.Terms[1].Op).equal(CompOper.Greater);
     expect(l0.Clause.Terms[1].Expr1.Type).equal(OmExpressionType.Field);
     expect(l0.Clause.Terms[1].Expr1.Value).equal("b");
     expect(l0.Clause.Terms[1].Expr2.Type).equal(OmExpressionType.Constant);
     expect(l0.Clause.Terms[1].Expr2.Value).instanceof(OmConstant);
-    expect((l0.Clause.Terms[1].Expr2.Value as OmConstant).Type).equal(OmDataType.Numeric);
+    expect((l0.Clause.Terms[1].Expr2.Value as OmConstant).Type).equal(DataType.Numeric);
     expect((l0.Clause.Terms[1].Expr2.Value as OmConstant).Value).equal(1);
 
     let l1 = Logic.And(Cond.Equal("a", 1), Cond.Greater("b", 1));
-    expect(l1.Clause.Relationship).equal(WhereClauseRelationship.And);
+    expect(l1.Clause.Relationship).equal(WhereRel.And);
     expect(l1.Clause.Terms.length).equal(2);
 
-    expect(l1.Clause.Terms[0].Op).equal(CompareOperator.Equal);
+    expect(l1.Clause.Terms[0].Op).equal(CompOper.Equal);
     expect(l1.Clause.Terms[0].Expr1.Type).equal(OmExpressionType.Field);
     expect(l1.Clause.Terms[0].Expr1.Value).equal("a");
     expect(l1.Clause.Terms[0].Expr2.Type).equal(OmExpressionType.Constant);
     expect(l1.Clause.Terms[0].Expr2.Value).instanceof(OmConstant);
-    expect((l1.Clause.Terms[0].Expr2.Value as OmConstant).Type).equal(OmDataType.Numeric);
+    expect((l1.Clause.Terms[0].Expr2.Value as OmConstant).Type).equal(DataType.Numeric);
     expect((l1.Clause.Terms[0].Expr2.Value as OmConstant).Value).equal(1);
 
-    expect(l1.Clause.Terms[1].Op).equal(CompareOperator.Greater);
+    expect(l1.Clause.Terms[1].Op).equal(CompOper.Greater);
     expect(l1.Clause.Terms[1].Expr1.Type).equal(OmExpressionType.Field);
     expect(l1.Clause.Terms[1].Expr1.Value).equal("b");
     expect(l1.Clause.Terms[1].Expr2.Type).equal(OmExpressionType.Constant);
     expect(l1.Clause.Terms[1].Expr2.Value).instanceof(OmConstant);
-    expect((l1.Clause.Terms[1].Expr2.Value as OmConstant).Type).equal(OmDataType.Numeric);
+    expect((l1.Clause.Terms[1].Expr2.Value as OmConstant).Type).equal(DataType.Numeric);
     expect((l1.Clause.Terms[1].Expr2.Value as OmConstant).Value).equal(1);
 
 
@@ -90,7 +91,7 @@ describe("SELECT", () => {
   it("check where", () => {
     expect(sq.WherePhrase.SubClauses.length).equal(1);
     expect(sq.WherePhrase.SubClauses[0].Terms.length).equal(2);
-    expect(sq.WherePhrase.SubClauses[0].Terms[0].Op).equal(CompareOperator.Equal);
+    expect(sq.WherePhrase.SubClauses[0].Terms[0].Op).equal(CompOper.Equal);
   })
 })
 

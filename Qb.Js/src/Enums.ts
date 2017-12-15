@@ -5,24 +5,6 @@
   Union
 }
 
-export enum OmAggregationFunction {
-  // <summary>No function</summary>
-  None, 
-  // <summary>Sum</summary>
-  Sum, 
-  // <summary>Count rows</summary>
-  Count, 
-  // <summary>Avarage</summary>
-  Avg, 
-  // <summary>Minimum</summary>
-  Min, 
-  // <summary>Maximum</summary>
-  Max,
-  // <summary>Returns true is the current row is a super-aggregate row when used with ROLLUP or CUBE</summary>
-  // <remarks>Grouping functions is not supported in all databases</remarks>
-  Grouping
-}
-
 export enum AggFunc {
   /// <summary>No function</summary>
   None,
@@ -38,9 +20,9 @@ export enum AggFunc {
   Max,
   /// <summary>Returns true is the current row is a super-aggregate row when used with ROLLUP or CUBE</summary>
   /// <remarks>Grouping functions is not supported in all databases</remarks>
-  Grouping,
-  /// <summary>SQL text</summary>
-  Raw
+  Grouping
+  // /// <summary>SQL text</summary>
+  // Raw
 }
 
 
@@ -59,51 +41,33 @@ export enum OmExpressionType {
 }
 
 // Specifies how tow operands are to be compared
-export enum CompareOperator {
+export enum CompOper {
   // <summary>Equal</summary>
-  Equal, 
+  Equal,
   // <summary>Different</summary>
-  NotEqual, 
+  NotEqual,
   // <summary>Left operand is greater</summary>
-  Greater, 
+  Greater,
   // <summary>Left operand is less</summary>
-  Less, 
+  Less,
   // <summary>Left operand is less or equal</summary>
-  LessOrEqual, 
+  LessOrEqual,
   // <summary>Left operand is greater or equal</summary>
   GreaterOrEqual,
   // <summary>Make a bitwise AND and check the result for being not null (ex: (a &amp; b) > 0) ) </summary>
-  BitwiseAnd, 
+  BitwiseAnd,
   // <summary>Substring. Use '%' signs in the value to match anything</summary>
   Like,
   // <summary>Substring. Use '%' signs in the value to match anything</summary>
   NotLike
 }
 
-export enum CompOper {
-  Equal,
-  NotEqual,
-  Greater,
-  Less,
-  LessOrEqual,
-  GreaterOrEqual,
-  BitwiseAnd,
-  Like,
-  NotLike,
-}
-
-
 /// Encapsulates SQL DISTINCT or ALL modifiers
-export enum DistinctModifier {
+export enum UnionMod {
   // <summary>Only distinct rows will be returned</summary>
-  Distinct,
+  Distinct = 0,
   // <summary>All rows will be returned</summary>
-  All
-}
-
-export enum UnionMode {
-  Distinct,
-  All
+  All = 1
 }
 
 export enum WhereTermType {
@@ -119,13 +83,13 @@ export enum WhereTermType {
   NotExists
 }
 
-export enum OmDataType {
-	// String value
-	String, 
-	// Numeric value (int, long, double, float, decimal)
+export enum DataType {
+  // String value
+  String,
+  // Numeric value (int, long, double, float, decimal)
   Numeric,
-	// DateTime object
-	Date
+  // DateTime object
+  Date
 }
 
 export enum ExprValCode {
@@ -135,113 +99,109 @@ export enum ExprValCode {
 }
 
 // Describes the logical relationship between terms of a WHERE clause
-export enum WhereClauseRelationship {
+export enum WhereRel {
   // Logical And
   And,
   // Logical Or
   Or
 }
 
-export enum WhereRel {
-  And,
-  Or
-}
-
 // Specifies how a result set should be ordered.
-export enum OrderByDirection { 
-  // Ascending Order
-  Ascending, 
-  // Descending Order
-  Descending
-}
-
 export enum OrderByDir {
+  // Ascending Order
   Asc,
+  // Descending Order
   Desc
 }
 
 
-// Указывает тип данных поля, свойства или объекта Parameter поставщика данных
-export enum DbType {
-  // Поток переменной длины из символов, не принадлежащих кодировке Юникод. В нем может быть от 1 до 8000 символов.
-  AnsiString,
-  //               Поток переменной длины из двоичных данных, имеющий длину от 1 до 8000 байт.
-  Binary,
-  //               8-битовое целое число без знака, которое может принимать значения от 0 до 255.
-  Byte,
-  //               Простой тип для представления логических значений true и false.
-  Boolean,
-  //               Значение типа currency, лежащее в диапазоне от -2 63 (или -922,337,203,685,477.5808) до 2 63 -1 (или +922,337,203,685,477.5807) и имеющее точность до одной десятитысячной денежной единицы.
-  Currency,
-  //               Тип для представления значений даты.
-  Date,
-  //               Тип для представления значений даты и времени.
-  DateTime,
-  //               Простой тип для представления значений, лежащих в диапазоне от 1,0 x 10 -28 до приблизительно 7,9 x 10 28 с 28-29 значимыми цифрами.
-  Decimal,
-  //               Простой тип для представления значений с плавающей запятой, лежащих в диапазоне от 5,0 x 10 -324 до приблизительно 1,7 x 10 308 с точностью до 15-16 знаков.
-  Double,
-  //               Глобальный уникальный идентификатор (GUID).
-  Guid,
-  //               Целочисленный тип для представления 16-разрядных целых чисел со знаком, лежащих в диапазоне от -32768 до 32767.
-  Int16,
-  //               Целочисленный тип для представления 32-битовых целых чисел со знаком в диапазоне от -2147483648 до 2147483647.
-  Int32,
-  //               Целочисленный тип для представления 64-битовых целых чисел со знаком в диапазоне от -9223372036854775808 до 9223372036854775807.
-  Int64,
-  //               Общий тип для представления всех значений и ссылок, которые не могут быть представлены ни одним другим значением DbType.
-  Object,
-  //               Целочисленный тип для представления 8-разрядных целых чисел со знаком, лежащих в диапазоне от -128 до 127.
-  SByte,
-  //               Простой тип для представления значений с плавающей запятой, лежащих в диапазоне от 1,5 x 10 -45 до 3,4 x 10 38 с точностью до 15-16 знаков.
-  Single,
-  //               Тип для представления символьных строк Юникода.
-  String,
-  //               Тип для представления значений времени.
-  Time,
-  //               Целочисленный тип для представления 16-разрядных целых чисел без знака, лежащих в диапазоне от 0 до 65535.
-  UInt16,
-  //               Целочисленный тип для представления 32-битовых целых чисел без знака в диапазоне от 0 до 4294967295.
-  UInt32,
-  //               Целочисленный тип для представления 64-разрядных целых чисел без знака, лежащих в диапазоне от 0 до 18446744073709551615.
-  UInt64,
-  //               Числовое значение переменной длины.
-  VarNumeric,
-  //               Поток фиксированной длины из символов, не принадлежащих кодировке Юникод.
-  AnsiStringFixedLength,
-  //               Строка фиксированной длины из символов Юникода.
-  StringFixedLength,
-  //               Проанализированное представление фрагмента или документа XML.
-  Xml = 25,
-  //               Данные даты и времени. Значение даты может находиться в диапазоне от 1 января 1 г. н. э. до 31 декабря 9999 года н. э. Значение времени может находиться в диапазоне от 00:00:00 до 23:59:59.9999999 с точностью до 100 наносекунд.
-  DateTime2,
-  //               Данные даты и времени, поддерживающие часовые пояса. Значение даты может находиться в диапазоне от 1 января 1 г. н. э. до 31 декабря 9999 года н. э. Значение времени может находиться в диапазоне от 00:00:00 до 23:59:59.9999999 с точностью до 100 наносекунд. Часовые пояса могут находиться в диапазоне от -14:00 до +14:00. 
-  DateTimeOffset
-}
-
-// Перечисление направлений передачи параметров команды
-export enum ParamDirection {
-  Input,
-  InputOutput,
-  Output,
-  ReturnValue
-}
-
+  //     Specifies the data type of a field, a property, or a Parameter object of a .NET
+  //     Framework data provider.
+  export enum DbType
+  {
+    //     A variable-length stream of non-Unicode characters ranging between 1 and 8,000
+    //     characters.
+    AnsiString = 0,
+    //     A variable-length stream of binary data ranging between 1 and 8,000 bytes.
+    Binary = 1,
+    //     An 8-bit unsigned integer ranging in value from 0 to 255.
+    Byte = 2,
+    //     A simple type representing Boolean values of true or false.
+    Boolean = 3,
+    //     A currency value ranging from -2 63 (or -922,337,203,685,477.5808) to 2 63 -1
+    //     (or +922,337,203,685,477.5807) with an accuracy to a ten-thousandth of a currency
+    //     unit.
+    Currency = 4,
+    //     A type representing a date value.
+    Date = 5,
+    //     A type representing a date and time value.
+    DateTime = 6,
+    //     A simple type representing values ranging from 1.0 x 10 -28 to approximately
+    //     7.9 x 10 28 with 28-29 significant digits.
+    Decimal = 7,
+    //     A floating point type representing values ranging from approximately 5.0 x 10
+    //     -324 to 1.7 x 10 308 with a precision of 15-16 digits.
+    Double = 8,
+    //     A globally unique identifier (or GUID).
+    Guid = 9,
+    //     An integral type representing signed 16-bit integers with values between -32768
+    //     and 32767.
+    Int16 = 10,
+    //     An integral type representing signed 32-bit integers with values between -2147483648
+    //     and 2147483647.
+    Int32 = 11,
+    //     An integral type representing signed 64-bit integers with values between -9223372036854775808
+    //     and 9223372036854775807.
+    Int64 = 12,
+    //     A general type representing any reference or value type not explicitly represented
+    //     by another DbType value.
+    Object = 13,
+    //     An integral type representing signed 8-bit integers with values between -128
+    //     and 127.
+    SByte = 14,
+    //     A floating point type representing values ranging from approximately 1.5 x 10
+    //     -45 to 3.4 x 10 38 with a precision of 7 digits.
+    Single = 15,
+    //     A type representing Unicode character strings.
+    String = 16,
+    //     A type representing a SQL Server DateTime value. If you want to use a SQL Server
+    //     time value, use System.Data.SqlDbType.Time.
+    Time = 17,
+    //     An integral type representing unsigned 16-bit integers with values between 0
+    //     and 65535.
+    UInt16 = 18,
+    //     An integral type representing unsigned 32-bit integers with values between 0
+    //     and 4294967295.
+    UInt32 = 19,
+    //     An integral type representing unsigned 64-bit integers with values between 0
+    //     and 18446744073709551615.
+    UInt64 = 20,
+    //     A variable-length numeric value.
+    VarNumeric = 21,
+    //     A fixed-length stream of non-Unicode characters.
+    AnsiStringFixedLength = 22,
+    //     A fixed-length string of Unicode characters.
+    StringFixedLength = 23,
+    //     A parsed representation of an XML document or fragment.
+    Xml = 25,
+    //     Date and time data. Date value range is from January 1,1 AD through December
+    //     31, 9999 AD. Time value range is 00:00:00 through 23:59:59.9999999 with an accuracy
+    //     of 100 nanoseconds.
+    DateTime2 = 26,
+    //     Date and time data with time zone awareness. Date value range is from January
+    //     1,1 AD through December 31, 9999 AD. Time value range is 00:00:00 through 23:59:59.9999999
+    //     with an accuracy of 100 nanoseconds. Time zone value range is -14:00 through
+    //     +14:00.
+    DateTimeOffset = 27
+  }
 // Specifies what kind of join should be rendered
 export enum JoinType {
-		Inner,
-		Left,
-		Right,
-		Full,
-		Cross
+  Inner,
+  Left,
+  Right,
+  Full,
+  Cross
 }
 
-// Перечисление реализации SQL DISTINCT or ALL для UNION
-export enum UnionModifier {
-  // Only distinct rows will be returned
-  Distinct,
-  // All rows will be returned
-  All
-}
 
 

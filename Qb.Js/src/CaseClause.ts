@@ -1,12 +1,12 @@
-﻿import {CaseTerm} from "./CaseTerm"
-import {OmExpression} from "./OmExpression"
+﻿import { CaseTerm } from "./CaseTerm"
+import { OmExpression } from "./OmExpression"
 
-  interface ICaseClause {
-    Terms: Array<CaseTerm>;
-    ElseValue: OmExpression;
-  }
+// export interface ICaseClause {
+//   Terms: Array<CaseTerm>;
+//   ElseValue: OmExpression;
+// }
 
-  export class CaseClause implements ICaseClause{
-    Terms = new Array<CaseTerm>();
-    ElseValue: OmExpression = null;
-  }
+export class CaseClause /*implements ICaseClause*/ {
+  Terms = new Array<CaseTerm>();
+  ElseValue: OmExpression;
+}

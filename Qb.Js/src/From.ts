@@ -1,13 +1,11 @@
-﻿import {FromTerm} from "./FromTerm";
-import {Select} from "./Select";
-import {Union} from "./Union";
-import {Qb} from "./Qb";
+﻿import { FromTerm } from "./FromTerm";
+import { Select } from "./Select";
+import { Union } from "./Union";
+import { Qb } from "./Qb";
+import { InvalidQueryError } from "./InvalidQueryError";
 
 
-interface IFrom {
-}
-
-export class From implements IFrom {
+export class From {
   public Term: FromTerm;
 
   static Table(tableName: string): From;
@@ -15,7 +13,11 @@ export class From implements IFrom {
   static Table(tableName: string, alias: string, ns: string): From;
   static Table(tableName: string, alias: string, ns1: string, ns2: string): From;
   static Table(): From {
-    var tableName, alias, ns1, ns2: string;
+    var tableName: string|undefined;
+    var alias: string|undefined;
+    var ns1: string|undefined;
+    var ns2: string|undefined;
+
     if (arguments.length >= 1) {
       tableName = arguments[0];
     }
@@ -29,6 +31,8 @@ export class From implements IFrom {
       ns2 = arguments[3];
     }
     var res = new From();
+    if(tableName === undefined)
+      throw new InvalidQueryError("Table name not specified");
     res.Term = FromTerm.Table(tableName, alias, ns1, ns2);
     return res;
   }

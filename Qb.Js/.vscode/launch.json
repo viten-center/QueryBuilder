@@ -5,22 +5,46 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run debug ALL test",
+      "name": "Debug CURRENT TS File",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-      "args": ["-r", "ts-node/register", "test/*.test.ts"],
+      "args": [
+        "${relativeFile}"
+      ],
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
+      "sourceMaps": true,
       "cwd": "${workspaceRoot}",
       "protocol": "inspector"
     },
     {
-      "name": "Run debug CURRENT test",
+      "name": "Debug ALL test",
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-      "args": ["-r", "ts-node/register", "${relativeFile}"],
+      "args": [
+        "-r",
+        "ts-node/register",
+        "test/*.test.ts"
+      ],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector"
-  }
+    },
+    {
+      "name": "Debug CURRENT test",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "-r",
+        "ts-node/register",
+        "${relativeFile}"
+      ],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector"
+    }
   ]
 }

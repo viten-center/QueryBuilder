@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import {JoinCond} from '../src/JoinCond'
+import {JoinCond} from '../src/index'
 import {JoinCondition} from '../src/JoinCondition'
 
 describe("JoinCond", ()=>{

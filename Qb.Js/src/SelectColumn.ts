@@ -1,26 +1,29 @@
-﻿import {OmExpression} from "./OmExpression"
-import {OmAggregationFunction} from "./Enums"
-import {FromTerm} from "./FromTerm"
+﻿import { OmExpression } from "./OmExpression"
+import { AggFunc } from "./Enums"
+import { FromTerm } from "./FromTerm"
+import { Expr } from "./Expr";
 
-interface ISelectColumn {
-    ColumnAlias: string;
-    Expression: OmExpression;
-  }
+export class SelectColumn {
+  ColumnAlias: string;
+  Expression: OmExpression;
 
-  export class SelectColumn implements ISelectColumn {
-    ColumnAlias: string;
-    Expression: OmExpression;
+  constructor(columnName: string|Expr, columnAlias: string | undefined, table: FromTerm | undefined, func: AggFunc | undefined) {
+    if (func === undefined)
+      func = AggFunc.None;
 
-    constructor(columnName: string, columnAlias: string, table: FromTerm, func: OmAggregationFunction) {
-      if (func === undefined || func === null)
-        func = OmAggregationFunction.None;
-
-      if (func == OmAggregationFunction.None)
+    if(columnName instanceof Expr){
+      this.Expression = columnName["Expression"];
+    }
+    else{
+      if (func === AggFunc.None)
         this.Expression = OmExpression.Field(columnName, table);
       else
         this.Expression = OmExpression.Func(func, OmExpression.Field(columnName, table));
-      this.ColumnAlias = columnAlias;
     }
+    if (columnAlias)
+      this.ColumnAlias = columnAlias;
   }
+
+}
 
 

@@ -1,11 +1,9 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Qb, Union } from "../src/Qb";
-import { From } from "../src/From";
+import { Qb, Union,From, SelectQuery, OmUnion } from "../src/index";
+
 import { FromTerm } from '../src/FromTerm';
 import { FromTermType } from '../src/Enums';
-import { SelectQuery } from '../src/SelectQuery';
-import { OmUnion } from '../src/OmUnion';
 
 describe("From", () => {
   it("Table(tableName: string): From", () => {

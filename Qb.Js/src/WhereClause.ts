@@ -1,24 +1,24 @@
-﻿import {WhereClauseRelationship} from "./Enums"
+﻿import {WhereRel} from "./Enums"
 import {WhereTerm} from "./WhereTerm"
 
-interface IWhereClause {
-    Relationship: WhereClauseRelationship;
-    Terms: Array<WhereTerm>;
-    SubClauses: Array<WhereClause>;
-    IsEmpty: boolean;
-}
+// interface IWhereClause {
+//     Relationship: WhereClauseRelationship;
+//     Terms: Array<WhereTerm>;
+//     SubClauses: Array<WhereClause>;
+//     IsEmpty: boolean;
+// }
 
-  export class WhereClause implements IWhereClause {
-    Relationship: WhereClauseRelationship = WhereClauseRelationship.And;
+  export class WhereClause /*implements IWhereClause*/ {
+    Relationship: WhereRel = WhereRel.And;
     public Terms = new Array<WhereTerm>();
     public SubClauses = new Array<WhereClause>();
 
-    constructor(relationship: WhereClauseRelationship) {
+    constructor(relationship: WhereRel) {
       this.Relationship = relationship;
     }
 
-    private static _defaultWhere: WhereClause = new WhereClause(WhereClauseRelationship.And);
-    private static _defaultHaving: WhereClause = new WhereClause(WhereClauseRelationship.And);
+    // private static _defaultWhere: WhereClause = new WhereClause(WhereRel.And);
+    // private static _defaultHaving: WhereClause = new WhereClause(WhereRel.And);
     
     get IsEmpty(): boolean {
       var len = this.SubClauses.length;

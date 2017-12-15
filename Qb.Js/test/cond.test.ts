@@ -1,21 +1,23 @@
 import { expect } from 'chai';
 import 'mocha';
+import { Expr, Cond, From, Select, Qb, SelectQuery } from '../src/index';
+
 import { WhereTerm } from '../src/WhereTerm'
-import { Cond } from '../src/Cond'
-import { Expr } from '../src/Expr';
-import { CompareOperator, WhereTermType, OmExpressionType, ExprValCode, OmDataType } from '../src/Enums';
-import { From } from '../src/From';
+//import { Cond } from '../src/Cond'
+//import { Expr } from '../src/Expr';
+import { CompOper, WhereTermType, OmExpressionType, ExprValCode, DataType } from '../src/Enums';
+//import { From } from '../src/From';
 import { OmConstant } from '../src/OmConstant';
 import { FromTerm } from '../src/FromTerm';
-import { Select, Qb } from '../src/Qb';
-import { SelectQuery } from '../src/SelectQuery';
+//import { Select, Qb } from '../src/Qb';
+//import { SelectQuery } from '../src/SelectQuery';
 
 describe("Cond", () => {
   let d: Date = new Date(2018, 0, 1, 0, 0, 0, 0);
 
   it("Equal(field: string, expr: Expr): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -29,7 +31,7 @@ describe("Cond", () => {
 
   it("Equal(field: string, alias: From, expr: Expr): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", From.Table("t"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -42,7 +44,7 @@ describe("Cond", () => {
 
   it("Equal(field: string, value: number): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", 1)["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -51,13 +53,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
   })
 
   it("Equal(field: string, alias: From, value: number): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", From.Table("t"), 1)["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -66,7 +68,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -75,7 +77,7 @@ describe("Cond", () => {
 
   it("Equal(field: string, value: string): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", "abc")["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -84,13 +86,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("abc");
   })
 
   it("Equal(field: string, alias: From, value: string): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", From.Table("t"), "abc")["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -99,7 +101,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("abc");
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -108,7 +110,7 @@ describe("Cond", () => {
 
   it("Equal(field: string, value: Date): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", d)["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -117,13 +119,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
   it("Equal(field: string, alias: From, value: Date): Cond", () => {
     let _: WhereTerm = Cond.Equal("a", From.Table("t"), d)["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -132,7 +134,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -141,7 +143,7 @@ describe("Cond", () => {
 
   it("Equal(expr1: Expr, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.Equal(Expr.Field("a"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.Equal);
+    expect(_.Op).eq(CompOper.Equal);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -149,12 +151,12 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("NotEqual(field: string, expr: Expr): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -168,7 +170,7 @@ describe("Cond", () => {
 
   it("NotEqual(field: string, alias: From, expr: Expr): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", From.Table("t"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -181,7 +183,7 @@ describe("Cond", () => {
 
   it("NotEqual(field: string, value: number): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", 1)["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -190,13 +192,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
   })
 
   it("NotEqual(field: string, alias: From, value: number): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", From.Table("t"), 1)["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -205,7 +207,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -214,7 +216,7 @@ describe("Cond", () => {
 
   it("NotEqual(field: string, value: string): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", "abc")["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -223,13 +225,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("abc");
   })
 
   it("NotEqual(field: string, alias: From, value: string): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", From.Table("t"), "abc")["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -238,7 +240,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("abc");
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -247,7 +249,7 @@ describe("Cond", () => {
 
   it("NotEqual(field: string, value: Date): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", d)["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -256,13 +258,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
   it("NotEqual(field: string, alias: From, value: Date): Cond", () => {
     let _: WhereTerm = Cond.NotEqual("a", From.Table("t"), d)["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -274,13 +276,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
   it("NotEqual(expr1: Expr, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.NotEqual(Expr.Field("a"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.NotEqual);
+    expect(_.Op).eq(CompOper.NotEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -288,13 +290,13 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   //LIKE
   it("Like(expr1: Expr, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.Like(Expr.Field("a"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.Like);
+    expect(_.Op).eq(CompOper.Like);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -302,12 +304,12 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("Like(expr1: Expr, expr2: Expr, escapeChar: string): Cond", () => {
     let _: WhereTerm = Cond.Like(Expr.Field("a"), Expr.Param("p"), "!")["Term"];
-    expect(_.Op).eq(CompareOperator.Like);
+    expect(_.Op).eq(CompOper.Like);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -315,17 +317,17 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
     expect(_.Expr3.ValueCode).eq(ExprValCode.SqlConst);
     expect(_.Expr3.Type).eq(OmExpressionType.Constant);
     expect(_.Expr3.Value).instanceof(OmConstant);
-    expect((_.Expr3.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr3.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr3.Value as OmConstant).Value).eq("!");
   })
 
   it("Like(field: string, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.Like("a", Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.Like);
+    expect(_.Op).eq(CompOper.Like);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -333,12 +335,12 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("Like(field: string, alias: From, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.Like("a", From.Table("t"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.Like);
+    expect(_.Op).eq(CompOper.Like);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -349,12 +351,12 @@ describe("Cond", () => {
     expect(_.Expr1.TableAlias).eq("t");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("Like(field: string, value: string): Cond", () => {
     let _: WhereTerm = Cond.Like("a", "%")["Term"];
-    expect(_.Op).eq(CompareOperator.Like);
+    expect(_.Op).eq(CompOper.Like);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -363,13 +365,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("%");
   })
 
   it("Like(field: string, alias: From, value: string): Cond", (() => {
     let _: WhereTerm = Cond.Like("a", From.Table("t"), "%")["Term"];
-    expect(_.Op).eq(CompareOperator.Like);
+    expect(_.Op).eq(CompOper.Like);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -382,13 +384,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("%");
   }))
   //NOTLIKE
   it("NotLike(expr1: Expr, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.NotLike(Expr.Field("a"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.NotLike);
+    expect(_.Op).eq(CompOper.NotLike);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -396,12 +398,12 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("NotLike(expr1: Expr, expr2: Expr, escapeChar: string): Cond", () => {
     let _: WhereTerm = Cond.NotLike(Expr.Field("a"), Expr.Param("p"), "!")["Term"];
-    expect(_.Op).eq(CompareOperator.NotLike);
+    expect(_.Op).eq(CompOper.NotLike);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -409,17 +411,17 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
     expect(_.Expr3.ValueCode).eq(ExprValCode.SqlConst);
     expect(_.Expr3.Type).eq(OmExpressionType.Constant);
     expect(_.Expr3.Value).instanceof(OmConstant);
-    expect((_.Expr3.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr3.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr3.Value as OmConstant).Value).eq("!");
   })
 
   it("NotLike(field: string, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.NotLike("a", Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.NotLike);
+    expect(_.Op).eq(CompOper.NotLike);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -427,12 +429,12 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("NotLike(field: string, alias: From, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.NotLike("a", From.Table("t"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.NotLike);
+    expect(_.Op).eq(CompOper.NotLike);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -443,12 +445,12 @@ describe("Cond", () => {
     expect(_.Expr1.TableAlias).eq("t");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("NotLike(field: string, value: string): Cond", () => {
     let _: WhereTerm = Cond.NotLike("a", "%")["Term"];
-    expect(_.Op).eq(CompareOperator.NotLike);
+    expect(_.Op).eq(CompOper.NotLike);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -457,13 +459,13 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("%");
   })
 
   it("NotLike(field: string, alias: From, value: string): Cond", (() => {
     let _: WhereTerm = Cond.NotLike("a", From.Table("t"), "%")["Term"];
-    expect(_.Op).eq(CompareOperator.NotLike);
+    expect(_.Op).eq(CompOper.NotLike);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -476,14 +478,14 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("%");
   }))
 
   // LessOrEqual
   it("LessOrEqual(expr1: Expr, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual(Expr.Field("a"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -491,12 +493,12 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("LessOrEqual(field: string, alias: From, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", From.Table("t"), Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -507,12 +509,12 @@ describe("Cond", () => {
     expect(_.Expr1.TableAlias).eq("t");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("LessOrEqual(field: string, expr2: Expr): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", Expr.Param("p"))["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -520,12 +522,12 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
   })
 
   it("LessOrEqual(field: string, value: number): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", 1)["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -534,14 +536,14 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
 
   })
 
   it("LessOrEqual(field: string, alias: From, value: number): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", From.Table("t"), 1)["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -550,7 +552,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -560,7 +562,7 @@ describe("Cond", () => {
 
   it("LessOrEqual(field: string, value: string): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", "abc")["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -569,14 +571,14 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("abc");
 
   })
 
   it("LessOrEqual(field: string, alias: From, value: string): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", From.Table("t"), "abc")["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -585,7 +587,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Expr2.Value as OmConstant).Value).eq("abc");
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -594,7 +596,7 @@ describe("Cond", () => {
 
   it("LessOrEqual(field: string, value: Date): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", d)["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -603,14 +605,14 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
 
   })
 
   it("LessOrEqual(field: string, alias: From, value: Date): Cond", () => {
     let _: WhereTerm = Cond.LessOrEqual("a", From.Table("t"), d)["Term"];
-    expect(_.Op).eq(CompareOperator.LessOrEqual);
+    expect(_.Op).eq(CompOper.LessOrEqual);
     expect(_.Type).eq(WhereTermType.Compare);
     expect(_.Expr1).not.undefined;
     expect(_.Expr1.Type).eq(OmExpressionType.Field);
@@ -619,7 +621,7 @@ describe("Cond", () => {
     expect(_.Expr2).not.undefined;
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
     expect(_.Expr1.Table).not.undefined;
     expect(_.Expr1.Table).instanceof(FromTerm);
@@ -639,7 +641,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Values[0] as OmConstant).Value).eq(1);
   })
 
@@ -655,7 +657,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.String);
     expect((_.Values[0] as OmConstant).Value).eq("1");
   })
 
@@ -673,7 +675,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Date);
     expect(((_.Values[0] as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
@@ -689,7 +691,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Values[0] as OmConstant).Value).eq(1);
   })
 
@@ -705,7 +707,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.String);
     expect((_.Values[0] as OmConstant).Value).eq("1");
   })
 
@@ -723,7 +725,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Date);
     expect(((_.Values[0] as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
@@ -764,7 +766,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Values[0] as OmConstant).Value).eq(1);
   })
 
@@ -780,7 +782,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.String);
     expect((_.Values[0] as OmConstant).Value).eq("1");
   })
 
@@ -798,7 +800,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Date);
     expect(((_.Values[0] as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
@@ -814,7 +816,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Values[0] as OmConstant).Value).eq(1);
   })
 
@@ -830,7 +832,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.String);
     expect((_.Values[0] as OmConstant).Value).eq("1");
   })
 
@@ -848,7 +850,7 @@ describe("Cond", () => {
     expect(_.Values).instanceOf(Array);
     expect(_.Values.length).eq(3);
     expect(_.Values[0]).instanceof(OmConstant);
-    expect((_.Values[0] as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Values[0] as OmConstant).Type).eq(DataType.Date);
     expect(((_.Values[0] as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
@@ -944,10 +946,10 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p1");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
     expect(_.Expr3.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr3.Value).eq("p2");
-    expect(_.Expr3.ValueCode).eq(OmDataType.String);
+    expect(_.Expr3.ValueCode).eq(DataType.String);
   })
 
   it("Between(field: string, lowBound: Expr, highBound: Expr): Cond", ()=>{
@@ -958,10 +960,10 @@ describe("Cond", () => {
     expect(_.Expr1.Value).eq("a");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p1");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
     expect(_.Expr3.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr3.Value).eq("p2");
-    expect(_.Expr3.ValueCode).eq(OmDataType.String);
+    expect(_.Expr3.ValueCode).eq(DataType.String);
   })
 
   it("Between(field: string, alias: From, lowBound: Expr, highBound: Expr): Cond", ()=>{
@@ -974,10 +976,10 @@ describe("Cond", () => {
     expect(_.Expr1.Table.RefName).eq("t");
     expect(_.Expr2.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr2.Value).eq("p1");
-    expect(_.Expr2.ValueCode).eq(OmDataType.String);
+    expect(_.Expr2.ValueCode).eq(DataType.String);
     expect(_.Expr3.Type).eq(OmExpressionType.Parameter);
     expect(_.Expr3.Value).eq("p2");
-    expect(_.Expr3.ValueCode).eq(OmDataType.String);
+    expect(_.Expr3.ValueCode).eq(DataType.String);
   })
 
   it("Between(field: string, alias: From, lowBound: number, highBound: number): Cond", ()=>{
@@ -991,12 +993,12 @@ describe("Cond", () => {
 
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
 
     expect(_.Expr3.Type).eq(OmExpressionType.Constant);
     expect(_.Expr3.Value).instanceof(OmConstant);
-    expect((_.Expr3.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr3.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr3.Value as OmConstant).Value).eq(2);
   })
 
@@ -1012,12 +1014,12 @@ describe("Cond", () => {
 
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
 
     expect(_.Expr3.Type).eq(OmExpressionType.Constant);
     expect(_.Expr3.Value).instanceof(OmConstant);
-    expect((_.Expr3.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr3.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr3.Value as OmConstant).Value as Date).valueOf).eq(d1.valueOf);
   })
 
@@ -1030,12 +1032,12 @@ describe("Cond", () => {
 
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr2.Value as OmConstant).Value).eq(1);
 
     expect(_.Expr3.Type).eq(OmExpressionType.Constant);
     expect(_.Expr3.Value).instanceof(OmConstant);
-    expect((_.Expr3.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Expr3.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Expr3.Value as OmConstant).Value).eq(2);
   })
 
@@ -1049,12 +1051,12 @@ describe("Cond", () => {
 
     expect(_.Expr2.Type).eq(OmExpressionType.Constant);
     expect(_.Expr2.Value).instanceof(OmConstant);
-    expect((_.Expr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
 
     expect(_.Expr3.Type).eq(OmExpressionType.Constant);
     expect(_.Expr3.Value).instanceof(OmConstant);
-    expect((_.Expr3.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Expr3.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Expr3.Value as OmConstant).Value as Date).valueOf).eq(d1.valueOf);
   })
 

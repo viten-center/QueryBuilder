@@ -1,4 +1,4 @@
-﻿import {OmConstant} from "./OmConstant";
+﻿import { OmConstant } from "./OmConstant";
 export class Constant {
   private Const: OmConstant;
 

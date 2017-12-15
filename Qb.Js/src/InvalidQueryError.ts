@@ -1,14 +1,10 @@
 ﻿export class InvalidQueryError implements Error {
-  private _name: string;
+  name: string;
+  stack?: string | undefined;
   private _message: string;
 
-  constructor(name: string, message: string) {
-    this._name = name;
+  constructor(message: string) {
     this._message = message;
-  }
-
-  get name(): string {
-    return this._name;
   }
 
   get message(): string {

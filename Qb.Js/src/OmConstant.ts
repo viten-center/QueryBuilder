@@ -1,43 +1,46 @@
-﻿import {OmDataType} from "./Enums"
+﻿import {DataType} from "./Enums"
 import {Utils} from "./Utils"
 
-interface IOmConstant {
-  Type: OmDataType;
-  Value: any;
-}
+// interface IOmConstant {
+//   Type: OmDataType;
+//   Value: any;
+// }
 
-export class OmConstant implements IOmConstant {
-  Type: OmDataType;
+export class OmConstant /*implements IOmConstant*/ {
+  Type: DataType;
   public StringValue: string;
   public NumericValue: number;
   public DateValue: Date;
 
 
-  constructor(val: any, type: OmDataType) {
+  constructor(val: string|number|Date/*, type: DataType*/) {
 
-    if (!Utils.IsEmpty(type)) {
-      this.Type = type;
-    }
+    // if (!Utils.IsEmpty(type)) {
+    //   this.Type = type;
+    // }
 
     if (!Utils.IsEmpty(val)) {
       if (typeof val == "number") {
         this.NumericValue = val;
+        this.Type = DataType.Numeric;
       } else if (val instanceof Date) {
         this.DateValue = val;
+        this.Type = DataType.Date;
       } else {
         this.StringValue = val;
+        this.Type = DataType.String;
       }
     }
 
-    if (val == null && type != OmDataType.String)
-      throw new Error("val");
+    // if (val == null && type != DataType.String)
+    //   throw new Error("val");
   }
 
-  get Value(): any {
+  get Value(): string|number|Date {
     switch (this.Type) {
-      case OmDataType.Date:
+      case DataType.Date:
         return this.DateValue;
-      case OmDataType.Numeric:
+      case DataType.Numeric:
         return this.NumericValue;
       default:
         return this.StringValue;
@@ -45,15 +48,15 @@ export class OmConstant implements IOmConstant {
   }
 
   static Number(val: number): OmConstant {
-    return new OmConstant(val, OmDataType.Numeric);
+    return new OmConstant(val);
   }
 
   static String(val: string): OmConstant {
-    return new OmConstant(val, OmDataType.String);
+    return new OmConstant(val);
   }
 
   static Date(val: Date): OmConstant {
-    return new OmConstant(val, OmDataType.Date);
+    return new OmConstant(val);
   }
 
 }

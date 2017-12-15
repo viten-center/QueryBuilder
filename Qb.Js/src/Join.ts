@@ -4,14 +4,14 @@ import {JoinType} from "./Enums";
 
 
 
-interface IJoin {
-  LeftTable: FromTerm;
-  Conditions: WhereClause;
-  RightTable: FromTerm;
-  Type: JoinType;
-}
+// interface IJoin {
+//   LeftTable: FromTerm;
+//   Conditions: WhereClause;
+//   RightTable: FromTerm;
+//   Type: JoinType;
+// }
 
-export class Join implements IJoin {
+export class Join /*implements IJoin*/ {
   LeftTable: FromTerm;
   Conditions: WhereClause;
   RightTable: FromTerm;

@@ -1,9 +1,9 @@
-﻿interface IJoinCondition {
-  LeftField: string;
-  RightField: string;
-}
+﻿// interface IJoinCondition {
+//   LeftField: string;
+//   RightField: string;
+// }
 
-export class JoinCondition implements IJoinCondition {
+export class JoinCondition /*implements IJoinCondition*/ {
   LeftField: string;
   RightField: string;
 

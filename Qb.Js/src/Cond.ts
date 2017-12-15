@@ -64,7 +64,7 @@ export class Cond {
 
   private static Compare(expr1: Expr, expr2: Expr, op: CompOper): Cond {
     var res = new Cond();
-    res.Term = WhereTerm.CreateCompare(expr1["Expression"], expr2["Expression"], Utils.ConvertCompOper(op));
+    res.Term = WhereTerm.CreateCompare(expr1["Expression"], expr2["Expression"], op);
     return res;
   }
 
@@ -82,11 +82,13 @@ export class Cond {
 
   // EQUAL NOTEQUAL
   private static ParseEqualArg(arg: IArguments): EqualArgs {
-    var expr1, expr2: Expr;
-    var field, v2: string;
-    var alias: From;
-    var v1: number;
-    var v3: Date;
+    var expr1: Expr | undefined;
+    var expr2: Expr | undefined;
+    var field: string | undefined;
+    var v2: string | undefined;
+    var alias: From | undefined;
+    var v1: number | undefined;
+    var v3: Date | undefined;
 
     if (arg.length >= 1) {
       if (typeof arg[0] == "string") {
@@ -123,13 +125,20 @@ export class Cond {
     }
 
     var res = new EqualArgs();
-    res.alias = alias;
-    res.expr1 = expr1;
-    res.expr2 = expr2;
-    res.field = field;
-    res.v1 = v1;
-    res.v2 = v2;
-    res.v3 = v3;
+    if (alias !== undefined)
+      res.alias = alias;
+    if (expr1 !== undefined)
+      res.expr1 = expr1;
+    if (expr2 !== undefined)
+      res.expr2 = expr2;
+    if (field !== undefined)
+      res.field = field;
+    if (v1 !== undefined)
+      res.v1 = v1;
+    if (v2 !== undefined)
+      res.v2 = v2;
+    if (v3 != undefined)
+      res.v3 = v3;
     return res;
   }
 
@@ -384,7 +393,7 @@ export class Cond {
       } else {
         res.Term = WhereTerm.CreateNotIn(e["Expression"], constants);
       }
-    } else{
+    } else {
       if (op == WhereTermType.In) {
         res.Term = WhereTerm.CreateIn(e["Expression"], arg.subQuery["Query"]);
       } else {

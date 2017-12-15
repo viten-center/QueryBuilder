@@ -1,59 +1,60 @@
-﻿import {OmExpressionType, OmAggregationFunction, OmDataType, ExprValCode} from "./Enums"
+﻿import {OmExpressionType, AggFunc, DataType, ExprValCode} from "./Enums"
 import {CaseClause} from "./CaseClause"
 import {FromTerm} from "./FromTerm"
 import {OmConstant} from "./OmConstant"
 import {SelectQuery} from "./SelectQuery"
 
-interface IOmExpression {
-    TableAlias: string;
-    Type: OmExpressionType;
-    Value: any;
-    AggFunction: OmAggregationFunction;
-    CaseClause: CaseClause;
-    SubExpr1: OmExpression;
-    SubExpr2: OmExpression;
-  }
+// export interface IOmExpression {
+//     TableAlias: string;
+//     Type: OmExpressionType;
+//     Value: any;
+//     AggFunction: AggFunc;
+//     CaseClause: CaseClause;
+//     SubExpr1: OmExpression;
+//     SubExpr2: OmExpression;
+//   }
     
 
-  export class OmExpression implements IOmExpression{
+  export class OmExpression /*implements IOmExpression*/{
     Type: OmExpressionType;
     Table: FromTerm;
-    AggFunction: OmAggregationFunction;
+    AggFunction: AggFunc;
     SubExpr1: OmExpression;
     SubExpr2: OmExpression;
     CaseClause = new CaseClause();
 
     static Number(val: number): OmExpression 
 		{
-      return OmExpression.Constant(OmConstant.Number(val), null);
+      return OmExpression.Constant(OmConstant.Number(val), DataType.Numeric);
     }
 
     static String(val: string): OmExpression {
-      return OmExpression.Constant(OmConstant.String(val), null);
+      return OmExpression.Constant(OmConstant.String(val), DataType.String);
     }
 
     static Date(val: Date): OmExpression {
-      return OmExpression.Constant(OmConstant.Date(val), null);
+      return OmExpression.Constant(OmConstant.Date(val), DataType.Date);
     }
 
-    static Constant(val: OmConstant, dataType: OmDataType): OmExpression
+    static Constant(val: OmConstant, dataType: DataType): OmExpression
 		{
       var expr = new OmExpression();
       if (dataType == undefined || dataType == null) {
-        expr.ValueCode = ExprValCode.SqlConst;
         expr.ConstantValue = val;
       } else {
-        expr.ConstantValue = new OmConstant(val, dataType);
+        expr.ConstantValue = val;
       }
+      expr.ValueCode = ExprValCode.SqlConst;
       expr.Type = OmExpressionType.Constant;
       return expr;
 		}
 
-    static Field(fieldName: string, table: FromTerm): OmExpression {
+    static Field(fieldName: string, table: FromTerm|undefined): OmExpression {
       var expr = new OmExpression();
       expr.ValueCode = ExprValCode.String;
       expr.StringValue = fieldName;
-      expr.Table = table;
+      if(table instanceof FromTerm)
+        expr.Table = table;
       expr.Type = OmExpressionType.Field;
       return expr;
     }
@@ -73,7 +74,7 @@ interface IOmExpression {
       return expr;
     }
 
-    static Func(func: OmAggregationFunction, param: OmExpression): OmExpression {
+    static Func(func: AggFunc, param: OmExpression): OmExpression {
       var expr = new OmExpression();
       expr.Type = OmExpressionType.Function;
       expr.SubExpr1 = param;
@@ -126,8 +127,8 @@ interface IOmExpression {
       return expr;
     }
 
-    get TableAlias(): string {
-      return this.Table == null ? null : this.Table.RefName;
+    get TableAlias(): string|null {
+      return this.Table == null ? null  : this.Table.RefName;
     }
 
     get Value(): any {

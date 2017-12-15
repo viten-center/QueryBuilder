@@ -1,9 +1,10 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import { Qb, Expr, From, Constant } from "../src/qb";
+import { Qb, Expr, From } from "../src/index";
+import { Constant } from "../src/Constant";
 import { OmExpression } from '../src/OmExpression';
-import { OmExpressionType, ExprValCode, OmDataType, AggFunc, OmAggregationFunction } from '../src/Enums';
+import { OmExpressionType, ExprValCode, DataType, AggFunc } from '../src/Enums';
 import { OmConstant } from '../src/OmConstant';
 import { SelectQuery } from '../src/SelectQuery';
 
@@ -73,7 +74,7 @@ describe("Expr", ()=>{
     let _: OmExpression = Expr.Date(d)["Expression"];
     expect(_.Type).eq(OmExpressionType.Constant);
     expect(_.Value).instanceOf(OmConstant);
-    expect((_.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
   })
 
@@ -81,7 +82,7 @@ describe("Expr", ()=>{
     let _: OmExpression = Expr.Number(1)["Expression"];
     expect(_.Type).eq(OmExpressionType.Constant);
     expect(_.Value).instanceOf(OmConstant);
-    expect((_.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.Value as OmConstant).Value).eq(1);
   })
 
@@ -89,7 +90,7 @@ describe("Expr", ()=>{
     let _: OmExpression = Expr.String("abc")["Expression"];
     expect(_.Type).eq(OmExpressionType.Constant);
     expect(_.Value).instanceOf(OmConstant);
-    expect((_.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.Value as OmConstant).Type).eq(DataType.String);
     expect((_.Value as OmConstant).Value).eq("abc");
   })
 
@@ -101,7 +102,7 @@ describe("Expr", ()=>{
   
   it("Func(func: ArgFunction, param: Expr)", ()=>{
     let _: OmExpression = Expr.Func(AggFunc.Max, Expr.Field("a"))["Expression"];
-    expect(_.AggFunction).eq(OmAggregationFunction.Max);
+    expect(_.AggFunction).eq(AggFunc.Max);
     expect(_.Type).eq(OmExpressionType.Function);
     expect(_.SubExpr1).not.undefined;
     expect(_.SubExpr1.Type).eq(OmExpressionType.Field);
@@ -119,7 +120,7 @@ describe("Expr", ()=>{
 
     expect(_.SubExpr2).not.undefined;
     expect(_.SubExpr2.Type).eq(OmExpressionType.Constant);
-    expect((_.SubExpr2.Value as OmConstant).Type).eq(OmDataType.String);
+    expect((_.SubExpr2.Value as OmConstant).Type).eq(DataType.String);
     expect((_.SubExpr2.Value as OmConstant).Value).eq("abc");
     expect((_.SubExpr2.Value as OmConstant).StringValue).eq("abc");
   })
@@ -134,7 +135,7 @@ describe("Expr", ()=>{
 
     expect(_.SubExpr2).not.undefined;
     expect(_.SubExpr2.Type).eq(OmExpressionType.Constant);
-    expect((_.SubExpr2.Value as OmConstant).Type).eq(OmDataType.Numeric);
+    expect((_.SubExpr2.Value as OmConstant).Type).eq(DataType.Numeric);
     expect((_.SubExpr2.Value as OmConstant).Value).eq(10);
     expect((_.SubExpr2.Value as OmConstant).NumericValue).eq(10);
   })
@@ -149,7 +150,7 @@ describe("Expr", ()=>{
 
     expect(_.SubExpr2).not.undefined;
     expect(_.SubExpr2.Type).eq(OmExpressionType.Constant);
-    expect((_.SubExpr2.Value as OmConstant).Type).eq(OmDataType.Date);
+    expect((_.SubExpr2.Value as OmConstant).Type).eq(DataType.Date);
     expect(((_.SubExpr2.Value as OmConstant).Value as Date).valueOf).eq(d.valueOf);
     expect((_.SubExpr2.Value as OmConstant).DateValue.valueOf).eq(d.valueOf);
   })
