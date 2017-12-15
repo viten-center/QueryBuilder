@@ -1,0 +1,1 @@
+dotnet pack Qb.Net.csproj --configuration release
