@@ -19,6 +19,7 @@ namespace Viten.QueryBuilder.Test
     {
       try
       {
+        SerializationTest.TestAll();
         QbTest.TestAll();
 
 

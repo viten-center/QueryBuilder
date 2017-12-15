@@ -8,9 +8,10 @@ namespace Viten.QueryBuilder.Test
 {
   public class QbTest
   {
-    public static void TestAll()
+    internal static void TestAll()
     {
       QbTest t = new QbTest();
+      t.TestJoin();
       t.TestJoinCond();
       t.TestCond();
       t.TestFrom();
@@ -23,10 +24,21 @@ namespace Viten.QueryBuilder.Test
     }
 
     [Fact]
+    public void TestJoin()
+    {
+      Select sel = Qb.Select("a").From("lt").Join("rt", JoinCond.Fields("id_0"));
+
+      From lt = From.Table("lt");
+      From rt = From.Table("rt");
+      Logic l = Logic.And(Cond.Equal(Expr.Field("id_0", lt), Expr.Field("id_0", rt)));
+
+      sel = Qb.Select("a").From("lt").Join(JoinType.Left, lt, rt, l);
+    }
+    [Fact]
     public void TestJoinCond()
     {
       JoinCond j = JoinCond.Fields("a");
-    }
+     }
     [Fact]
     public void TestCond()
     {
@@ -75,6 +87,7 @@ namespace Viten.QueryBuilder.Test
       string sql = renderer.RenderInsert(ins);
     }
 
+    [Fact]
     public void TestUpdate()
     {
       Update upd = Qb.Update("Customers")
@@ -86,6 +99,7 @@ namespace Viten.QueryBuilder.Test
       string sql = renderer.RenderUpdate(upd);
     }
 
+    [Fact]
     public void TestDelete()
     {
       Delete del = Qb.Delete("Customers")
@@ -105,7 +119,7 @@ namespace Viten.QueryBuilder.Test
         );
       Renderer.SqlServerRenderer renderer = new Renderer.SqlServerRenderer();
       string sql = renderer.RenderSelect(sel);
-      Assert.Equal(sql, "select * from [tab] where (([a] = 1 and [b] > 2))");
+      Assert.Equal("select * from [tab] where (([a] = 1 and [b] > 2))", sql);
 
       sel = Qb.Select("*")
       .From("tab")
@@ -126,7 +140,7 @@ namespace Viten.QueryBuilder.Test
         );
 
       sql = renderer.RenderSelect(sel);
-      Assert.Equal(sql, "select * from [tab] where (([a] = 1 and [b] > 2))");
+      Assert.Equal("select * from [tab] where (([a] = 1 and [b] > 2))", sql);
 
       sel = Qb.Select("*")
         .From("tab")
@@ -137,14 +151,14 @@ namespace Viten.QueryBuilder.Test
           )
         );
       sql = renderer.RenderSelect(sel);
-      Assert.Equal(sql, "select * from [tab] where (([a] = 1 or [b] > 2))");
+      Assert.Equal("select * from [tab] where (([a] = 1 or [b] > 2))", sql);
 
       From customer = From.Table("Customers", "c");
       From orders = From.Table("Orders", "o");
       Select inner = Qb.Select(
         Column.New("FirstName", customer),
         Column.New("LastName", customer),
-        Column.New("Count", orders, "sum", AggFunc.Sum)
+        Column.New("Count", "sum", orders, AggFunc.Sum)
         )
         .From(customer)
         .Join(JoinType.Left, customer, orders, JoinCond.Fields("Id", "CustomerId"))
