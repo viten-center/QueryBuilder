@@ -1,0 +1,1 @@
+dotnet build Dapper.Qb.Net.csproj
