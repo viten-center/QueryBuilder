@@ -14,7 +14,7 @@
 
 ### SELECT
 
-Query
+1. Query
 ```csharp
       Select sel = Qb.Select("*")
         .From("MyTable")
@@ -30,7 +30,7 @@ from [MyTable]
 where (([a] = 1 and [b] > 2))
 ```
 
-Query
+2. Query
 ```csharp
       Select sel = Qb.Select("*")
       .From("tab")
@@ -47,7 +47,7 @@ from [tab]
 where (([a] = 1 or [a] = 2))
 ```
 
-Query
+3. Query
 ```csharp
       From customer = From.Table("Customers", "c");
       From orders = From.Table("Orders", "o");
@@ -76,7 +76,7 @@ group by
     [c].[LastName]
 ```
 
-Query
+4. Query
 ```csharp
       From customer = From.Table("Customers", "c");
       From orders = From.Table("Orders", "o");
@@ -144,7 +144,7 @@ from
 ```
 ### INSERT
 
-Query
+1. Query
 ```csharp
       Insert ins = Qb.Insert("Customers")
         .Values(
@@ -163,7 +163,7 @@ values
 
 ### UPDATE
 
-Query
+1. Query
 ```csharp
       Update upd = Qb.Update("Customers")
         .Values(
@@ -182,7 +182,7 @@ where
 
 ### DELETE
 
-Query
+1. Query
 ```csharp
       Delete del = Qb.Delete("Customers")
         .Where(Cond.Equal("Id", 20));

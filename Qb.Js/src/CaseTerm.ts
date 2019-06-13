@@ -1,12 +1,7 @@
 ﻿import { WhereClause } from "./WhereClause"
 import { OmExpression } from "./OmExpression"
 
-// export interface ICaseTerm {
-//     Condition: WhereClause;
-//     Value: OmExpression;
-//   }
-
-export class CaseTerm /*implements ICaseTerm*/ {
+export class CaseTerm {
   Condition: WhereClause;
   Value: OmExpression;
 

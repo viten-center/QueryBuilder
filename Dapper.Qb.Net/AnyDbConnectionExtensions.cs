@@ -13,9 +13,9 @@ namespace Dapper
   {
     static DynamicParameters GetParameters(ParamCollection paramCollection)
     {
-      if (paramCollection.Count == 0) return null;
 
       DynamicParameters retVal = new DynamicParameters();
+      //if (paramCollection.Count == 0) return null;
 
       for (int i = 0; i < paramCollection.Count; i++)
       {

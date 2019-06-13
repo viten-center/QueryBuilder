@@ -7,7 +7,21 @@ using Viten.QueryBuilder.Renderer;
 
 namespace Viten.QueryBuilder.Data.AnyDb
 {
-  public sealed class AnyDbFactory
+  public interface IAnyDbFactory
+  {
+    string GetSqlRowCount(Select query);
+    string GetSql(Select query, int pageIndex, int pageSize, int totalCount);
+    string GetSql(Select query);
+    string GetSql(Update query);
+    string GetSql(Delete query);
+    string GetSql(Insert query);
+    string GetSql(InsertSelect query);
+    AnyDbConnection OpenConnection();
+    void CreateDatabase();
+    void DropDatabase();
+    bool ExistsDatabase();
+  }
+  public sealed class AnyDbFactory: IAnyDbFactory
   {
     private IAnyDbAnnouncer _announcer;
     // ReSharper disable once InconsistentNaming
