@@ -1,0 +1,1 @@
+dotnet pack Dapper.Qb.Net.csproj --configuration release
