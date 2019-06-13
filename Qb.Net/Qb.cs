@@ -26,6 +26,8 @@ namespace Viten.QueryBuilder
           return new SqlServerRenderer();
         case DatabaseProvider.SqlServerCe:
           return new SqlServerCeRenderer();
+        case DatabaseProvider.PostgreSql:
+          return new PostgreSqlRenderer();
         default:
           throw new ArgumentException($"Not valid argument '{db}'");
       }
