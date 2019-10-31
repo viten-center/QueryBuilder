@@ -23,6 +23,12 @@ namespace Viten.QueryBuilder.Data.AnyDb
       return _connection.BeginTransaction(isolationLevel);
     }
 
+    protected override void Dispose(bool disposing)
+    {
+      base.Dispose(disposing);
+      if(_connection != null && _connection.State != ConnectionState.Closed)
+        Close();
+    }
     public override void Close()
     {
       _connection.Close();
@@ -76,11 +82,14 @@ namespace Viten.QueryBuilder.Data.AnyDb
       AnyDbCommand retVal =
         new AnyDbCommand(this, _connection.CreateCommand(), _announcer)
         {
-          CommandTimeout = _factory.AnyDbSetting.CommandTimeout
+          CommandTimeout = DefaultCommandTimeout
         };
       return retVal;
     }
 
-    
+    public int DefaultCommandTimeout
+    {
+      get { return _factory.AnyDbSetting.CommandTimeout; }
+    }
   }
 }

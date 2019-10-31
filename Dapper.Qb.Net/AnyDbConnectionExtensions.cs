@@ -65,6 +65,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetDeleteSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -73,6 +75,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetUpdateSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -81,6 +85,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetInsertSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       bool returnIdentity = !string.IsNullOrEmpty(query.Query.IdentityField);
       if (!returnIdentity)
@@ -92,6 +98,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetInsertSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -104,6 +112,8 @@ namespace Dapper
       bool buffered = true, int? commandTimeout = null, string splitOn = "Id")
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query<TFirst, TSecond, TReturn>(sql, func, parameters, transaction, buffered,  commandTimeout: commandTimeout, splitOn: splitOn);
     }
@@ -112,6 +122,8 @@ namespace Dapper
       bool buffered = true, int? commandTimeout = null, string splitOn = "Id")
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query<TFirst, TSecond, TThird, TReturn>(sql, func, parameters, transaction, buffered, commandTimeout: commandTimeout, splitOn: splitOn);
     }
@@ -120,6 +132,8 @@ namespace Dapper
       bool buffered = true, int? commandTimeout = null, string splitOn = "Id")
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query<TFirst, TSecond, TThird, TFourth, TReturn>(sql, func, parameters, transaction, buffered, commandTimeout: commandTimeout, splitOn: splitOn);
     }
@@ -128,6 +142,8 @@ namespace Dapper
       bool buffered = true, int? commandTimeout = null, string splitOn = "Id")
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(sql, func, parameters, transaction, buffered, commandTimeout: commandTimeout, splitOn: splitOn);
     }
@@ -136,6 +152,8 @@ namespace Dapper
       bool buffered = true, int? commandTimeout = null, string splitOn = "Id")
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(sql, func, parameters, transaction, buffered, commandTimeout: commandTimeout, splitOn: splitOn);
     }
@@ -144,6 +162,8 @@ namespace Dapper
       bool buffered = true, int? commandTimeout = null, string splitOn = "Id")
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(sql, func, parameters, transaction, buffered, commandTimeout: commandTimeout, splitOn: splitOn);
     }
@@ -151,6 +171,8 @@ namespace Dapper
     public static IEnumerable<T> Query<T>(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query<T>(sql, parameters, transaction, buffered, commandTimeout, CommandType.Text);
     }
@@ -159,6 +181,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query(type, sql, parameters, transaction, buffered, commandTimeout, CommandType.Text);
     }
@@ -167,6 +191,8 @@ namespace Dapper
       IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query(sql, parameters, transaction, buffered, commandTimeout, CommandType.Text);
     }
@@ -177,6 +203,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.ExecuteReader(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -188,6 +216,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.ExecuteScalar<T>(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -196,6 +226,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.ExecuteScalar(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -206,6 +238,8 @@ namespace Dapper
       IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirst(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -214,6 +248,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirst(type, sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -221,6 +257,8 @@ namespace Dapper
     public static T QueryFirst<T>(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirst<T>(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -231,6 +269,8 @@ namespace Dapper
       IDbTransaction transaction = null, int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirstOrDefault(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -240,6 +280,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirstOrDefault<T>(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
@@ -248,6 +290,8 @@ namespace Dapper
       int? commandTimeout = null)
     {
       string sql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+        commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirstOrDefault(type, sql, parameters, transaction, commandTimeout, CommandType.Text);
     }

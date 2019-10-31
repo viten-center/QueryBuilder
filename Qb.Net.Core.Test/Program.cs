@@ -19,8 +19,8 @@ namespace Viten.QueryBuilder.Test
     {
       try
       {
-        SerializationTest.TestAll();
-        QbTest.TestAll();
+        //SerializationTest.TestAll();
+        //QbTest.TestAll();
 
 
         Dapper.AnyDbConnectionInitialiser.Initialise();
@@ -30,7 +30,7 @@ namespace Viten.QueryBuilder.Test
         IEnumerable<Customer> customers;
         using (AnyDbConnection con = factory.OpenConnection())
         {
-          customers = con.Query<Customer>(sel);
+          //customers = con.Query<Customer>(sel);
         }
 
       }

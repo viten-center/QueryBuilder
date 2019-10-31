@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
@@ -12,11 +12,11 @@
     <NeutralLanguage>ru</NeutralLanguage>
     <PackageTags>sql;query;builder;database</PackageTags>
     <Copyright>Copyright 2017 (c) viten-center. All rights reserved.</Copyright>
-    <AssemblyVersion>0.11.1.0</AssemblyVersion>
+    <AssemblyVersion>0.11.2.0</AssemblyVersion>
     <FileVersion>0.11.0.0</FileVersion>
     <RepositoryUrl>https://github.com/viten-center/QueryBuilder.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>0.11.1</Version>
+    <Version>0.11.2</Version>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
