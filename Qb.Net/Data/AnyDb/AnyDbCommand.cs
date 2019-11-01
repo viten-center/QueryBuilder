@@ -22,6 +22,11 @@ namespace Viten.QueryBuilder.Data.AnyDb
       _dbCommand = command;
     }
 
+    protected override void Dispose(bool disposing)
+    {
+      base.Dispose(disposing);
+      _dbCommand.Dispose();
+    }
     public override void Prepare()
     {
       _dbCommand.Prepare();

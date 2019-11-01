@@ -21,6 +21,16 @@ namespace Viten.QueryBuilder.Test
       {
         //SerializationTest.TestAll();
         //QbTest.TestAll();
+        AnyDbFactory pg_factory = new AnyDbFactory(new PgDbSetting());
+        using(AnyDbConnection con = pg_factory.OpenConnection())
+        using(AnyDbCommand cmd = con.CreateCommand())
+        {
+          Npgsql.NpgsqlParameter p = (Npgsql.NpgsqlParameter)cmd.CreateParameter();
+          p.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Boolean;
+          p.ParameterName = "@p0";
+          cmd.Parameters.Add(p);
+        }
+        
 
 
         Dapper.AnyDbConnectionInitialiser.Initialise();
@@ -29,7 +39,9 @@ namespace Viten.QueryBuilder.Test
           .From("Customers");
         IEnumerable<Customer> customers;
         using (AnyDbConnection con = factory.OpenConnection())
+        using (AnyDbCommand cmd = con.CreateCommand())
         {
+          
           //customers = con.Query<Customer>(sel);
         }
 
@@ -39,6 +51,13 @@ namespace Viten.QueryBuilder.Test
         Console.WriteLine(e);
       }
     }
+  }
+
+  class PgDbSetting : Data.AnyDb.IAnyDbSetting
+  {
+    public DatabaseProvider DatabaseProvider { get; set; } = DatabaseProvider.PostgreSql;
+    public string ConnectionString { get; set; } = "host=localhost;database=umk_test;username=developer;password=developer";
+    public int CommandTimeout { get; set; } = 30;
   }
 
   class AnyDbSetting : Data.AnyDb.IAnyDbSetting

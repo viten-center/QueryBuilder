@@ -49,6 +49,21 @@ namespace Viten.QueryBuilder.Data.AnyDb
 
     internal readonly IAnyDbSetting AnyDbSetting;
 
+    public DatabaseProvider Provider
+    {
+      get { return this.AnyDbSetting.DatabaseProvider; }
+    }
+
+    public string ConnectionString
+    {
+      get { return this.AnyDbSetting.ConnectionString; }
+    }
+
+    public int CommandTimeout
+    {
+      get { return this.AnyDbSetting.CommandTimeout; }
+    }
+
 
     public AnyDbFactory(IAnyDbSetting anyDbSetting, IAnyDbAnnouncer announcer = null)
     {

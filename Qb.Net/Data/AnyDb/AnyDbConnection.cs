@@ -26,7 +26,7 @@ namespace Viten.QueryBuilder.Data.AnyDb
     protected override void Dispose(bool disposing)
     {
       base.Dispose(disposing);
-      if(_connection != null && _connection.State != ConnectionState.Closed)
+      if (_connection != null && _connection.State != ConnectionState.Closed)
         Close();
     }
     public override void Close()
