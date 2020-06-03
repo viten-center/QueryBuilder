@@ -21,7 +21,7 @@ namespace Viten.QueryBuilder.Data.AnyDb
     void DropDatabase();
     bool ExistsDatabase();
   }
-  public sealed class AnyDbFactory: IAnyDbFactory
+  public class AnyDbFactory: IAnyDbFactory
   {
     private IAnyDbAnnouncer _announcer;
     // ReSharper disable once InconsistentNaming
