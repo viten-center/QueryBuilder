@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace Viten.QueryBuilder
 {
   /// <summary>Класс коллекции параметров команды</summary>
-  public class ParamCollection : NameObjectCollectionBase
+  public class ParamCollection : NameObjectCollectionBase, IList<Param>
   {
     public void AddRange(Param[] @params)
     {
@@ -70,6 +71,7 @@ namespace Viten.QueryBuilder
       return retVal;
     }
 
+
     public Param this[string paramName]
     {
       get
@@ -85,5 +87,35 @@ namespace Viten.QueryBuilder
         return this[key];
       }
     }
+
+    bool ICollection<Param>.IsReadOnly => false;
+
+    Param IList<Param>.this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public int IndexOf(Param item)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void Insert(int index, Param item)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void RemoveAt(int index)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void CopyTo(Param[] array, int arrayIndex)
+    {
+      throw new NotImplementedException();
+    }
+
+    IEnumerator<Param> IEnumerable<Param>.GetEnumerator()
+    {
+      throw new NotImplementedException();
+    }
+
   }
 }

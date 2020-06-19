@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Viten.QueryBuilder.Data.AnyDb;
 using Dapper;
+using Dapper.Contrib.Extensions;
 
 namespace Viten.QueryBuilder.Test
 {
+  [Table("customer")]
   public class Customer
   {
-    public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    [Key]
+    public int id { get; set; }
+    public string first_name { get; set; }
+    public string last_name { get; set; }
   }
 
   class Program
@@ -19,36 +22,16 @@ namespace Viten.QueryBuilder.Test
     {
       try
       {
-        //SerializationTest.TestAll();
-        //QbTest.TestAll();
-        AnyDbFactory pg_factory = new AnyDbFactory(new PgDbSetting());
-        using(AnyDbConnection con = pg_factory.OpenConnection())
-        using(AnyDbCommand cmd = con.CreateCommand())
-        {
-          Npgsql.NpgsqlParameter p = (Npgsql.NpgsqlParameter)cmd.CreateParameter();
-          p.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Boolean;
-          p.ParameterName = "@p0";
-          cmd.Parameters.Add(p);
-        }
-        
-
-
         Dapper.AnyDbConnectionInitialiser.Initialise();
-        AnyDbFactory factory = new AnyDbFactory(new AnyDbSetting());
-        Select sel = Qb.Select("*")
-          .From("Customers");
-        IEnumerable<Customer> customers;
-        using (AnyDbConnection con = factory.OpenConnection())
-        using (AnyDbCommand cmd = con.CreateCommand())
-        {
-          
-          //customers = con.Query<Customer>(sel);
-        }
+
+        SerializationTest.TestAll();
+        QbTest.TestAll();
+        DapperTest.TestAll();
 
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
-        Console.WriteLine(e);
+        Console.WriteLine(ex);
       }
     }
   }
@@ -56,7 +39,7 @@ namespace Viten.QueryBuilder.Test
   class PgDbSetting : Data.AnyDb.IAnyDbSetting
   {
     public DatabaseProvider DatabaseProvider { get; set; } = DatabaseProvider.PostgreSql;
-    public string ConnectionString { get; set; } = "host=localhost;database=umk_test;username=developer;password=developer";
+    public string ConnectionString { get; set; } = "host=localhost;database=qb_test;username=developer;password=developer";
     public int CommandTimeout { get; set; } = 30;
   }
 

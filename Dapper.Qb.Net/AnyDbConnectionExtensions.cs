@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Threading.Tasks;
 using Viten.QueryBuilder;
 using Viten.QueryBuilder.Data.AnyDb;
 using Viten.QueryBuilder.Renderer;
@@ -9,14 +10,36 @@ using Viten.QueryBuilder.Renderer;
 // ReSharper disable once CheckNamespace
 namespace Dapper
 {
+  public class MoreDataFlag
+  {
+    public bool HasMoreData
+    {
+      get;
+      set;
+    }
+  }
+
   public static class AnyDbConnectionExtensions
   {
+    private static int GetRowCount(int pageNum, int pageSize)
+    {
+      return pageNum * pageSize + pageSize;
+    }
+
+    private static string GetPageSql(AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount)
+    {
+      return Qb.CreateRenderer(cnn.DatabaseProvider).RenderPage(pageIndex, pageSize, totalRowCount, query);
+    }
+
+    private static string GetRowCountSql(AnyDbConnection cnn, Select query)
+    {
+      return Qb.CreateRenderer(cnn.DatabaseProvider).RenderRowCount(query);
+    }
+
     static DynamicParameters GetParameters(ParamCollection paramCollection)
     {
 
       DynamicParameters retVal = new DynamicParameters();
-      //if (paramCollection.Count == 0) return null;
-
       for (int i = 0; i < paramCollection.Count; i++)
       {
         Param p = paramCollection[i];
@@ -102,6 +125,55 @@ namespace Dapper
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
+    }
+
+    //===
+    public static async Task<int> ExecuteAsync(this AnyDbConnection cnn, Delete query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string deleteSql = GetDeleteSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.ExecuteAsync((IDbConnection)cnn, deleteSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<int> ExecuteAsync(this AnyDbConnection cnn, Update query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string updateSql = GetUpdateSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.ExecuteAsync((IDbConnection)cnn, updateSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<long> ExecuteAsync(this AnyDbConnection cnn, Insert query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string sql = GetInsertSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      if (string.IsNullOrEmpty(query.Query.IdentityField))
+      {
+        return Convert.ToInt64(await SqlMapper.ExecuteAsync((IDbConnection)cnn, sql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text));
+      }
+      return Convert.ToInt64(await SqlMapper.ExecuteScalarAsync((IDbConnection)cnn, sql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text));
+    }
+
+    public static async Task<int> ExecuteAsync(this AnyDbConnection cnn, InsertSelect query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string insertSelectSql = GetInsertSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.ExecuteAsync((IDbConnection)cnn, insertSelectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
     }
 
     #endregion Execute
@@ -196,6 +268,174 @@ namespace Dapper
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.Query(sql, parameters, transaction, buffered, commandTimeout, CommandType.Text);
     }
+
+    //===
+
+    public static async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(this AnyDbConnection cnn, Select query, Func<TFirst, TSecond, TReturn> func, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?), string splitOn = "Id")
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync<TFirst, TSecond, TReturn>((IDbConnection)cnn, selectSql, func, (object)parameters, transaction, buffered, splitOn, commandTimeout, (CommandType?)null);
+    }
+
+    public static async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TReturn>(this AnyDbConnection cnn, Select query, Func<TFirst, TSecond, TThird, TReturn> func, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?), string splitOn = "Id")
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync<TFirst, TSecond, TThird, TReturn>((IDbConnection)cnn, selectSql, func, (object)parameters, transaction, buffered, splitOn, commandTimeout, (CommandType?)null);
+    }
+
+    public static async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(this AnyDbConnection cnn, Select query, Func<TFirst, TSecond, TThird, TFourth, TReturn> func, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?), string splitOn = "Id")
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>((IDbConnection)cnn, selectSql, func, (object)parameters, transaction, buffered, splitOn, commandTimeout, (CommandType?)null);
+    }
+
+    public static async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(this AnyDbConnection cnn, Select query, Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> func, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?), string splitOn = "Id")
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>((IDbConnection)cnn, selectSql, func, (object)parameters, transaction, buffered, splitOn, commandTimeout, (CommandType?)null);
+    }
+
+    public static async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(this AnyDbConnection cnn, Select query, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> func, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?), string splitOn = "Id")
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>((IDbConnection)cnn, selectSql, func, (object)parameters, transaction, buffered, splitOn, commandTimeout, (CommandType?)null);
+    }
+
+    public static async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(this AnyDbConnection cnn, Select query, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> func, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?), string splitOn = "Id")
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>((IDbConnection)cnn, selectSql, func, (object)parameters, transaction, buffered, splitOn, commandTimeout, (CommandType?)null);
+    }
+
+    public static async Task<IEnumerable<T>> QueryAsync<T>(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync<T>((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<IEnumerable<object>> QueryAsync(this AnyDbConnection cnn, Type type, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync((IDbConnection)cnn, type, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<IEnumerable<dynamic>> QueryAsync(this AnyDbConnection cnn, Select query, object param = null, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryAsync((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static int QueryTotalCount(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string sql = GetRowCountSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return cnn.ExecuteScalar<int>(sql, param: parameters, transaction: transaction, commandTimeout: commandTimeout, commandType: (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<int> QueryTotalCountAsync(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string sql = GetRowCountSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await cnn.ExecuteScalarAsync<int>(sql, param: parameters, transaction: transaction, commandTimeout: commandTimeout, commandType: (CommandType?)CommandType.Text);
+    }
+
+    public static IEnumerable<T> QueryPage<T>(this AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount, MoreDataFlag flag, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?))
+    {
+      if (flag == null)
+      {
+        throw new ArgumentNullException("flag");
+      }
+      string pageSql = GetPageSql(cnn, query, pageIndex, pageSize, totalRowCount);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      flag.HasMoreData = (totalRowCount > GetRowCount(pageIndex, pageSize));
+      return SqlMapper.Query<T>((IDbConnection)cnn, pageSql, (object)parameters, transaction, buffered, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<IEnumerable<T>> QueryPageAsync<T>(this AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount, MoreDataFlag flag, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?))
+    {
+      string pageSql = GetPageSql(cnn, query, pageIndex, pageSize, totalRowCount);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      flag.HasMoreData = (totalRowCount > GetRowCount(pageIndex, pageSize));
+      return await SqlMapper.QueryAsync<T>((IDbConnection)cnn, pageSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<IEnumerable<dynamic>> QueryPageAsync(this AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount, MoreDataFlag flag, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?))
+    {
+      if (flag == null)
+      {
+        throw new ArgumentNullException("flag");
+      }
+      string pageSql = GetPageSql(cnn, query, pageIndex, pageSize, totalRowCount);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      flag.HasMoreData = (totalRowCount > GetRowCount(pageIndex, pageSize));
+      return await SqlMapper.QueryAsync((IDbConnection)cnn, pageSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
     #endregion Query
 
     #region ExecuteReader
@@ -208,6 +448,20 @@ namespace Dapper
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.ExecuteReader(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
+
+    //===
+
+    public static async Task<IDataReader> ExecuteReaderAsync(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.ExecuteReaderAsync((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
     #endregion ExecuteReader
 
     #region MyRegion
@@ -230,6 +484,30 @@ namespace Dapper
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.ExecuteScalar(sql, parameters, transaction, commandTimeout, CommandType.Text);
+    }
+
+    //===
+
+    public static async Task<T> ExecuteScalarAsync<T>(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.ExecuteScalarAsync<T>((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<object> ExecuteScalarAsync(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.ExecuteScalarAsync((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
     }
 
     #endregion
@@ -262,6 +540,42 @@ namespace Dapper
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirst<T>(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
+
+    //===
+
+    public static async Task<dynamic> QueryFirstAsync(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?), CommandType? commandType = default(CommandType?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryFirstAsync((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<object> QueryFirstAsync(this AnyDbConnection cnn, Type type, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryFirstAsync((IDbConnection)cnn, type, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<T> QueryFirstAsync<T>(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryFirstAsync<T>((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
     #endregion QueryFirst
 
     #region QueryFirstOrDefault
@@ -295,6 +609,42 @@ namespace Dapper
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       return cnn.QueryFirstOrDefault(type, sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
+
+    //===
+
+    public static async Task<dynamic> QueryFirstOrDefaultAsync(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryFirstOrDefaultAsync((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<T> QueryFirstOrDefaultAsync<T>(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryFirstOrDefaultAsync<T>((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
+    public static async Task<object> QueryFirstOrDefaultAsync(this AnyDbConnection cnn, Type type, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
+    {
+      string selectSql = GetSelectSql(cnn, query);
+      if (!commandTimeout.HasValue)
+      {
+        commandTimeout = cnn.DefaultCommandTimeout;
+      }
+      DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+      return await SqlMapper.QueryFirstOrDefaultAsync((IDbConnection)cnn, type, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
+    }
+
     #endregion QueryFirstOrDefault
   }
 }

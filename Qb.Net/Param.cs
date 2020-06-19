@@ -9,16 +9,20 @@ namespace Viten.QueryBuilder
   /// <summary>Класс параметра команды</summary>
   public class Param 
   {
-    /// <summary>Конструктор</summary>
-    internal Param()
+    public Param()
     {
-      this.DbType = System.Data.DbType.String;
-      this.Size = 0;
-      this.Scale = 0;
-      this.Precision = 0;
-      this.IsNullable = false;
-      this.Direction = ParameterDirection.Input;
+
     }
+    /// <summary>Конструктор</summary>
+    //internal Param()
+    //{
+    //  this.DbType = System.Data.DbType.String;
+    //  this.Size = 0;
+    //  this.Scale = 0;
+    //  this.Precision = 0;
+    //  this.IsNullable = false;
+    //  this.Direction = ParameterDirection.Input;
+    //}
     /// <summary>Возвращает или задает имя объекта</summary>
     public string Name { get; set; }
     
