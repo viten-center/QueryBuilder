@@ -176,6 +176,9 @@ namespace Viten.QueryBuilder.Test
     [Fact]
     public void Test()
     {
+      string str = System.IO.File.ReadAllText("select.json");
+      SelectQuery selectQuery = JsonConvert.DeserializeObject<SelectQuery>(str);
+
       for (int i = 0; i < queryes.Length; i++)
       {
         string line = lines[i];

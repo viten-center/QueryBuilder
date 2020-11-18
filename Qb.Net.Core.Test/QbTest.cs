@@ -23,6 +23,10 @@ namespace Viten.QueryBuilder.Test
       t.TestDelete();
     }
 
+    public void RestSerialization()
+    {
+    }
+
     [Fact]
     public void TestJoin()
     {
@@ -34,11 +38,13 @@ namespace Viten.QueryBuilder.Test
 
       sel = Qb.Select("a").From("lt").Join(JoinType.Left, lt, rt, l);
     }
+
     [Fact]
     public void TestJoinCond()
     {
       JoinCond j = JoinCond.Fields("a");
-     }
+    }
+
     [Fact]
     public void TestCond()
     {

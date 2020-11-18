@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System;
 using Viten.QueryBuilder.Data.AnyDb;
 using Dapper;
 using System.Threading.Tasks;
@@ -10,15 +10,26 @@ namespace Viten.QueryBuilder.Test
 {
   class DapperTest
   {
+    class Annonce : IAnyDbAnnouncer
+    {
+      public bool Enabled => true;
+
+      public void Announce(string message)
+      {
+        Console.WriteLine(message);
+      }
+    }
     AnyDbFactory _factory;
     private DapperTest()
     {
-      _factory = new AnyDbFactory(new PgDbSetting());
+      _factory = new AnyDbFactory(new PgDbSetting(), new Annonce());
     }
     internal static void TestAll()
     {
       DapperTest t = new DapperTest();
       t.InitDb();
+      t.SelectTest();
+      t.GetPageSqlTest();
       t.ExecuteAsyncTest();
     }
 
@@ -48,12 +59,28 @@ CREATE TABLE public.customer (
       }
     }
 
+
     IEnumerable<Customer> GetAll(AnyDbConnection con)
     {
       Select sel = Qb.Select("*").From("customer");
       return con.Query<Customer>(sel);
     }
 
+    public void SelectTest()
+    {
+      Select sel = Qb.Select("*")
+        .From("customer").OrderBy("id");
+      using(AnyDbConnection con = _factory.OpenConnection())
+      {
+        System.Data.IDataReader dataReader = con.ExecuteReader(sel);
+      }
+    }
+    public void GetPageSqlTest()
+    {
+      Select sel = Qb.Select("*")
+        .From("customer").OrderBy("id");
+      string sql = _factory.GetSql(sel, 2, 10, int.MaxValue);
+    }
     public void ExecuteAsyncTest()
     {
       using (AnyDbConnection con = _factory.OpenConnection())

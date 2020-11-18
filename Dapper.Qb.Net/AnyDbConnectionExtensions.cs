@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Viten.QueryBuilder;
 using Viten.QueryBuilder.Data.AnyDb;
@@ -91,6 +92,7 @@ namespace Dapper
       if (!commandTimeout.HasValue)
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
+
       return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
 
@@ -112,9 +114,12 @@ namespace Dapper
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       bool returnIdentity = !string.IsNullOrEmpty(query.Query.IdentityField);
-      if (!returnIdentity)
-        return Convert.ToInt64(cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text));
-      return Convert.ToInt64(cnn.ExecuteScalar(sql, parameters, transaction, commandTimeout, CommandType.Text));
+      using (SqlStopwatch sw = new SqlStopwatch(cnn, sql))
+      {
+        if (!returnIdentity)
+          return Convert.ToInt64(cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text));
+        return Convert.ToInt64(cnn.ExecuteScalar(sql, parameters, transaction, commandTimeout, CommandType.Text));
+      }
     }
 
     public static int Execute(this AnyDbConnection cnn, InsertSelect query, IDbTransaction transaction = null,
@@ -124,7 +129,10 @@ namespace Dapper
       if (!commandTimeout.HasValue)
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-      return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
+      using (SqlStopwatch sw = new SqlStopwatch(cnn, sql))
+      {
+        return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
+      }
     }
 
     //===
@@ -187,7 +195,7 @@ namespace Dapper
       if (!commandTimeout.HasValue)
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-      return cnn.Query<TFirst, TSecond, TReturn>(sql, func, parameters, transaction, buffered,  commandTimeout: commandTimeout, splitOn: splitOn);
+      return cnn.Query<TFirst, TSecond, TReturn>(sql, func, parameters, transaction, buffered, commandTimeout: commandTimeout, splitOn: splitOn);
     }
 
     public static IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TReturn>(this AnyDbConnection cnn, Select query, Func<TFirst, TSecond, TThird, TReturn> func, IDbTransaction transaction = null,
@@ -647,4 +655,5 @@ namespace Dapper
 
     #endregion QueryFirstOrDefault
   }
+
 }

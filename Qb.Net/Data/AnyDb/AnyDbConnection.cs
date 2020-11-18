@@ -18,6 +18,10 @@ namespace Viten.QueryBuilder.Data.AnyDb
       DatabaseProvider = databaseProvider;
     }
 
+    public IAnyDbAnnouncer Announcer
+    {
+      get { return _announcer; }
+    }
     protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
     {
       return _connection.BeginTransaction(isolationLevel);
@@ -80,7 +84,7 @@ namespace Viten.QueryBuilder.Data.AnyDb
     public new AnyDbCommand CreateCommand()
     {
       AnyDbCommand retVal =
-        new AnyDbCommand(this, _connection.CreateCommand(), _announcer)
+        new AnyDbCommand(this, _connection.CreateCommand())
         {
           CommandTimeout = DefaultCommandTimeout
         };
@@ -90,6 +94,14 @@ namespace Viten.QueryBuilder.Data.AnyDb
     public int DefaultCommandTimeout
     {
       get { return _factory.AnyDbSetting.CommandTimeout; }
+    }
+
+    public AnyDbFactory Factory
+    {
+      get
+      {
+        return _factory;
+      }
     }
   }
 }

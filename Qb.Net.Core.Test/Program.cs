@@ -24,7 +24,7 @@ namespace Viten.QueryBuilder.Test
       {
         Dapper.AnyDbConnectionInitialiser.Initialise();
 
-        SerializationTest.TestAll();
+        //SerializationTest.TestAll();
         QbTest.TestAll();
         DapperTest.TestAll();
 

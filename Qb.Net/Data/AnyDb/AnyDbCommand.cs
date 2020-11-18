@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Viten.QueryBuilder.Renderer;
@@ -10,15 +11,13 @@ namespace Viten.QueryBuilder.Data.AnyDb
 {
   public sealed class AnyDbCommand : DbCommand
   {
-    private IAnyDbAnnouncer _announcer;
     private AnyDbConnection _anyConnection;
     private readonly DbCommand _dbCommand;
 
-    internal AnyDbCommand(AnyDbConnection anyConnection, DbCommand command, IAnyDbAnnouncer announcer)
+    internal AnyDbCommand(AnyDbConnection anyConnection, DbCommand command)
     {
       if (anyConnection == null) throw new ArgumentNullException(nameof(anyConnection));
       _anyConnection = anyConnection;
-      _announcer = announcer;
       _dbCommand = command;
     }
 
@@ -100,9 +99,10 @@ namespace Viten.QueryBuilder.Data.AnyDb
 
     public new DbDataReader ExecuteReader(CommandBehavior behavior)
     {
-      if (_announcer != null && _announcer.Enabled)
-        _announcer?.Announce(GetAnnounce(_dbCommand));
-      return _dbCommand.ExecuteReader(behavior);
+      using (SqlStopwatch sw = new SqlStopwatch(this))
+      {
+        return _dbCommand.ExecuteReader(behavior);
+      }
     }
 
     public new DbDataReader ExecuteReader()
@@ -128,9 +128,10 @@ namespace Viten.QueryBuilder.Data.AnyDb
     #region ExecuteNonQuery
     public override int ExecuteNonQuery()
     {
-      if (_announcer != null && _announcer.Enabled)
-        _announcer?.Announce(GetAnnounce(_dbCommand));
-      return _dbCommand.ExecuteNonQuery();
+      using (SqlStopwatch sw = new SqlStopwatch(this))
+      {
+        return _dbCommand.ExecuteNonQuery();
+      }
     }
 
     public int ExecuteNonQuery(Delete query)
@@ -139,9 +140,11 @@ namespace Viten.QueryBuilder.Data.AnyDb
       _dbCommand.CommandText = render.RenderDelete(query);
       _dbCommand.CommandType = CommandType.Text;
       FillParameters(_dbCommand, query.Query.CommandParams, render);
-      if (_announcer != null && _announcer.Enabled)
-        _announcer?.Announce(GetAnnounce(_dbCommand));
-      return ExecuteNonQuery();
+
+      using (SqlStopwatch sw = new SqlStopwatch(this))
+      {
+        return ExecuteNonQuery();
+      }
     }
 
     public int ExecuteNonQuery(Update query)
@@ -178,9 +181,17 @@ namespace Viten.QueryBuilder.Data.AnyDb
     #region ExecuteScalar
     public override object ExecuteScalar()
     {
-      if (_announcer != null && _announcer.Enabled)
-        _announcer?.Announce(GetAnnounce(_dbCommand));
-      return _dbCommand.ExecuteScalar();
+      Stopwatch sw = null;
+      if (_anyConnection.Announcer != null)
+        sw = Stopwatch.StartNew();
+      object retVal = _dbCommand.ExecuteScalar();
+      if (sw != null)
+      {
+        sw.Stop();
+        _anyConnection.Announcer?.Announce(GetAnnounce(_dbCommand, sw.Elapsed));
+      }
+      return retVal;
+
     }
 
     public object ExecuteScalar(Select query)
@@ -213,11 +224,13 @@ namespace Viten.QueryBuilder.Data.AnyDb
       }
     }
 
-    static string GetAnnounce(DbCommand cmd)
+    public static string GetAnnounce(DbCommand cmd, TimeSpan elapsed)
     {
+      if (cmd == null)
+        return null;
       StringBuilder sb = new StringBuilder();
       sb.Append(DateTime.Now.ToString("G"));
-      sb.Append(" | SQL: ");
+      sb.Append($" {elapsed.TotalMilliseconds} ms | SQL: ");
 
       sb.Append(cmd.CommandText);
       if (cmd.Parameters.Count > 0)
@@ -234,5 +247,27 @@ namespace Viten.QueryBuilder.Data.AnyDb
       }
       return sb.ToString();
     }
+
+    class SqlStopwatch : IDisposable
+    {
+      AnyDbCommand _cmd;
+      Stopwatch _sw;
+      public SqlStopwatch(AnyDbCommand cmd)
+      {
+        _cmd = cmd;
+        if (_cmd._anyConnection.Announcer != null && _cmd._anyConnection.Announcer.Enabled)
+          _sw = Stopwatch.StartNew();
+      }
+      public void Dispose()
+      {
+        if (_sw != null)
+        {
+          _sw.Stop();
+          string ann = AnyDbCommand.GetAnnounce(_cmd._dbCommand, _sw.Elapsed);
+          _cmd._anyConnection.Announcer.Announce(ann);
+        }
+      }
+    }
+
   }
 }
