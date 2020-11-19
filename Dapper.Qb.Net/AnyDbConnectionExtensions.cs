@@ -114,12 +114,9 @@ namespace Dapper
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
       bool returnIdentity = !string.IsNullOrEmpty(query.Query.IdentityField);
-      using (SqlStopwatch sw = new SqlStopwatch(cnn, sql))
-      {
-        if (!returnIdentity)
-          return Convert.ToInt64(cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text));
-        return Convert.ToInt64(cnn.ExecuteScalar(sql, parameters, transaction, commandTimeout, CommandType.Text));
-      }
+      if (!returnIdentity)
+        return Convert.ToInt64(cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text));
+      return Convert.ToInt64(cnn.ExecuteScalar(sql, parameters, transaction, commandTimeout, CommandType.Text));
     }
 
     public static int Execute(this AnyDbConnection cnn, InsertSelect query, IDbTransaction transaction = null,
@@ -129,10 +126,7 @@ namespace Dapper
       if (!commandTimeout.HasValue)
         commandTimeout = cnn.DefaultCommandTimeout;
       DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-      using (SqlStopwatch sw = new SqlStopwatch(cnn, sql))
-      {
-        return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
-      }
+      return cnn.Execute(sql, parameters, transaction, commandTimeout, CommandType.Text);
     }
 
     //===
