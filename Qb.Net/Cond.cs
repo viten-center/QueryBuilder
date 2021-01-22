@@ -240,7 +240,7 @@ namespace Viten.QueryBuilder
     /// <summary>Операция NotLike</summary>
     public static Cond NotLike(Expr expr1, Expr expr2)
     {
-      return Compare(expr1, expr2, CompCond.Like);
+      return Compare(expr1, expr2, CompCond.NotLike);
     }
 
     /// <summary>Операция NotLike</summary>

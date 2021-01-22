@@ -72,7 +72,8 @@ CREATE TABLE public.customer (
         .From("customer").OrderBy("id");
       using(AnyDbConnection con = _factory.OpenConnection())
       {
-        System.Data.IDataReader dataReader = con.ExecuteReader(sel);
+        var res = con.Query(sel);
+        //System.Data.IDataReader dataReader = con.ExecuteReader(sel);
       }
     }
     public void GetPageSqlTest()
