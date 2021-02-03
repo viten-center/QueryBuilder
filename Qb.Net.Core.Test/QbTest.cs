@@ -11,6 +11,7 @@ namespace Viten.QueryBuilder.Test
     internal static void TestAll()
     {
       QbTest t = new QbTest();
+      t.TestDelete();
       t.TestJoin();
       t.TestJoinCond();
       t.TestCond();
@@ -20,7 +21,7 @@ namespace Viten.QueryBuilder.Test
       t.TestWhere();
       t.TestInsert();
       t.TestUpdate();
-      t.TestDelete();
+      
     }
 
     public void RestSerialization()
@@ -112,6 +113,9 @@ namespace Viten.QueryBuilder.Test
         .Where(Cond.Equal("Id", 20));
       Renderer.SqlServerRenderer renderer = new Renderer.SqlServerRenderer();
       string sql = renderer.RenderDelete(del);
+      del = Qb.Delete("Customers", "nsi")
+        .Where(Cond.Equal("Id", 20));
+      sql = renderer.RenderDelete(del);
     }
 
     [Fact]
@@ -177,11 +181,65 @@ namespace Viten.QueryBuilder.Test
           Column.New("LastName", t),
           Column.New(Expr.IfNull(Expr.Field("sum", t), 0), "total")
         )
-        .From(From.SubQuery(inner, "t"));
+        .From(From.SubQuery(inner, "t"))
+        .Where(Cond.NotLike(Expr.Field("FirstName"), Expr.String("aa$")));
 
       sql = renderer.RenderSelect(sel);
       Renderer.PostgreSqlRenderer pg = new Renderer.PostgreSqlRenderer();
       sql = pg.RenderSelect(sel);
+
+      List<string> grants = new List<string>() { "1.$", "2.$" };
+      List<string> bans = new List<string>() { "3.$", "4.$" };
+
+      string ss = GetSqlDemans(grants, bans);
+
     }
+
+    public static string GetSqlDemans(List<string> grants, List<string> bans)
+    {
+      From d = From.Table("demand", "d", "dem");
+      List<Cond> condGrant = new List<Cond>();
+      List<Cond> condBan = new List<Cond>();
+      foreach (string grant in grants)
+      {
+        condGrant.Add(Cond.Like(Expr.Field(nameof(Demand.OkpCode), d), Expr.String(grant)));
+      }
+      foreach (string ban in bans)
+      {
+        condBan.Add(Cond.NotLike(Expr.Field(nameof(Demand.OkpCode), d), Expr.String(ban)));
+      }
+
+      Logic logicGrant = Logic.Or(condGrant.ToArray());
+      Logic logicBan = Logic.Or(condBan.ToArray());
+
+      Select sel = Qb.Select("*")
+        .From(d);
+      if (condGrant.Count == 0 && condBan.Count == 0)
+        return GetSql(sel);
+      if (condGrant.Count != 0 && condBan.Count != 0)
+      {
+        sel.Where(Logic.And(logicGrant, logicBan));
+        return GetSql(sel);
+      }
+      if (condBan.Count == 0)
+      {
+        sel.Where(Logic.And(logicGrant));
+        return GetSql(sel);
+      }
+      sel.Where(Logic.And(logicBan));
+      return GetSql(sel);
+    }
+
+    static string GetSql(Select sel)
+    {
+      Viten.QueryBuilder.Renderer.PostgreSqlRenderer render = new Viten.QueryBuilder.Renderer.PostgreSqlRenderer();
+      return render.RenderSelect(sel);
+    }
+
   }
+  class Demand
+  {
+    public string OkpCode { get; set; }
+  }
+
 }

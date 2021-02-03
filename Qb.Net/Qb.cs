@@ -59,6 +59,11 @@ namespace Viten.QueryBuilder
       return new Delete(tableName);
     }
 
+    public static Delete Delete(string tableName, string schema)
+    {
+      return new Delete(tableName, schema);
+    }
+
     ///// <summary>Построение команды DELETE</summary>
     ///// <param name="select">SELECT для удаления</param>
     ///// <returns>Описатель команды</returns>

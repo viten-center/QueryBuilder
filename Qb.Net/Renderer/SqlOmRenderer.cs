@@ -970,13 +970,18 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="builder"></param>
 		/// <param name="tableName"></param>
-    protected virtual void Delete(StringBuilder builder, object fromObject, FromTermType fromTermType)
+    protected virtual void Delete(StringBuilder builder, object fromObject, FromTermType fromTermType, string schema)
 		{
 			builder.Append("delete from ");
       switch (fromTermType)
       {
         case FromTermType.Table:
-          Identifier(builder, (string)fromObject);
+					if (!string.IsNullOrEmpty(schema))
+					{
+						Identifier(builder, schema);
+						builder.Append(".");
+					}
+					Identifier(builder, (string)fromObject);
           builder.Append(" ");
           break;
         case FromTermType.SubQueryObj:
@@ -998,7 +1003,7 @@ namespace Viten.QueryBuilder.Renderer
 		{
 			query.Validate();
 			StringBuilder builder = new StringBuilder();
-      Delete(builder, query.FromObject, query.FromType);
+      Delete(builder, query.FromObject, query.FromType, query.Schema);
 			Where(builder, query.WhereClause);
 			WhereClause(builder, query.WhereClause);
 			return builder.ToString();

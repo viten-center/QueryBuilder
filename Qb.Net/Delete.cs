@@ -14,6 +14,11 @@ namespace Viten.QueryBuilder
       Query = new DeleteQuery(tableName);
     }
 
+    internal Delete(string tableName, string schema)
+    {
+      Query = new DeleteQuery(tableName, schema);
+    }
+
     public Delete Where(params Cond[] opers)
     {
       return Where(Logic.And(opers));

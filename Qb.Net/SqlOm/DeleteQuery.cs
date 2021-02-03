@@ -21,7 +21,9 @@ namespace Viten.QueryBuilder.SqlOm
   public class DeleteQuery 
 	{
     object fromObject;
-    FromTermType fromTermType = FromTermType.Table;
+		string schema;
+
+		FromTermType fromTermType = FromTermType.Table;
 		WhereClause whereClause = new WhereClause(WhereRel.And);
 
 		/// <summary>
@@ -39,6 +41,12 @@ namespace Viten.QueryBuilder.SqlOm
       this.fromObject = tableName;
 		}
 
+		public DeleteQuery(string tableName, string schema)
+			:this(tableName)
+    {
+			this.schema = schema;
+    }
+
 		/// <summary>
 		/// Specifies which rows are to be deleted
 		/// </summary>
@@ -47,6 +55,10 @@ namespace Viten.QueryBuilder.SqlOm
 			get { return this.whereClause; }
 		}
 
+		public string Schema
+    {
+      get { return this.schema; }
+    }
 		/// <summary>
 		/// Gets or set the name of a table records are to be deleted from
 		/// </summary>
