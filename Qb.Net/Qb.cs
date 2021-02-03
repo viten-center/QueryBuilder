@@ -82,6 +82,12 @@ namespace Viten.QueryBuilder
     {
       return new Insert(tableName);
     }
+
+    public static Insert Insert(string tableName, string schema)
+    {
+      return new Insert(tableName, schema);
+    }
+
     #endregion Insert
 
     #region InsertSelect
@@ -92,6 +98,12 @@ namespace Viten.QueryBuilder
     {
       return new InsertSelect(tableName);
     }
+
+    public static InsertSelect InsertSelect(string tableName, string schema)
+    {
+      return new InsertSelect(tableName, schema);
+    }
+
     #endregion InsertSelect
 
     #region Update
@@ -102,6 +114,12 @@ namespace Viten.QueryBuilder
     {
       return new Update(tableName);
     }
+
+    public static Update Update(string tableName, string schema)
+    {
+      return new Update(tableName, schema);
+    }
+
     #endregion Update
 
 

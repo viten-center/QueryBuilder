@@ -12,6 +12,9 @@ namespace Viten.QueryBuilder.Test
     {
       QbTest t = new QbTest();
       t.TestDelete();
+      t.TestInsert();
+      t.TestUpdate();
+
       t.TestJoin();
       t.TestJoinCond();
       t.TestCond();
@@ -19,9 +22,6 @@ namespace Viten.QueryBuilder.Test
       t.TestExpr();
       t.TestLogic();
       t.TestWhere();
-      t.TestInsert();
-      t.TestUpdate();
-      
     }
 
     public void RestSerialization()
@@ -92,6 +92,14 @@ namespace Viten.QueryBuilder.Test
         );
       Renderer.SqlServerRenderer renderer = new Renderer.SqlServerRenderer();
       string sql = renderer.RenderInsert(ins);
+
+      ins = Qb.Insert("Customers", "rem")
+      .Values(
+        Value.New("FirstName", "Pavel"),
+        Value.New("LastName", "Pavel")
+      );
+      sql = renderer.RenderInsert(ins);
+
     }
 
     [Fact]
@@ -104,6 +112,14 @@ namespace Viten.QueryBuilder.Test
         .Where(Cond.Equal("FirstName", "Pavel"));
       Renderer.SqlServerRenderer renderer = new Renderer.SqlServerRenderer();
       string sql = renderer.RenderUpdate(upd);
+
+      upd = Qb.Update("Customers", "rem")
+      .Values(
+        Value.New("LastName", "Pavlov")
+      )
+      .Where(Cond.Equal("FirstName", "Pavel"));
+      sql = renderer.RenderUpdate(upd);
+
     }
 
     [Fact]

@@ -35,6 +35,11 @@ namespace Viten.QueryBuilder.SqlOm
     /// </summary>
     public string IdentityField { get; set; }
 
+		string schema;
+		public string Schema
+    {
+      get { return this.schema; }
+    }
     ParamCollection commandParams = new ParamCollection();
 
     /// <summary>Список параметров команды</summary>
@@ -58,7 +63,14 @@ namespace Viten.QueryBuilder.SqlOm
 		{
 			this.TableName = tableName;
 		}
-    /// <summary>
+
+		public InsertQuery(string tableName, string schema)
+			:this(tableName)
+		{
+			this.schema = schema;
+		}
+
+		/// <summary>
 		/// Gets the collection if column-value pairs
 		/// </summary>
 		/// <remarks>

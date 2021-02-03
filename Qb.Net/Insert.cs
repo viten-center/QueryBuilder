@@ -15,6 +15,11 @@ namespace Viten.QueryBuilder
       Query = new InsertQuery(tableName);
     }
 
+    internal Insert(string tableName, string schema)
+    {
+      Query = new InsertQuery(tableName, schema);
+    }
+
     /// <summary>Определение значений полей для вставки</summary>
     public Insert Values(params Value[] values)
     {

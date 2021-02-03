@@ -39,6 +39,8 @@ namespace Viten.QueryBuilder.SqlOm
     /// </summary>
     public string TableName { get; set; }
 
+    public string Schema { get; set; }
+
     /// <summary>
     /// Creates a new UpdateQuery
     /// </summary>
@@ -55,12 +57,17 @@ namespace Viten.QueryBuilder.SqlOm
 			this.TableName = tableName;
 		}
 
+    public UpdateQuery(string tableName, string schema)
+      :this(tableName)
+    {
+      Schema = schema;
+    }
 
 
-		/// <summary>
-		/// Validates UpdateQuery
-		/// </summary>
-		public void Validate()
+    /// <summary>
+    /// Validates UpdateQuery
+    /// </summary>
+    public void Validate()
 		{
 			if (TableName == null)
 				throw new InvalidQueryException("TableName is empty.");

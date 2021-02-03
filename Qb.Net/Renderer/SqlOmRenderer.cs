@@ -824,9 +824,14 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="builder"></param>
 		/// <param name="tableName">Name of the table to be updated</param>
-		protected virtual void Update(StringBuilder builder, string tableName)
+		protected virtual void Update(StringBuilder builder, string tableName, string schema)
 		{
 			builder.Append("update ");
+			if(!string.IsNullOrEmpty(schema))
+      {
+				Identifier(builder, schema);
+				builder.Append(".");
+			}
 			Identifier(builder, tableName);
 			builder.Append(" set ");
 		}
@@ -867,7 +872,7 @@ namespace Viten.QueryBuilder.Renderer
 		{
 			query.Validate();
 			StringBuilder builder = new StringBuilder();
-			Update(builder, query.TableName);
+			Update(builder, query.TableName, query.Schema);
 			UpdateTerms(builder, query.Terms);
 			Where(builder, query.WhereClause);
 			WhereClause(builder, query.WhereClause);
@@ -880,9 +885,14 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="builder"></param>
 		/// <param name="tableName"></param>
-		protected virtual void Insert(StringBuilder builder, string tableName)
+		protected virtual void Insert(StringBuilder builder, string tableName, string schema)
 		{
 			builder.Append("insert into ");
+			if(!string.IsNullOrEmpty(schema ))
+      {
+				Identifier(builder, schema);
+				builder.Append(".");
+      }
 			Identifier(builder, tableName);
 			builder.Append(" ");
 		}
@@ -946,7 +956,7 @@ namespace Viten.QueryBuilder.Renderer
 		{
 			query.Validate();
 			StringBuilder builder = new StringBuilder();
-			Insert(builder, query.TableName);
+			Insert(builder, query.TableName, query.Schema);
 
 			builder.Append("(");
 			InsertColumns(builder, query.Terms);
@@ -960,7 +970,7 @@ namespace Viten.QueryBuilder.Renderer
     {
       query.Validate();
       StringBuilder builder = new StringBuilder();
-      Insert(builder, query.TableName);
+      Insert(builder, query.TableName, query.Schema);
       builder.Append(RenderSelect(query.SelectQuery));
       return builder.ToString();
     }

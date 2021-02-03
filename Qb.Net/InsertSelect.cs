@@ -13,6 +13,12 @@ namespace Viten.QueryBuilder
     {
       Query = new InsertSelectQuery(tableName);
     }
+
+    internal InsertSelect(string tableName, string schema)
+    {
+      Query = new InsertSelectQuery(tableName, schema);
+    }
+
     /// <summary>Определение команды SELECT для вставки</summary>
     /// <param name="select"></param>
     /// <returns></returns>

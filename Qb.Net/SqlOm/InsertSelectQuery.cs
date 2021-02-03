@@ -11,6 +11,7 @@ namespace Viten.QueryBuilder.SqlOm
     /// Gets or set the name of a table to be inserted into
     /// </summary>
     public string TableName { get; set; }
+    public string Schema { get; set; }
 
     /// <summary>Query</summary>
     public SelectQuery SelectQuery { get; set; }
@@ -31,6 +32,11 @@ namespace Viten.QueryBuilder.SqlOm
 			this.TableName = tableName;
 		}
 
+    public InsertSelectQuery(string tableName, string schema)
+      :this(tableName)
+    {
+      this.Schema = schema;
+    }
 
     /// <summary>
     /// Validates InsertQuery

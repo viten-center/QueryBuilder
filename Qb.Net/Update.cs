@@ -15,6 +15,11 @@ namespace Viten.QueryBuilder
       Query = new UpdateQuery(tableName);
     }
 
+    internal Update(string tableName, string schema)
+    {
+      Query = new UpdateQuery(tableName, schema);
+    }
+
     public Update Where(params Cond[] opers)
     {
       return Where(Logic.And(opers));
