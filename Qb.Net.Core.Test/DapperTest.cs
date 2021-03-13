@@ -5,6 +5,7 @@ using Viten.QueryBuilder.Data.AnyDb;
 using Dapper;
 using System.Threading.Tasks;
 using Xunit;
+using System.IO;
 
 namespace Viten.QueryBuilder.Test
 {
@@ -22,7 +23,8 @@ namespace Viten.QueryBuilder.Test
     AnyDbFactory _factory;
     private DapperTest()
     {
-      _factory = new AnyDbFactory(new PgDbSetting(), new Annonce());
+      //_factory = new AnyDbFactory(new PgDbSetting(), new Annonce());
+      _factory = new AnyDbFactory(new SqliteDbSetting(), new Annonce());
     }
     internal static void TestAll()
     {
@@ -35,22 +37,33 @@ namespace Viten.QueryBuilder.Test
 
     void InitDb()
     {
-      PgDbSetting ps = new PgDbSetting();
-
-      Npgsql.NpgsqlConnectionStringBuilder sb = new Npgsql.NpgsqlConnectionStringBuilder(ps.ConnectionString);
-      sb.Database = "postgres";
-      ps.ConnectionString = sb.ToString();
-
-      AnyDbFactory f = new AnyDbFactory(ps);
-      using (AnyDbConnection con = f.OpenConnection())
+      if (_factory.Provider == DatabaseProvider.PostgreSql)
       {
-        con.Execute("drop database if exists qb_test");
-        con.Execute("create database qb_test");
+        PgDbSetting ps = new PgDbSetting();
+
+        Npgsql.NpgsqlConnectionStringBuilder sb = new Npgsql.NpgsqlConnectionStringBuilder(ps.ConnectionString);
+        sb.Database = "postgres";
+        ps.ConnectionString = sb.ToString();
+
+        AnyDbFactory f = new AnyDbFactory(ps);
+        using (AnyDbConnection con = f.OpenConnection())
+        {
+          con.Execute("drop database if exists qb_test");
+          con.Execute("create database qb_test");
+        }
       }
-      using (AnyDbConnection con = _factory.OpenConnection())
+      if (_factory.Provider == DatabaseProvider.SqLite)
+      {
+        Microsoft.Data.Sqlite.SqliteConnectionStringBuilder sb = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder(_factory.ConnectionString);
+        if(File.Exists(sb.DataSource))
+        {
+          File.Delete(sb.DataSource);
+        }
+      }
+        using (AnyDbConnection con = _factory.OpenConnection())
       { 
         con.Execute(@"
-CREATE TABLE public.customer (
+CREATE TABLE customer (
 	id serial NOT NULL,
 	first_name varchar(50) NULL,
 	last_name varchar(50) NULL,

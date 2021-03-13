@@ -36,6 +36,12 @@ namespace Viten.QueryBuilder.Test
     }
   }
 
+  class SqliteDbSetting : IAnyDbSetting
+  {
+    public DatabaseProvider DatabaseProvider { get; set; } = DatabaseProvider.SqLite;
+    public string ConnectionString { get; set; } = "Data Source=test.db";
+    public int CommandTimeout { get; set; } = 30;
+  }
   class PgDbSetting : Data.AnyDb.IAnyDbSetting
   {
     public DatabaseProvider DatabaseProvider { get; set; } = DatabaseProvider.PostgreSql;

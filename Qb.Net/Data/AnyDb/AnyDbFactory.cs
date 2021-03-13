@@ -31,7 +31,11 @@ namespace Viten.QueryBuilder.Data.AnyDb
 
     static AnyDbFactory()
     {
+#if NET451
       _mapProvider[DatabaseProvider.SqLite] = "System.Data.SQLite.SQLiteConnection, System.Data.SQLite";
+#elif NETSTANDARD2_0
+      _mapProvider[DatabaseProvider.SqLite] = "Microsoft.Data.Sqlite.SqliteConnection, Microsoft.Data.Sqlite";
+#endif
       _mapProvider[DatabaseProvider.MySql] = "MySql.Data.MySqlClient.MySqlConnection, MySql.Data";
       _mapProvider[DatabaseProvider.SqlServerCe] = "System.Data.SqlServerCe.SqlCeConnection, System.Data.SqlServerCe";
       _mapProvider[DatabaseProvider.Oracle] = "Oracle.DataAccess.Client.OracleConnection, Oracle.DataAccess";
