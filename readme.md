@@ -3,12 +3,12 @@
 **QueryBuilder** allows you to create queries against a database, describing them as an object, without using tools such as LinqToSql, ORM, etc. and generate their SQL code in the syntax of the DBMS used
 
 ## Supported DBMS
-* MS SQL
-* MS SQL CE
-* SQLite
-* Oracle
-* MySQL
-* PostgreSQL
+* MS SQL (System.Data)
+* MS SQL CE (NET451 System.Data.SqlServerCe)
+* SQLite (NET451 System.Data.SQLite, NETSTANDARD2_0 Microsoft.Data.Sqlite)
+* Oracle (Oracle.DataAccess)
+* MySQL (MySql.Data)
+* PostgreSQL (Npgsql)
 
 ## Examples of working with query objects
 
