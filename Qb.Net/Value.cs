@@ -32,6 +32,12 @@ namespace Viten.QueryBuilder
     }
 
     /// <summary>Значение поля</summary>
+    public static Value New(string fieldName, long val)
+    {
+      return new Value(fieldName, Expr.Constant(DataType.Number, val));
+    }
+
+    /// <summary>Значение поля</summary>
     public static Value New(string fieldName, double val)
     {
       return new Value(fieldName, Expr.Constant(DataType.Number, val));

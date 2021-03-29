@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Viten.QueryBuilder.Data.AnyDb;
 using Viten.QueryBuilder.SqlOm;
 using Xunit;
 
@@ -11,6 +12,7 @@ namespace Viten.QueryBuilder.Test
     internal static void TestAll()
     {
       QbTest t = new QbTest();
+      t.TestLong();
       t.TestDelete();
       t.TestInsert();
       t.TestUpdate();
@@ -28,6 +30,19 @@ namespace Viten.QueryBuilder.Test
     {
     }
 
+    void TestLong()
+    {
+      Select sel = Qb.Select("*")
+        .From("tab")
+        .Where(Cond.Equal("col", DateTime.Now.Ticks));
+      AnyDbFactory factory = new AnyDbFactory(new AnyDbSetting());
+      string sql = factory.GetSql(sel);
+      Update upd = Qb.Update("tab")
+        .Values(
+          Value.New("col", DateTime.Now.Ticks)
+        );
+      sql = factory.GetSql(upd);
+    }
     [Fact]
     public void TestJoin()
     {
