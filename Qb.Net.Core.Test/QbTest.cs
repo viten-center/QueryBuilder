@@ -158,7 +158,7 @@ namespace Viten.QueryBuilder.Test
           Cond.Equal("a", 1),
           Cond.Greater("b", 2)
         );
-      Renderer.SqlServerRenderer renderer = new Renderer.SqlServerRenderer();
+      Renderer.ISqlOmRenderer renderer = new Renderer.SqlServerRenderer();
       string sql = renderer.RenderSelect(sel);
       Assert.Equal("select * from [tab] where (([a] = 1 and [b] > 2))", sql);
 
@@ -224,6 +224,11 @@ namespace Viten.QueryBuilder.Test
 
       string ss = GetSqlDemans(grants, bans);
 
+
+      sel = Qb.Select("*").From("tab").Where(Cond.Like("FirstName", "%abc%"));
+      sql = renderer.RenderSelect(sel);
+      renderer = new Renderer.PostgreSqlRenderer();
+      sql = renderer.RenderSelect(sel);
     }
 
     public static string GetSqlDemans(List<string> grants, List<string> bans)

@@ -26,6 +26,33 @@ namespace Viten.QueryBuilder.Renderer
       return RenderSelect(query, false, 0, query.Top);
     }
 
+    /// <summary>
+    /// Renders a comaprison operator
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="op"></param>
+    protected override void Operator(StringBuilder builder, CompCond op)
+    {
+      if (op == CompCond.Equal)
+        builder.Append("=");
+      else if (op == CompCond.NotEqual)
+        builder.Append("<>");
+      else if (op == CompCond.Greater)
+        builder.Append(">");
+      else if (op == CompCond.Less)
+        builder.Append("<");
+      else if (op == CompCond.LessOrEqual)
+        builder.Append("<=");
+      else if (op == CompCond.GreaterOrEqual)
+        builder.Append(">=");
+      else if (op == CompCond.Like)
+        builder.Append("ilike");
+      else if (op == CompCond.NotLike)
+        builder.Append("not ilike");
+      else
+        throw new InvalidQueryException("Unkown operator: " + op.ToString());
+    }
+
 
     string RenderSelect(SelectQuery query, bool forRowCount, int offset, int limitRows)
     {
