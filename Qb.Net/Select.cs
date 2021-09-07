@@ -11,6 +11,12 @@ namespace Viten.QueryBuilder
   {
     internal SelectQuery Query;
 
+    internal Select(SelectQuery selectQuery)
+    {
+      if (selectQuery == null)
+        throw new ArgumentNullException(nameof(selectQuery));
+      Query = selectQuery;
+    }
     internal Select(params string[] columnsName)
     {
       if (columnsName == null)
@@ -243,5 +249,9 @@ namespace Viten.QueryBuilder
       return this;
     }
 
+    public static explicit operator Select(SelectQuery selectQuery)
+    {
+      return new Select(selectQuery);
+    }
   }
 }
