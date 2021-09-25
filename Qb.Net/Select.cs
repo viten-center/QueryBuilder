@@ -132,6 +132,31 @@ namespace Viten.QueryBuilder
       From right = new From(rightTableName);
       return Join(joinType, left, right, joinCondition);
     }
+    public Select JoinCross(string leftTableName, string rightTableName, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Cross, leftTableName, rightTableName, joinCondition);
+    }
+    public Select JoinFull(string leftTableName, string rightTableName, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Full, leftTableName, rightTableName, joinCondition);
+    }
+    public Select JoinInner(string leftTableName, string rightTableName, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Inner, leftTableName, rightTableName, joinCondition);
+    }
+    public Select JoinLeft(string leftTableName, string rightTableName, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Left, leftTableName, rightTableName, joinCondition);
+    }
+    public Select JoinRight(string leftTableName, string rightTableName, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Right, leftTableName, rightTableName, joinCondition);
+    }
+
+
+
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -149,6 +174,26 @@ namespace Viten.QueryBuilder
       this.Query.FromClause.Join(joinType, leftTable.Term, rightTable.Term, conds.ToArray());
       return this;
     }
+    public Select JoinCross(From leftTable, From rightTable, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Cross, leftTable, rightTable, joinCondition);
+    }
+    public Select JoinFull(From leftTable, From rightTable, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Full, leftTable, rightTable, joinCondition);
+    }
+    public Select JoinInner(From leftTable, From rightTable, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Inner, leftTable, rightTable, joinCondition);
+    }
+    public Select JoinLeft(From leftTable, From rightTable, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Left, leftTable, rightTable, joinCondition);
+    }
+    public Select JoinRight(From leftTable, From rightTable, params JoinCond[] joinCondition)
+    {
+      return Join(JoinType.Right, leftTable, rightTable, joinCondition);
+    }
 
     /// <summary>
     /// 
@@ -165,6 +210,30 @@ namespace Viten.QueryBuilder
       return this;
     }
 
+    public Select JoinInner(From leftTable, From rightTable, Logic where)
+    {
+      return Join(JoinType.Inner, leftTable, rightTable, where);
+    }
+    public Select JoinLeft(From leftTable, From rightTable, Logic where)
+    {
+      return Join(JoinType.Left, leftTable, rightTable, where);
+    }
+    public Select JoinRight(From leftTable, From rightTable, Logic where)
+    {
+      return Join(JoinType.Right, leftTable, rightTable, where);
+    }
+    public Select JoinCross(From leftTable, From rightTable, Logic where)
+    {
+      return Join(JoinType.Cross, leftTable, rightTable, where);
+    }
+    public Select JoinFull(From leftTable, From rightTable, Logic where)
+    {
+      return Join(JoinType.Full, leftTable, rightTable, where);
+    }
+
+
+
+
     /// <summary>
     /// Все условия будут объеденены через AND
     /// </summary>
@@ -172,6 +241,28 @@ namespace Viten.QueryBuilder
     {
       return Join(joinType, leftTable, rightTable, Logic.And(opers));
     }
+    public Select JoinCross(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    {
+      return Join(JoinType.Cross, leftTable, rightTable, Logic.And(opers));
+    }
+    public Select JoinFull(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    {
+      return Join(JoinType.Full, leftTable, rightTable, Logic.And(opers));
+    }
+    public Select JoinInner(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    {
+      return Join(JoinType.Inner, leftTable, rightTable, Logic.And(opers));
+    }
+    public Select JoinLeft(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    {
+      return Join(JoinType.Left, leftTable, rightTable, Logic.And(opers));
+    }
+    public Select JoinRight(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    {
+      return Join(JoinType.Right, leftTable, rightTable, Logic.And(opers));
+    }
+
+
 
     /// <summary>
     /// Все условия будут объеденены через AND

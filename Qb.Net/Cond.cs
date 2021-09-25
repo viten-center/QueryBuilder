@@ -624,6 +624,14 @@ namespace Viten.QueryBuilder
       return term;
     }
 
+    public static Cond In(Expr expr, params long[] values)
+    {
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.Num(values[i]));
+      return Cond.In(expr, col);
+    }
+
     public static Cond In(Expr expr, params int[] values)
     {
       List<Constant> col = new List<Constant>();
@@ -678,48 +686,138 @@ namespace Viten.QueryBuilder
     /// <param name="values">Sub query</param>
     /// <returns></returns>
 
-    public static Cond NotIn(Expr expr, List<Constant> values)
+    public static Cond NotIn(string field, From alias,params int[] values)
     {
-      Cond oper = new Cond();
-      OmConstantCollection col = new OmConstantCollection();
-      for (int i = 0; i < values.Count; i++)
-        col.Add(values[i].Const);
-      oper.Term = WhereTerm.CreateNotIn(expr.Expression, col);
-      return oper;
+      return NotIn(Expr.Field(field, alias), values);
     }
 
-    /// <summary>Операция NotIn</summary>
-    public static Cond NotIn(Expr expr, params Constant[] values)
+    public static Cond NotIn(string field, params int[] values)
     {
-      List<Constant> list = new List<Constant>();
-      if (values != null)
-        list.AddRange(values);
-      return Cond.NotIn(expr, list);
+      return NotIn(Expr.Field(field), values);
     }
 
-    /// <summary>Операция NotIn</summary>
-    public static Cond NotIn(string field, From alias, List<Constant> values)
+    public static Cond NotIn(Expr expr, params int[] values)
     {
-      return Cond.NotIn(Expr.Field(field, alias), values);
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.Num(values[i]));
+      return Cond.In(expr, col);
     }
 
-    /// <summary>Операция NotIn</summary>
-    public static Cond NotIn(string field, List<Constant> values)
+    public static Cond NotIn(string field, From alias, params long[] values)
     {
-      return NotIn(field, null, values);
+      return NotIn(Expr.Field(field, alias), values);
     }
 
-    /// <summary>Операция NotIn</summary>
-    public static Cond NotIn(string field, params Constant[] values)
+    public static Cond NotIn(string field, params long[] values)
     {
-      return Cond.NotIn(field, null, values);
+      return NotIn(Expr.Field(field), values);
     }
 
-    /// <summary>Операция NotIn</summary>
-    public static Cond NotIn(string field, From alias, params Constant[] values)
+    public static Cond NotIn(Expr expr, params long[] values)
     {
-      return Cond.NotIn(Expr.Field(field, alias), values);
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.Num(values[i]));
+      return Cond.In(expr, col);
     }
+
+    public static Cond NotIn(string field, From alias, params double[] values)
+    {
+      return NotIn(Expr.Field(field, alias), values);
+    }
+
+    public static Cond NotIn(string field, params double[] values)
+    {
+      return NotIn(Expr.Field(field), values);
+    }
+
+    public static Cond NotIn(Expr expr, params double[] values)
+    {
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.Num(values[i]));
+      return Cond.In(expr, col);
+    }
+
+    public static Cond NotIn(string field, From alias, params DateTime[] values)
+    {
+      return NotIn(Expr.Field(field, alias), values);
+    }
+
+    public static Cond NotIn(string field, params DateTime[] values)
+    {
+      return NotIn(Expr.Field(field), values);
+    }
+
+    public static Cond NotIn(Expr expr, params DateTime[] values)
+    {
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.Date(values[i]));
+      return Cond.In(expr, col);
+    }
+
+    public static Cond NotIn(string field, From alias, params string[] values)
+    {
+      return NotIn(Expr.Field(field, alias), values);
+    }
+
+    public static Cond NotIn(string field, params string[] values)
+    {
+      return NotIn(Expr.Field(field), values);
+    }
+
+    public static Cond NotIn(Expr expr, params string[] values)
+    {
+      List<Constant> col = new List<Constant>();
+      for (int i = 0; i < values.Length; i++)
+        col.Add(Constant.String(values[i]));
+      return Cond.In(expr, col);
+    }
+
+    //public static Cond NotIn(Expr expr, List<Constant> values)
+    //{
+    //  Cond oper = new Cond();
+    //  OmConstantCollection col = new OmConstantCollection();
+    //  for (int i = 0; i < values.Count; i++)
+    //    col.Add(values[i].Const);
+    //  oper.Term = WhereTerm.CreateNotIn(expr.Expression, col);
+    //  return oper;
+    //}
+
+    /// <summary>Операция NotIn</summary>
+    //public static Cond NotIn(Expr expr, params Constant[] values)
+    //{
+    //  List<Constant> list = new List<Constant>();
+    //  if (values != null)
+    //    list.AddRange(values);
+    //  return Cond.NotIn(expr, list);
+    //}
+
+    /// <summary>Операция NotIn</summary>
+    //public static Cond NotIn(string field, From alias, List<Constant> values)
+    //{
+    //  return Cond.NotIn(Expr.Field(field, alias), values);
+    //}
+
+    /// <summary>Операция NotIn</summary>
+    //public static Cond NotIn(string field, List<Constant> values)
+    //{
+    //  return NotIn(field, null, values);
+    //}
+
+    /// <summary>Операция NotIn</summary>
+    //public static Cond NotIn(string field, params Constant[] values)
+    //{
+    //  return Cond.NotIn(field, null, values);
+    //}
+
+    /// <summary>Операция NotIn</summary>
+    //public static Cond NotIn(string field, From alias, params Constant[] values)
+    //{
+    //  return Cond.NotIn(Expr.Field(field, alias), values);
+    //}
 
     /// <summary>Операция NotIn</summary>
     public static Cond NotIn(Expr expr, Select subQuery)

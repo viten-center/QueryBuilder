@@ -163,6 +163,16 @@ namespace Viten.QueryBuilder.Test
       Assert.Equal("select * from [tab] where (([a] = 1 and [b] > 2))", sql);
 
       sel = Qb.Select("*")
+        .From("tab")
+        .Where(
+          Cond.NotIn(Expr.Field("a"), 1, 2),
+          Cond.NotIn("a", 1, 2),
+          Cond.NotIn("b", "bb", "bbb"),
+          Cond.NotIn("a", DateTime.Now, DateTime.UtcNow)
+          );
+      sql = renderer.RenderSelect(sel);
+
+      sel = Qb.Select("*")
       .From("tab")
       .Where(Logic.Or(
         Cond.Equal("a", 1),
