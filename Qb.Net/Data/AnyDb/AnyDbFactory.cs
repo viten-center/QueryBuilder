@@ -9,8 +9,8 @@ namespace Viten.QueryBuilder.Data.AnyDb
 {
   public interface IAnyDbFactory
   {
-    string GetSqlRowCount(Select query);
-    string GetSql(Select query, int pageIndex, int pageSize, int totalCount);
+    //string GetSqlRowCount(Select query);
+    //string GetSql(Select query, int pageIndex, int pageSize, int totalCount);
     string GetSql(Select query);
     string GetSql(Update query);
     string GetSql(Delete query);
@@ -37,7 +37,7 @@ namespace Viten.QueryBuilder.Data.AnyDb
       _mapProvider[DatabaseProvider.SqLite] = "Microsoft.Data.Sqlite.SqliteConnection, Microsoft.Data.Sqlite";
 #endif
       _mapProvider[DatabaseProvider.MySql] = "MySql.Data.MySqlClient.MySqlConnection, MySql.Data";
-      _mapProvider[DatabaseProvider.SqlServerCe] = "System.Data.SqlServerCe.SqlCeConnection, System.Data.SqlServerCe";
+      //_mapProvider[DatabaseProvider.SqlServerCe] = "System.Data.SqlServerCe.SqlCeConnection, System.Data.SqlServerCe";
       _mapProvider[DatabaseProvider.Oracle] = "Oracle.DataAccess.Client.OracleConnection, Oracle.DataAccess";
       _mapProvider[DatabaseProvider.PostgreSql] = "Npgsql.NpgsqlConnection, Npgsql";
       _mapProvider[DatabaseProvider.SqlServer] = null;
@@ -46,7 +46,7 @@ namespace Viten.QueryBuilder.Data.AnyDb
       _mapAdapter[DatabaseProvider.SqlServer] = new SqlServerAdapter();
       _mapAdapter[DatabaseProvider.PostgreSql] = new PostgreSqlAdapter();
       _mapAdapter[DatabaseProvider.MySql] = new MySqlAdapter();
-      _mapAdapter[DatabaseProvider.SqlServerCe] = new SqlServerCeAdapter();
+      //_mapAdapter[DatabaseProvider.SqlServerCe] = new SqlServerCeAdapter();
       _mapAdapter[DatabaseProvider.Oracle] = new OracleAdapter();
 
     }
@@ -76,17 +76,17 @@ namespace Viten.QueryBuilder.Data.AnyDb
       AnyDbSetting = anyDbSetting;
     }
 
-    public string GetSqlRowCount(Select query)
-    {
-      ISqlOmRenderer renderer = Qb.CreateRenderer(AnyDbSetting.DatabaseProvider);
-      return renderer.RenderRowCount(query);
-    }
+    //public string GetSqlRowCount(Select query)
+    //{
+    //  ISqlOmRenderer renderer = Qb.CreateRenderer(AnyDbSetting.DatabaseProvider);
+    //  return renderer.RenderRowCount(query);
+    //}
 
-    public string GetSql(Select query, int pageIndex, int pageSize, int totalCount)
-    {
-      ISqlOmRenderer renderer = Qb.CreateRenderer(AnyDbSetting.DatabaseProvider);
-      return renderer.RenderPage(pageIndex, pageSize, totalCount, query);
-    }
+    //public string GetSql(Select query, int pageIndex, int pageSize, int totalCount)
+    //{
+    //  ISqlOmRenderer renderer = Qb.CreateRenderer(AnyDbSetting.DatabaseProvider);
+    //  return renderer.RenderPage(pageIndex, pageSize, totalCount, query);
+    //}
 
     public string GetSql(Select query)
     {

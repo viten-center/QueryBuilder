@@ -12,6 +12,7 @@ namespace Viten.QueryBuilder.Test
     internal static void TestAll()
     {
       QbTest t = new QbTest();
+      t.TestPaging();
       t.TestLong();
       t.TestDelete();
       t.TestInsert();
@@ -26,8 +27,33 @@ namespace Viten.QueryBuilder.Test
       t.TestWhere();
     }
 
-    public void RestSerialization()
+    void TestPaging()
     {
+      Select sel = Qb.Select("*")
+        .From("AE", "ae")
+        .OrderBy("AE_ID")
+        .Page(1, 10);
+
+      Renderer.MySqlRenderer my = new Renderer.MySqlRenderer();
+      string sql = my.RenderSelect(sel);
+      
+
+      From u = From.Table("unit", "u", "nsi");
+      sel = Qb.Select("*")
+        .From(u)
+        .OrderBy("id")
+        .Page(2, 10);
+      Renderer.PostgreSqlRenderer pg = new Renderer.PostgreSqlRenderer();
+      sql = pg.RenderSelect(sel);
+
+      Renderer.SqLiteRenderer lite = new Renderer.SqLiteRenderer();
+      sql = lite.RenderSelect(sel);
+
+      Renderer.SqlServerRenderer ms = new Renderer.SqlServerRenderer();
+      sql = ms.RenderSelect(sel);
+
+      Renderer.OracleRenderer ora = new Renderer.OracleRenderer();
+      sql = ora.RenderSelect(sel);
     }
 
     void TestLong()

@@ -1,5 +1,6 @@
 ﻿using Viten.QueryBuilder.SqlOm;
 using System.Text;
+using Viten.QueryBuilder.Culture;
 
 namespace Viten.QueryBuilder.Renderer
 {
@@ -49,14 +50,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="query">Query definition</param>
 		/// <returns>Generated SQL statement</returns>
-		/// <remarks>MySql 4.1 does not support GroupByWithCube option. If a query has <see cref="SelectQuery.GroupByWithCube"/> set an <see cref="InvalidQueryException"/> exception will be thrown. </remarks>
 		public override string RenderSelect(SelectQuery query)
-		{
-			return RenderSelect(query, false, 0, query.Top);
-		}
-
-
-		string RenderSelect(SelectQuery query, bool forRowCount, int offset, int limitRows)
 		{
 			query.Validate();
 			
@@ -66,10 +60,7 @@ namespace Viten.QueryBuilder.Renderer
 			this.Select(selectBuilder, query.Distinct);
 			
 			//Render select columns
-			if (forRowCount)
-				this.SelectColumn(selectBuilder, new SelectColumn("*", null, "cnt", AggFunc.Count));
-			else
-				this.SelectColumns(selectBuilder, query.Columns);
+			this.SelectColumns(selectBuilder, query.Columns);
 
 			this.FromClause(selectBuilder, query.FromClause, query.TableSpace);
 			
@@ -91,9 +82,20 @@ namespace Viten.QueryBuilder.Renderer
 			this.OrderBy(selectBuilder, query.OrderByTerms);
 			this.OrderByTerms(selectBuilder, query.OrderByTerms);
 
-			if (limitRows > -1)
-				selectBuilder.AppendFormat(" limit {0}, {1}", offset, limitRows);
+			if ((query.PageIndex > -1 || query.PageSize > -1) && query.OrderByTerms.Count == 0)
+			{
+				throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
+			}
 
+			if (query.PageSize > -1)
+			{
+				selectBuilder.AppendFormat(" limit {0}", query.PageSize);
+				if (query.PageIndex > 0)
+				{
+					int offsetRows = query.PageSize * query.PageIndex;
+					selectBuilder.AppendFormat(" offset {0}", offsetRows);
+				}
+			}
 			return selectBuilder.ToString();
 		}
 
@@ -106,16 +108,16 @@ namespace Viten.QueryBuilder.Renderer
 		/// Renders a SQL statement which returns a result set with one row and one cell which contains the number of rows <paramref name="query"/> can generate. 
 		/// The generated statement will work nicely with <see cref="System.Data.IDbCommand.ExecuteScalar"/> method.
 		/// </remarks>
-		public override string RenderRowCount(SelectQuery query)
-		{
-			string baseSql = RenderSelect(query);
+		//public override string RenderRowCount(SelectQuery query)
+		//{
+		//	string baseSql = RenderSelect(query);
 
-			SelectQuery countQuery = new SelectQuery();
-			SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
-			countQuery.Columns.Add(col);
-			countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
-			return RenderSelect(countQuery);
-		}
+		//	SelectQuery countQuery = new SelectQuery();
+		//	SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
+		//	countQuery.Columns.Add(col);
+		//	countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
+		//	return RenderSelect(countQuery);
+		//}
 
 		/// <summary>
 		/// Renders a SELECT statement which a result-set page
@@ -128,9 +130,9 @@ namespace Viten.QueryBuilder.Renderer
 		/// <remarks>
 		/// Parameter <paramref name="totalRowCount"/> is ignored.
 		/// </remarks>
-		public override string RenderPage(int pageIndex, int pageSize, int totalRowCount, SelectQuery query)
-		{
-			return RenderSelect(query, false, pageIndex * pageSize, pageSize);		
-		}
+		//public override string RenderPage(int pageIndex, int pageSize, int totalRowCount, SelectQuery query)
+		//{
+		//	return RenderSelect(query);		
+		//}
   }
 }

@@ -1,12 +1,13 @@
 ﻿using System.Text;
+using Viten.QueryBuilder.Culture;
 using Viten.QueryBuilder.SqlOm;
 
 
 namespace Viten.QueryBuilder.Renderer
 {
-  public class PostgreSqlRenderer: SqlOmRenderer
+  public class PostgreSqlRenderer : SqlOmRenderer
   {
-    public PostgreSqlRenderer() 
+    public PostgreSqlRenderer()
       : base('"', '"')
     {
     }
@@ -19,11 +20,6 @@ namespace Viten.QueryBuilder.Renderer
     public override ISqlOmRenderer CreateNew()
     {
       return new PostgreSqlRenderer();
-    }
-
-    public override string RenderSelect(SelectQuery query)
-    {
-      return RenderSelect(query, false, 0, query.Top);
     }
 
     /// <summary>
@@ -54,7 +50,7 @@ namespace Viten.QueryBuilder.Renderer
     }
 
 
-    string RenderSelect(SelectQuery query, bool forRowCount, int offset, int limitRows)
+    public override string RenderSelect(SelectQuery query)
     {
       query.Validate();
 
@@ -64,10 +60,7 @@ namespace Viten.QueryBuilder.Renderer
       this.Select(selectBuilder, query.Distinct);
 
       //Render select columns
-      if (forRowCount)
-        this.SelectColumn(selectBuilder, new SelectColumn("*", null, "cnt", AggFunc.Count));
-      else
-        this.SelectColumns(selectBuilder, query.Columns);
+      this.SelectColumns(selectBuilder, query.Columns);
 
       this.FromClause(selectBuilder, query.FromClause, query.TableSpace);
 
@@ -77,39 +70,45 @@ namespace Viten.QueryBuilder.Renderer
       this.GroupBy(selectBuilder, query.GroupByTerms);
       this.GroupByTerms(selectBuilder, query.GroupByTerms);
 
-      /*
-      if (query.GroupByWithCube)
-        throw new InvalidQueryException("MySql does not support WITH CUBE modifier.");
-
-      if (query.GroupByWithRollup)
-        selectBuilder.Append(" with rollup");
-      */
-
       this.Having(selectBuilder, query.HavingPhrase);
       this.WhereClause(selectBuilder, query.HavingPhrase);
 
       this.OrderBy(selectBuilder, query.OrderByTerms);
       this.OrderByTerms(selectBuilder, query.OrderByTerms);
 
-      if (limitRows > -1)
+      if ((query.PageIndex > -1 || query.PageSize > -1) && query.OrderByTerms.Count == 0)
       {
-        selectBuilder.AppendFormat(" limit {0}", limitRows);
-        if(offset > 0)
-          selectBuilder.AppendFormat(" offset {0}", offset);
+        throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
+      }
+
+      if (query.PageSize > -1)
+      {
+        selectBuilder.AppendFormat(" limit {0}", query.PageSize);
+        if (query.PageIndex > 0)
+        {
+          int offsetRows = query.PageSize * query.PageIndex;
+          selectBuilder.AppendFormat(" offset {0}", offsetRows);
+        }
       }
       return selectBuilder.ToString();
     }
 
-    public override string RenderRowCount(SelectQuery query)
-    {
-      string baseSql = RenderSelect(query);
+    //public override string RenderRowCount(SelectQuery query)
+    //{
+    //  string baseSql = RenderSelect(query);
 
-      SelectQuery countQuery = new SelectQuery();
-      SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
-      countQuery.Columns.Add(col);
-      countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
-      return RenderSelect(countQuery);
-    }
+    //  SelectQuery countQuery = new SelectQuery();
+    //  SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
+    //  countQuery.Columns.Add(col);
+    //  countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
+    //  return RenderSelect(countQuery);
+    //}
+
+    //public override string RenderPage(int pageIndex, int pageSize, int totalRowCount, SelectQuery query)
+    //{
+    //  //return RenderSelect(query, false, pageIndex * pageSize, pageSize);
+    //  return RenderSelect(query);
+    //}
 
     protected override string GetIdentitySuffix(string identityField)
     {

@@ -35,18 +35,18 @@ namespace Viten.QueryBuilder
         Query.Columns.Add(columns[i].Col);
     }
 
-    bool topCalled = false;
-    /// <summary>Установка параметра Top</summary>
-    public Select Top(int top)
-    {
-      if (topCalled)
-        throw new InvalidQueryException(SR.Err_RepeatTop);
-      if (pageCalled)
-        throw new InvalidQueryException(SR.Err_TopWithPage);
-      this.Query.Top = top;
-      topCalled = true;
-      return this;
-    }
+    //bool topCalled = false;
+    ///// <summary>Установка параметра Top</summary>
+    //public Select Top(int top)
+    //{
+    //  if (topCalled)
+    //    throw new InvalidQueryException(SR.Err_RepeatTop);
+    //  if (pageCalled)
+    //    throw new InvalidQueryException(SR.Err_TopWithPage);
+    //  this.Query.Top = top;
+    //  topCalled = true;
+    //  return this;
+    //}
 
     bool pageCalled = false;
     /// <summary>Установка постраничного просмотра</summary>
@@ -56,8 +56,6 @@ namespace Viten.QueryBuilder
         throw new InvalidQueryException(SR.Err_RepeatPage);
       if (pageIndex < 0 || pageSize < 1)
         throw new InvalidQueryException(SR.Err_InvalidPage);
-      if (topCalled)
-        throw new InvalidQueryException(SR.Err_TopWithPage);
       this.Query.PageIndex = pageIndex;
       this.Query.PageSize = pageSize;
       pageCalled = true;

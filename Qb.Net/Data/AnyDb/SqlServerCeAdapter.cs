@@ -7,6 +7,7 @@ using System.Text;
 
 namespace Viten.QueryBuilder.Data.AnyDb
 {
+  /*
   internal class SqlServerCeAdapter: IDbAdapter
   {
     const string _engineClass = "System.Data.SqlServerCe.SqlCeEngine, System.Data.SqlServerCe";
@@ -47,4 +48,5 @@ namespace Viten.QueryBuilder.Data.AnyDb
         throw new Exception("DatabaseProvider must be DatabaseProvider.SqlServerCe");
     }
   }
+  */
 }
