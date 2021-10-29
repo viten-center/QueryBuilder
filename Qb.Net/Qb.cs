@@ -24,8 +24,8 @@ namespace Viten.QueryBuilder
           return new SqLiteRenderer();
         case DatabaseProvider.SqlServer:
           return new SqlServerRenderer();
-        case DatabaseProvider.SqlServerCe:
-          return new SqlServerCeRenderer();
+        //case DatabaseProvider.SqlServerCe:
+        //  return new SqlServerCeRenderer();
         case DatabaseProvider.PostgreSql:
           return new PostgreSqlRenderer();
         default:

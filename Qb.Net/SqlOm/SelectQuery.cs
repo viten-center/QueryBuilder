@@ -113,7 +113,7 @@ namespace Viten.QueryBuilder.SqlOm
     /// When Top is less then zero, no limitation will apply on the result-set. To limit
     /// the number of rows returned by this query set Top to a positive integer or zero
     /// </remarks>
-    public int Top { get; set; } = -1;
+    //public int Top { get; set; } = -1;
 
     public int PageIndex { get; set; } = -1;
     public int PageSize { get; set; } = -1;
@@ -187,7 +187,8 @@ namespace Viten.QueryBuilder.SqlOm
       newQuery.wherePhrase = wherePhrase.Clone();
       newQuery.fromClause = fromClause.Clone();
 
-      newQuery.Top = Top;
+      newQuery.PageIndex = PageIndex;
+      newQuery.PageSize = PageSize;
       newQuery.GroupByWithRollup = GroupByWithRollup;
       newQuery.GroupByWithCube = GroupByWithCube;
       newQuery.Distinct = Distinct;

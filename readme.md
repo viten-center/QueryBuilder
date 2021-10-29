@@ -4,11 +4,21 @@
 
 ## Supported DBMS
 * MS SQL (System.Data)
-* MS SQL CE (NET451 System.Data.SqlServerCe)
+* MS SQL CE (NET451 System.Data.SqlServerCe). **NOT SUPPORTED IN v 0.20+**
 * SQLite (NET451 System.Data.SQLite, NETSTANDARD2_0 Microsoft.Data.Sqlite)
 * Oracle (Oracle.DataAccess)
 * MySQL (MySql.Data)
 * PostgreSQL (Npgsql)
+
+## Important!
+Since version 0.20:
+* The Select.Top () method is not supported. Use the Select.Page () method
+* MS SQL CE is not supported. 
+* Extension methods is not supported:
+AnyDbConnection.QueryPageAsync(),
+AnyDbConnection.QueryTotalCountAsync(),
+AnyDbConnection.QueryTotalCount(),
+AnyDbConnection.QueryPage().
 
 ## Examples of working with query objects
 
@@ -141,6 +151,24 @@ from
         "c"."FirstName", 
         "c"."LastName" 
 ) "t"
+```
+
+### SELECT PAGE
+
+```csharp
+    From u = From.Table("unit", "u", "nsi");
+    Select sel = Qb.Select("*")
+        .From(u)
+        .OrderBy("id")
+        .Page(2, 10);
+```
+generation (MS SQL)
+```SQL
+select * 
+from nsi.[unit] [u] 
+order by [id] asc 
+offset 20 rows 
+fetch next 10 rows only
 ```
 ### INSERT
 

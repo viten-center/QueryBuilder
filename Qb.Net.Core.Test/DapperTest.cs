@@ -23,8 +23,8 @@ namespace Viten.QueryBuilder.Test
     AnyDbFactory _factory;
     private DapperTest()
     {
-      //_factory = new AnyDbFactory(new PgDbSetting(), new Annonce());
-      _factory = new AnyDbFactory(new SqliteDbSetting(), new Annonce());
+      _factory = new AnyDbFactory(new PgDbSetting(), new Annonce());
+      //_factory = new AnyDbFactory(new SqliteDbSetting(), new Annonce());
     }
     internal static void TestAll()
     {
@@ -69,6 +69,11 @@ CREATE TABLE customer (
 	last_name varchar(50) NULL,
 	CONSTRAINT customer_pk PRIMARY KEY (id)
 );");
+        for(int i = 0; i < 100; i++)
+        {
+          con.Execute($"insert into customer (first_name, last_name) values ('F_{i}', 'L_{i}')");
+        }
+
       }
     }
 
@@ -86,14 +91,19 @@ CREATE TABLE customer (
       using(AnyDbConnection con = _factory.OpenConnection())
       {
         var res = con.Query(sel);
-        //System.Data.IDataReader dataReader = con.ExecuteReader(sel);
+        Assert.Equal(100, res.Count());
       }
     }
     public void GetPageSqlTest()
     {
       Select sel = Qb.Select("*")
-        .From("customer").OrderBy("id");
-      string sql = _factory.GetSql(sel, 2, 10, int.MaxValue);
+        .From("customer").OrderBy("id").Page(1, 10);
+      string sql = _factory.GetSql(sel);
+      using (AnyDbConnection con = _factory.OpenConnection())
+      {
+        var res = con.Query(sel);
+        Assert.Equal(10, res.Count());
+      }
     }
     public void ExecuteAsyncTest()
     {
@@ -105,7 +115,7 @@ CREATE TABLE customer (
             Value.New("last_name", "456")
           );
         con.ExecuteAsync(ins).Wait();
-        Assert.Single(GetAll(con));
+        Assert.Equal(101, GetAll(con).Count());
 
         ins = Qb.Insert("customer")
           .Values(
@@ -113,38 +123,29 @@ CREATE TABLE customer (
             Value.New("last_name", "654")
           );
         con.ExecuteAsync(ins).Wait();
-        Assert.Equal(2, GetAll(con).Count());
+        Assert.Equal(102, GetAll(con).Count());
 
 
-        Select sel_0 = Qb.Select("*").From("customer");
-        int total = con.QueryTotalCountAsync(sel_0).Result;
-        Assert.Equal(2, total);
-        total = con.QueryTotalCount(sel_0);
-        Assert.Equal(2, total);
+        Select sel_0 = Qb.Select("*").From("customer").Page(0, 200);
         sel_0 = sel_0.OrderBy("first_name");
-        MoreDataFlag f = new MoreDataFlag();
-        var page = con.QueryPageAsync(sel_0, 0, 3, total, f).Result;
-        Assert.Equal(2, page.Count());
-        Assert.False(f.HasMoreData);
-        page = con.QueryPage<Customer>(sel_0, 0, 3, total, f);
-        Assert.Equal(2, page.Count());
-        Assert.False(f.HasMoreData);
+        var page = con.QueryAsync(sel_0).Result;
+        Assert.Equal(102, page.Count());
 
         Update upd = Qb.Update("customer")
           .Values(
             Value.New("first_name", "XXX")
           );
         int res = con.ExecuteAsync(upd).Result;
-        Assert.Equal(2, res);
+        Assert.Equal(102, res);
 
         Select sel = Qb.Select("*")
           .From("customer");
         IEnumerable<Customer> en = con.QueryAsync<Customer>(sel).Result;
-        Assert.Equal(2, en.Count());
+        Assert.Equal(102, en.Count());
 
         Delete del = Qb.Delete("customer");
         res = con.ExecuteAsync(del).Result;
-        Assert.Equal(2, res);
+        Assert.Equal(102, res);
       }
     }
       

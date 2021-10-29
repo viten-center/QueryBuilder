@@ -7,11 +7,10 @@ namespace Viten.QueryBuilder
 {
   public enum DatabaseProvider
   {
-    MySql,
-    Oracle,
-    SqLite,
-    SqlServer,
-    SqlServerCe,
-    PostgreSql
+    MySql = 0,
+    Oracle = 1,
+    SqLite = 2,
+    SqlServer = 3,
+    PostgreSql = 5
   }
 }

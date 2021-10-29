@@ -52,7 +52,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// Renders a SQL statement which returns a result set with one row and one cell which contains the number of rows <paramref name="query"/> can generate. 
 		/// The generated statement will work nicely with <see cref="System.Data.IDbCommand.ExecuteScalar"/> method.
 		/// </remarks>
-		string RenderRowCount(SelectQuery query);
+		//string RenderRowCount(SelectQuery query);
 
     /// <summary>
     /// Renders a row count SELECT statement. 
@@ -63,7 +63,7 @@ namespace Viten.QueryBuilder.Renderer
     /// Renders a SQL statement which returns a result set with one row and one cell which contains the number of rows <paramref name="query"/> can generate. 
     /// The generated statement will work nicely with <see cref="System.Data.IDbCommand.ExecuteScalar"/> method.
     /// </remarks>
-    string RenderRowCount(Select query);
+    //string RenderRowCount(Select query);
 
 		/// <summary>
 		/// Renders a paged SELECT statement
@@ -77,7 +77,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// Generating pagination SQL is different on different databases because every database offers different levels of support for such functioanality.
 		/// Some databases (SqlServer 2000) require the programmer to supply the total number of rows to produce a page. If your renderer does not use the totalRowCount parameter, please state so in your implementation documentation.
 		/// </remarks>
-		string RenderPage(int pageIndex, int pageSize, int totalRowCount, SelectQuery query);
+		//string RenderPage(int pageIndex, int pageSize, int totalRowCount, SelectQuery query);
 
     /// <summary>
     /// Renders a paged SELECT statement
@@ -91,7 +91,7 @@ namespace Viten.QueryBuilder.Renderer
     /// Generating pagination SQL is different on different databases because every database offers different levels of support for such functioanality.
     /// Some databases (SqlServer 2000) require the programmer to supply the total number of rows to produce a page. If your renderer does not use the totalRowCount parameter, please state so in your implementation documentation.
     /// </remarks>
-    string RenderPage(int pageIndex, int pageSize, int totalRowCount, Select query);
+    //string RenderPage(int pageIndex, int pageSize, int totalRowCount, Select query);
 
 		/// <summary>
 		/// Renders an UPDATE statement

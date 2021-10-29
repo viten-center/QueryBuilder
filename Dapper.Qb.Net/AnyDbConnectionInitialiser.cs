@@ -30,8 +30,8 @@ namespace Dapper
                 return "sqliteconnection";
               case DatabaseProvider.SqlServer:
                 return "sqlconnection";
-              case DatabaseProvider.SqlServerCe:
-                return "sqlceconnection";
+              //case DatabaseProvider.SqlServerCe:
+              //  return "sqlceconnection";
             }
           }
           return con.GetType().Name.ToLower();

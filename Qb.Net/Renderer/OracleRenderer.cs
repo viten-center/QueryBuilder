@@ -1,5 +1,6 @@
 using Viten.QueryBuilder.SqlOm;
 using System.Text;
+using Viten.QueryBuilder.Culture;
 
 namespace Viten.QueryBuilder.Renderer
 {
@@ -83,23 +84,23 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="query">Query definition</param>
 		/// <returns>Generated SQL statement</returns>
+		//public override string RenderSelect(SelectQuery query)
+		//{
+		//	if (query.Top > -1 && query.OrderByTerms.Count > 0)
+		//	{
+		//		string baseSql = RenderSelect(query, -1);
+
+		//		SelectQuery countQuery = new SelectQuery();
+		//		SelectColumn col = new SelectColumn("*");
+		//		countQuery.Columns.Add(col);
+		//		countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
+		//		return RenderSelect(countQuery, query.Top);
+		//	}
+		//	else
+		//		return RenderSelect(query, query.Top);
+		//}
+
 		public override string RenderSelect(SelectQuery query)
-		{
-			if (query.Top > -1 && query.OrderByTerms.Count > 0)
-			{
-				string baseSql = RenderSelect(query, -1);
-
-				SelectQuery countQuery = new SelectQuery();
-				SelectColumn col = new SelectColumn("*");
-				countQuery.Columns.Add(col);
-				countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
-				return RenderSelect(countQuery, query.Top);
-			}
-			else
-				return RenderSelect(query, query.Top);
-		}
-
-		string RenderSelect(SelectQuery query, int limitRows)
 		{
 			query.Validate();
 			
@@ -115,8 +116,6 @@ namespace Viten.QueryBuilder.Renderer
 
 			WhereClause fullWhereClause = new WhereClause(WhereRel.And);
 			fullWhereClause.SubClauses.Add(query.WherePhrase);
-			if (limitRows > -1)
-				fullWhereClause.Terms.Add(WhereTerm.CreateCompare(OmExpression.PseudoField("rownum"), OmExpression.Number(limitRows), CompCond.LessOrEqual));
 
 			this.Where(selectBuilder, fullWhereClause);
 			this.WhereClause(selectBuilder, fullWhereClause);
@@ -137,6 +136,18 @@ namespace Viten.QueryBuilder.Renderer
 			this.OrderBy(selectBuilder, query.OrderByTerms);
 			this.OrderByTerms(selectBuilder, query.OrderByTerms);
 
+			if ((query.PageIndex > -1 || query.PageSize > -1) && query.OrderByTerms.Count == 0)
+			{
+				throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
+			}
+
+			if (query.PageSize > -1 || query.PageIndex > 0)
+			{
+				int offsetRows = query.PageSize * query.PageIndex;
+				selectBuilder.AppendFormat(" offset {0} rows fetch next {1} rows only", offsetRows, query.PageSize);
+			}
+
+
 			return selectBuilder.ToString();
 		}
 
@@ -149,15 +160,15 @@ namespace Viten.QueryBuilder.Renderer
 		/// Renders a SQL statement which returns a result set with one row and one cell which contains the number of rows <paramref name="query"/> can generate. 
 		/// The generated statement will work nicely with <see cref="System.Data.IDbCommand.ExecuteScalar"/> method.
 		/// </remarks>
-		public override string RenderRowCount(SelectQuery query)
-		{
-			string baseSql = RenderSelect(query, -1);
+		//public override string RenderRowCount(SelectQuery query)
+  //  {
+  //    string baseSql = RenderSelect(query);
 
-			SelectQuery countQuery = new SelectQuery();
-			SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
-			countQuery.Columns.Add(col);
-			countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
-			return RenderSelect(countQuery);
-		}
+  //    SelectQuery countQuery = new SelectQuery();
+  //    SelectColumn col = new SelectColumn("*", null, "cnt", AggFunc.Count);
+  //    countQuery.Columns.Add(col);
+  //    countQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "t");
+  //    return RenderSelect(countQuery);
+  //  }
 	}
 }

@@ -109,7 +109,7 @@ namespace Viten.QueryBuilder.Renderer
 		/// </summary>
 		/// <param name="query">Query definition to count rows for</param>
 		/// <returns>Generated SQL statement</returns>
-		public abstract string RenderRowCount(SelectQuery query);
+		//public abstract string RenderRowCount(SelectQuery query);
 
     protected abstract string GetIdentitySuffix(string identityField);
 
@@ -192,56 +192,56 @@ namespace Viten.QueryBuilder.Renderer
 		/// To generate pagination SQL you must supply <paramref name="totalRowCount"/>.
 		/// To aquire the total number of rows use the <see cref="RenderRowCount"/> method.
 		/// </remarks>
-		public virtual string RenderPage(int pageIndex, int pageSize, int totalRowCount, SelectQuery query)
-		{
+		//public virtual string RenderPage(int pageIndex, int pageSize, int totalRowCount, SelectQuery query)
+		//{
 
-			if (query.OrderByTerms.Count == 0)
-				throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
+		//	if (query.OrderByTerms.Count == 0)
+		//		throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
 
-			int currentPageSize = pageSize;
-			if (pageSize * (pageIndex + 1) > totalRowCount)
-				currentPageSize = totalRowCount - pageSize * pageIndex;
-			if (currentPageSize < 0)
-				currentPageSize = 0;
+		//	int currentPageSize = pageSize;
+		//	if (pageSize * (pageIndex + 1) > totalRowCount)
+		//		currentPageSize = totalRowCount - pageSize * pageIndex;
+		//	if (currentPageSize < 0)
+		//		currentPageSize = 0;
 				
-			SelectQuery baseQuery = query.Clone();
+		//	SelectQuery baseQuery = query.Clone();
 			
-			baseQuery.Top = (pageIndex + 1) * pageSize;
-			//baseQuery.Columns.Add(new SelectColumn("*"));
-			foreach(OrderByTerm term in baseQuery.OrderByTerms)
-				baseQuery.Columns.Add(new SelectColumn(term.Field, term.Table, FormatSortFieldName(term.Field), AggFunc.None));
+		//	baseQuery.Top = (pageIndex + 1) * pageSize;
+		//	//baseQuery.Columns.Add(new SelectColumn("*"));
+		//	foreach(OrderByTerm term in baseQuery.OrderByTerms)
+		//		baseQuery.Columns.Add(new SelectColumn(term.Field, term.Table, FormatSortFieldName(term.Field), AggFunc.None));
 
-			string baseSql = RenderSelect(baseQuery);
+		//	string baseSql = RenderSelect(baseQuery);
 			
-			SelectQuery reverseQuery = new SelectQuery();
-			reverseQuery.Columns.Add(new SelectColumn("*"));
-			reverseQuery.Top = currentPageSize;
-			reverseQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "r");
-			ApplyOrderBy(baseQuery.OrderByTerms, reverseQuery, false, reverseQuery.FromClause.BaseTable);
-			string reverseSql = RenderSelect(reverseQuery);
+		//	SelectQuery reverseQuery = new SelectQuery();
+		//	reverseQuery.Columns.Add(new SelectColumn("*"));
+		//	reverseQuery.Top = currentPageSize;
+		//	reverseQuery.FromClause.BaseTable = FromTerm.SubQuery(baseSql, "r");
+		//	ApplyOrderBy(baseQuery.OrderByTerms, reverseQuery, false, reverseQuery.FromClause.BaseTable);
+		//	string reverseSql = RenderSelect(reverseQuery);
 
-			SelectQuery forwardQuery = new SelectQuery();
-			foreach(SelectColumn originalCol in query.Columns)
-			{
-				FromTerm forwardTable = FromTerm.TermRef("f");
-				OmExpression expr = null;
-				if (originalCol.ColumnAlias != null)
-					expr = OmExpression.Field(originalCol.ColumnAlias, forwardTable);
-				else if (	originalCol.Expression.Type == OmExpressionType.Field || 
-					originalCol.Expression.Type == OmExpressionType.Constant)
-				{
-					expr = OmExpression.Field((string)originalCol.Expression.Value, forwardTable);
-				}
+		//	SelectQuery forwardQuery = new SelectQuery();
+		//	foreach(SelectColumn originalCol in query.Columns)
+		//	{
+		//		FromTerm forwardTable = FromTerm.TermRef("f");
+		//		OmExpression expr = null;
+		//		if (originalCol.ColumnAlias != null)
+		//			expr = OmExpression.Field(originalCol.ColumnAlias, forwardTable);
+		//		else if (	originalCol.Expression.Type == OmExpressionType.Field || 
+		//			originalCol.Expression.Type == OmExpressionType.Constant)
+		//		{
+		//			expr = OmExpression.Field((string)originalCol.Expression.Value, forwardTable);
+		//		}
 
-				if (expr != null)
-					forwardQuery.Columns.Add(new SelectColumn(expr, originalCol.ColumnAlias));
-			}
+		//		if (expr != null)
+		//			forwardQuery.Columns.Add(new SelectColumn(expr, originalCol.ColumnAlias));
+		//	}
 
-			forwardQuery.FromClause.BaseTable = FromTerm.SubQuery(reverseSql, "f");
-			ApplyOrderBy(baseQuery.OrderByTerms, forwardQuery, true, forwardQuery.FromClause.BaseTable);
+		//	forwardQuery.FromClause.BaseTable = FromTerm.SubQuery(reverseSql, "f");
+		//	ApplyOrderBy(baseQuery.OrderByTerms, forwardQuery, true, forwardQuery.FromClause.BaseTable);
 
-			return RenderSelect(forwardQuery);
-		}
+		//	return RenderSelect(forwardQuery);
+		//}
 
 		string FormatSortFieldName(string fieldName)
 		{
@@ -1097,15 +1097,15 @@ namespace Viten.QueryBuilder.Renderer
       return RenderSelect(Qb.GetQueryObject(query));
     }
 
-    public string RenderRowCount(Select query)
-    {
-      return RenderRowCount(Qb.GetQueryObject(query));
-    }
+    //public string RenderRowCount(Select query)
+    //{
+    //  return RenderRowCount(Qb.GetQueryObject(query));
+    //}
 
-    public string RenderPage(int pageIndex, int pageSize, int totalRowCount, Select query)
-    {
-      return RenderPage(pageIndex, pageSize, totalRowCount, Qb.GetQueryObject(query));
-    }
+    //public string RenderPage(int pageIndex, int pageSize, int totalRowCount, Select query)
+    //{
+    //  return RenderPage(pageIndex, pageSize, totalRowCount, Qb.GetQueryObject(query));
+    //}
 
     public string RenderUpdate(Update query)
     {
