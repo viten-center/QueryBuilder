@@ -239,23 +239,23 @@ namespace Viten.QueryBuilder
     {
       return Join(joinType, leftTable, rightTable, Logic.And(opers));
     }
-    public Select JoinCross(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    public Select JoinCross(From leftTable, From rightTable, params Cond[] opers)
     {
       return Join(JoinType.Cross, leftTable, rightTable, Logic.And(opers));
     }
-    public Select JoinFull(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    public Select JoinFull(From leftTable, From rightTable, params Cond[] opers)
     {
       return Join(JoinType.Full, leftTable, rightTable, Logic.And(opers));
     }
-    public Select JoinInner(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    public Select JoinInner(From leftTable, From rightTable, params Cond[] opers)
     {
       return Join(JoinType.Inner, leftTable, rightTable, Logic.And(opers));
     }
-    public Select JoinLeft(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    public Select JoinLeft(From leftTable, From rightTable, params Cond[] opers)
     {
       return Join(JoinType.Left, leftTable, rightTable, Logic.And(opers));
     }
-    public Select JoinRight(JoinType joinType, From leftTable, From rightTable, params Cond[] opers)
+    public Select JoinRight(From leftTable, From rightTable, params Cond[] opers)
     {
       return Join(JoinType.Right, leftTable, rightTable, Logic.And(opers));
     }
