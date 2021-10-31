@@ -4,14 +4,14 @@
 
 ## Supported DBMS
 * MS SQL (System.Data)
-* MS SQL CE (NET451 System.Data.SqlServerCe). **NOT SUPPORTED IN v 0.20+**
+* MS SQL CE (NET451 System.Data.SqlServerCe). **NOT SUPPORTED IN v 0.20.0+**
 * SQLite (NET451 System.Data.SQLite, NETSTANDARD2_0 Microsoft.Data.Sqlite)
 * Oracle (Oracle.DataAccess)
 * MySQL (MySql.Data)
 * PostgreSQL (Npgsql)
 
 ## Important!
-Since version 0.20:
+Since version 0.20.0:
 * The Select.Top () method is not supported. Use the Select.Page () method
 * MS SQL CE is not supported. 
 * Extension methods is not supported:
