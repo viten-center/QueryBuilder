@@ -32,13 +32,12 @@ export class SelectQuery /*implements ISelectQuery*/ {
   OrderByTerms = new Array<OrderByTerm>();
   GroupByTerms = new Array<GroupByTerm>();
   CommandParams = new Array<Param>();
-  Top: number = -1;
-  PageNum: number = -1;
-  PageSize: number = -1;
-  GroupByWithRollup: boolean;
-  GroupByWithCube: boolean;
-  Distinct: boolean;
-  TableSpace: string;
+  Offset: number = -1;
+  Limit: number = -1;
+  GroupByWithRollup: boolean = false;
+  GroupByWithCube: boolean = false;
+  Distinct: boolean = false;
+  TableSpace: string | undefined = undefined;
 
   Validate() {
     if (this.Columns.length == 0) {

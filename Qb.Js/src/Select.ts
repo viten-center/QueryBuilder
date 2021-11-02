@@ -43,14 +43,9 @@ export class Select /*implements ISelect*/ {
       this.Query.Columns.push(columns[i]["Col"]);
   }
 
-  Top(top: number): Select {
-    this.Query.Top = top;
-    return this;
-  }
-
   Page(pageNum: number, pageSize: number): Select {
-    this.Query.PageNum = pageNum;
-    this.Query.PageSize = pageSize;
+    this.Query.Offset = pageNum * pageSize;
+    this.Query.Limit = pageSize;
     return this;
   }
 

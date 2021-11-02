@@ -15,11 +15,14 @@ export class Param /*implements IParam*/ {
   DbType: DbType;
   Value: any;
 
+  constructor (parameterName: string, dataType: DbType, value: any){
+    this.DbType = dataType;
+    this.Name = parameterName;
+    this.Value = value;
+  }
+
   static New(parameterName: string, dataType: DbType, value: any): Param {
-    var p = new Param();
-    p.Name = parameterName;
-    p.DbType = dataType;
-    p.Value = value;
+    var p = new Param(parameterName, dataType, value);
     return p;
   }
 }

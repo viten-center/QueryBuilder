@@ -8,7 +8,7 @@ import { Expr } from '../src/Expr';
 
 describe("Join", () => {
   it("Join(rightTableName: string, joinCond: JoinCond): Select", () => {
-    let _: SelectQuery = Qb.Select("a").From("lt").Join("rt", JoinCond.Field("id_0"))["Query"];
+    let _: SelectQuery = Qb.Select("a").From("lt").Join("rt", JoinCond.Fields("id_0"))["Query"];
     expect(_.FromClause.BaseTable.Type).eq(FromTermType.Table);
     expect(_.FromClause.BaseTable.Expression).eq("lt");
     expect(_.FromClause.BaseTable.RefName).eq("lt");
