@@ -32,7 +32,7 @@ namespace Viten.QueryBuilder.Test
       Select sel = Qb.Select("*")
         .From("AE", "ae")
         .OrderBy("AE_ID")
-        .Page(1, 10);
+        .Page(2, 10);
 
       Renderer.MySqlRenderer my = new Renderer.MySqlRenderer();
       string sql = my.RenderSelect(sel);
