@@ -89,15 +89,18 @@ namespace Viten.QueryBuilder.Renderer
       this.OrderBy(selectBuilder, query.OrderByTerms);
       this.OrderByTerms(selectBuilder, query.OrderByTerms);
 
-      if ((query.PageIndex > -1 || query.PageSize > -1) && query.OrderByTerms.Count == 0)
+      if ((query.Offset > -1 || query.Limit > -1) && query.OrderByTerms.Count == 0)
       {
         throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
       }
 
-      if (query.PageSize > -1 || query.PageIndex > 0)
+      if (query.Offset > -1)
       {
-        int offsetRows = query.PageSize * query.PageIndex;
-        selectBuilder.AppendFormat(" offset {0} rows fetch next {1} rows only", offsetRows, query.PageSize);
+        selectBuilder.AppendFormat(" offset next {0} rows", query.Offset);
+        if (query.Limit > -1)
+        {
+          selectBuilder.AppendFormat(" fetch next {0} rows only", query.Limit);
+        }
       }
 
       return selectBuilder.ToString();

@@ -115,8 +115,8 @@ namespace Viten.QueryBuilder.SqlOm
     /// </remarks>
     //public int Top { get; set; } = -1;
 
-    public int PageIndex { get; set; } = -1;
-    public int PageSize { get; set; } = -1;
+    public int Offset { get; set; } = -1;
+    public int Limit { get; set; } = -1;
 
     /// <summary>
     /// Gets or sets the group by with rollup option for the query
@@ -187,8 +187,8 @@ namespace Viten.QueryBuilder.SqlOm
       newQuery.wherePhrase = wherePhrase.Clone();
       newQuery.fromClause = fromClause.Clone();
 
-      newQuery.PageIndex = PageIndex;
-      newQuery.PageSize = PageSize;
+      newQuery.Offset = Offset;
+      newQuery.Limit= Limit;
       newQuery.GroupByWithRollup = GroupByWithRollup;
       newQuery.GroupByWithCube = GroupByWithCube;
       newQuery.Distinct = Distinct;

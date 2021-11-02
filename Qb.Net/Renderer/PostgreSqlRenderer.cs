@@ -76,18 +76,17 @@ namespace Viten.QueryBuilder.Renderer
       this.OrderBy(selectBuilder, query.OrderByTerms);
       this.OrderByTerms(selectBuilder, query.OrderByTerms);
 
-      if ((query.PageIndex > -1 || query.PageSize > -1) && query.OrderByTerms.Count == 0)
+      if ((query.Offset > -1 || query.Limit > -1) && query.OrderByTerms.Count == 0)
       {
         throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
       }
 
-      if (query.PageSize > -1)
+      if (query.Limit > -1)
       {
-        selectBuilder.AppendFormat(" limit {0}", query.PageSize);
-        if (query.PageIndex > 0)
+        selectBuilder.AppendFormat(" limit {0}", query.Limit);
+        if (query.Offset> -1)
         {
-          int offsetRows = query.PageSize * query.PageIndex;
-          selectBuilder.AppendFormat(" offset {0}", offsetRows);
+          selectBuilder.AppendFormat(" offset {0}", query.Offset);
         }
       }
       return selectBuilder.ToString();

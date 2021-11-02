@@ -85,21 +85,20 @@ namespace Viten.QueryBuilder.Renderer
 			this.OrderBy(selectBuilder, query.OrderByTerms);
 			this.OrderByTerms(selectBuilder, query.OrderByTerms);
 
-			if ((query.PageIndex > -1 || query.PageSize > -1) && query.OrderByTerms.Count == 0)
+			if ((query.Offset > -1 || query.Limit > 0) && query.OrderByTerms.Count == 0)
 			{
 				throw new InvalidQueryException(SR.Err_OrderByNeedForPage);
 			}
 
-			if (query.PageSize > -1)
+			if (query.Limit > -1)
 			{
-				if (query.PageIndex > -1)
+				if (query.Offset > -1)
 				{
-					int offsetRows = query.PageIndex * query.PageSize;
-					selectBuilder.AppendFormat(" limit {0}, {1}", offsetRows, query.PageSize);
+					selectBuilder.AppendFormat(" limit {0}, {1}", query.Offset, query.Limit);
 				}
 				else
 				{
-					selectBuilder.AppendFormat(" limit {0}", query.PageSize);
+					selectBuilder.AppendFormat(" limit {0}", query.Limit);
 				}
 			}
 			return selectBuilder.ToString();

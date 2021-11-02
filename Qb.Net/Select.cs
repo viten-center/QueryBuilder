@@ -56,8 +56,8 @@ namespace Viten.QueryBuilder
         throw new InvalidQueryException(SR.Err_RepeatPage);
       if (pageIndex < 0 || pageSize < 1)
         throw new InvalidQueryException(SR.Err_InvalidPage);
-      this.Query.PageIndex = pageIndex;
-      this.Query.PageSize = pageSize;
+      this.Query.Offset = pageSize * pageIndex;
+      this.Query.Limit = pageSize;
       pageCalled = true;
       return this;
     }
