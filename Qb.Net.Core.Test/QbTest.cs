@@ -12,6 +12,7 @@ namespace Viten.QueryBuilder.Test
     internal static void TestAll()
     {
       QbTest t = new QbTest();
+      t.TestNotIn();
       t.TestPaging();
       t.TestLong();
       t.TestDelete();
@@ -27,6 +28,14 @@ namespace Viten.QueryBuilder.Test
       t.TestWhere();
     }
 
+    void TestNotIn()
+    {
+      Select sel = Qb.Select("*")
+        .From("AE", "ae")
+        .Where(Cond.NotIn(Expr.Field("f"), 1, 2, 3, 4));
+      Renderer.PostgreSqlRenderer pg = new Renderer.PostgreSqlRenderer();
+      string sql = pg.RenderSelect(sel);
+    }
     void TestPaging()
     {
       Select sel = Qb.Select("*")

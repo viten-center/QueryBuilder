@@ -78,7 +78,9 @@ namespace Viten.QueryBuilder.SqlOm
 				return;
 
 			OmConstant constant;
-			if (val is string)
+			if (val is OmConstant)
+				constant = (OmConstant)val;
+			else if (val is string)
 				constant = OmConstant.String((string)val);
 			else if (val is DateTime)
 				constant = OmConstant.Date((DateTime)val);

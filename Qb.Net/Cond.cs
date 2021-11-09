@@ -701,7 +701,7 @@ namespace Viten.QueryBuilder
       List<Constant> col = new List<Constant>();
       for (int i = 0; i < values.Length; i++)
         col.Add(Constant.Num(values[i]));
-      return Cond.In(expr, col);
+      return Cond.NotIn(expr, col);
     }
 
     public static Cond NotIn(string field, From alias, params long[] values)
@@ -719,7 +719,7 @@ namespace Viten.QueryBuilder
       List<Constant> col = new List<Constant>();
       for (int i = 0; i < values.Length; i++)
         col.Add(Constant.Num(values[i]));
-      return Cond.In(expr, col);
+      return Cond.NotIn(expr, col);
     }
 
     public static Cond NotIn(string field, From alias, params double[] values)
@@ -755,7 +755,7 @@ namespace Viten.QueryBuilder
       List<Constant> col = new List<Constant>();
       for (int i = 0; i < values.Length; i++)
         col.Add(Constant.Date(values[i]));
-      return Cond.In(expr, col);
+      return Cond.NotIn(expr, col);
     }
 
     public static Cond NotIn(string field, From alias, params string[] values)
@@ -773,18 +773,18 @@ namespace Viten.QueryBuilder
       List<Constant> col = new List<Constant>();
       for (int i = 0; i < values.Length; i++)
         col.Add(Constant.String(values[i]));
-      return Cond.In(expr, col);
+      return Cond.NotIn(expr, col);
     }
 
-    //public static Cond NotIn(Expr expr, List<Constant> values)
-    //{
-    //  Cond oper = new Cond();
-    //  OmConstantCollection col = new OmConstantCollection();
-    //  for (int i = 0; i < values.Count; i++)
-    //    col.Add(values[i].Const);
-    //  oper.Term = WhereTerm.CreateNotIn(expr.Expression, col);
-    //  return oper;
-    //}
+    public static Cond NotIn(Expr expr, List<Constant> values)
+    {
+      Cond oper = new Cond();
+      OmConstantCollection col = new OmConstantCollection();
+      for (int i = 0; i < values.Count; i++)
+        col.Add(values[i].Const);
+      oper.Term = WhereTerm.CreateNotIn(expr.Expression, col);
+      return oper;
+    }
 
     /// <summary>Операция NotIn</summary>
     //public static Cond NotIn(Expr expr, params Constant[] values)
