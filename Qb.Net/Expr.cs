@@ -3,6 +3,18 @@ using System;
 
 namespace Viten.QueryBuilder
 {
+  public class WhenThen
+  {
+    internal Cond _when;
+    internal Expr _then;
+    public static WhenThen New(Cond when, Expr then)
+    {
+      WhenThen whenThen = new WhenThen();
+      whenThen._when = when;
+      whenThen._then = then;
+      return whenThen;
+    }
+  }
   /// <summary>Класс описания выражения</summary>
   public class Expr
   {
@@ -29,6 +41,27 @@ namespace Viten.QueryBuilder
       return oper;
     }
     #endregion Raw
+
+    #region Case
+    public static Expr Case(Expr @else, params WhenThen[] whenThen)
+    {
+      Expr oper = new Expr();
+      CaseClause clause = new CaseClause();
+      clause.ElseValue = @else.Expression;
+      
+      
+      foreach (WhenThen item in whenThen)
+      {
+        CaseTerm caseTerm = new CaseTerm();
+        caseTerm.Condition = new WhereClause();
+        caseTerm.Condition.Terms.Add(item._when.Term);
+        caseTerm.Value = item._then.Expression;
+        clause.Terms.Add(caseTerm);
+      }
+      oper.Expression= OmExpression.Case(clause);
+      return oper;
+    }
+    #endregion Case
 
     #region Field
     /// <summary>Определение поля</summary>

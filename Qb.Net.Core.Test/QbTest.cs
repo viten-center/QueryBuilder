@@ -12,6 +12,7 @@ namespace Viten.QueryBuilder.Test
     internal static void TestAll()
     {
       QbTest t = new QbTest();
+      t.TestCase();
       t.TestNotIn();
       t.TestPaging();
       t.TestLong();
@@ -28,6 +29,24 @@ namespace Viten.QueryBuilder.Test
       t.TestWhere();
     }
 
+    void TestCase()
+    {
+      From c = From.Table("country", "c", "nsi");
+      Select sel = Qb.Select(
+        Column.New("id"),
+        Column.New(Expr.Case(
+          Expr.String("UNKNOWN"),
+          WhenThen.New(Cond.Equal("code", c, "AU"), Expr.String("кингуру")),
+          WhenThen.New(Cond.Equal("code", c, "PN"), Expr.String("папуас"))
+          ), "caseCol")
+        )
+        .From(c);
+      Renderer.PostgreSqlRenderer pg = new Renderer.PostgreSqlRenderer();
+      string sql = pg.RenderSelect(sel);
+      Renderer.MySqlRenderer my = new Renderer.MySqlRenderer();
+      sql = my.RenderSelect(sel);
+      Assert.Equal("select `id`,  case  when (`c`.`code` = 'AU') then 'кингуру' when (`c`.`code` = 'PN') then 'папуас' else 'UNKNOWN' end  `caseCol` from nsi.`country` `c`", sql);
+    }
     void TestNotIn()
     {
       Select sel = Qb.Select("*")
@@ -45,7 +64,7 @@ namespace Viten.QueryBuilder.Test
 
       Renderer.MySqlRenderer my = new Renderer.MySqlRenderer();
       string sql = my.RenderSelect(sel);
-      
+
 
       From u = From.Table("unit", "u", "nsi");
       sel = Qb.Select("*")

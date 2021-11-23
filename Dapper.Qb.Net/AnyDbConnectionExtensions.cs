@@ -27,15 +27,6 @@ namespace Dapper
       return pageNum * pageSize + pageSize;
     }
 
-    //private static string GetPageSql(AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount)
-    //{
-    //  return Qb.CreateRenderer(cnn.DatabaseProvider).RenderPage(pageIndex, pageSize, totalRowCount, query);
-    //}
-
-    //private static string GetRowCountSql(AnyDbConnection cnn, Select query)
-    //{
-    //  return Qb.CreateRenderer(cnn.DatabaseProvider).RenderRowCount(query);
-    //}
 
     static DynamicParameters GetParameters(ParamCollection paramCollection)
     {
@@ -372,72 +363,6 @@ namespace Dapper
       return await SqlMapper.QueryAsync((IDbConnection)cnn, selectSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
     }
 
-    //public static int QueryTotalCount(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
-    //{
-    //  string sql = GetRowCountSql(cnn, query);
-    //  if (!commandTimeout.HasValue)
-    //  {
-    //    commandTimeout = cnn.DefaultCommandTimeout;
-    //  }
-    //  DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-    //  return cnn.ExecuteScalar<int>(sql, param: parameters, transaction: transaction, commandTimeout: commandTimeout, commandType: (CommandType?)CommandType.Text);
-    //}
-
-    //public static async Task<int> QueryTotalCountAsync(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null, int? commandTimeout = default(int?))
-    //{
-    //  string sql = GetRowCountSql(cnn, query);
-    //  if (!commandTimeout.HasValue)
-    //  {
-    //    commandTimeout = cnn.DefaultCommandTimeout;
-    //  }
-    //  DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-    //  return await cnn.ExecuteScalarAsync<int>(sql, param: parameters, transaction: transaction, commandTimeout: commandTimeout, commandType: (CommandType?)CommandType.Text);
-    //}
-
-    //public static IEnumerable<T> QueryPage<T>(this AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount, MoreDataFlag flag, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?))
-    //{
-    //  if (flag == null)
-    //  {
-    //    throw new ArgumentNullException("flag");
-    //  }
-    //  string pageSql = GetPageSql(cnn, query, pageIndex, pageSize, totalRowCount);
-    //  if (!commandTimeout.HasValue)
-    //  {
-    //    commandTimeout = cnn.DefaultCommandTimeout;
-    //  }
-    //  DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-    //  flag.HasMoreData = (totalRowCount > GetRowCount(pageIndex, pageSize));
-    //  return SqlMapper.Query<T>((IDbConnection)cnn, pageSql, (object)parameters, transaction, buffered, commandTimeout, (CommandType?)CommandType.Text);
-    //}
-
-    //public static async Task<IEnumerable<T>> QueryPageAsync<T>(this AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount, MoreDataFlag flag, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?))
-    //{
-    //  string pageSql = GetPageSql(cnn, query, pageIndex, pageSize, totalRowCount);
-    //  if (!commandTimeout.HasValue)
-    //  {
-    //    commandTimeout = cnn.DefaultCommandTimeout;
-    //  }
-    //  DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-    //  flag.HasMoreData = (totalRowCount > GetRowCount(pageIndex, pageSize));
-    //  return await SqlMapper.QueryAsync<T>((IDbConnection)cnn, pageSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
-    //}
-
-    //public static async Task<IEnumerable<dynamic>> QueryPageAsync(this AnyDbConnection cnn, Select query, int pageIndex, int pageSize, int totalRowCount, MoreDataFlag flag, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = default(int?))
-    //{
-    //  if (flag == null)
-    //  {
-    //    throw new ArgumentNullException("flag");
-    //  }
-    //  string pageSql = GetPageSql(cnn, query, pageIndex, pageSize, totalRowCount);
-    //  if (!commandTimeout.HasValue)
-    //  {
-    //    commandTimeout = cnn.DefaultCommandTimeout;
-    //  }
-    //  DynamicParameters parameters = GetParameters(query.Query.CommandParams);
-    //  flag.HasMoreData = (totalRowCount > GetRowCount(pageIndex, pageSize));
-    //  return await SqlMapper.QueryAsync((IDbConnection)cnn, pageSql, (object)parameters, transaction, commandTimeout, (CommandType?)CommandType.Text);
-    //}
-
     #endregion Query
 
     #region ExecuteReader
@@ -466,7 +391,7 @@ namespace Dapper
 
     #endregion ExecuteReader
 
-    #region MyRegion
+    #region ExecuteScalar
 
     public static T ExecuteScalar<T>(this AnyDbConnection cnn, Select query, IDbTransaction transaction = null,
       int? commandTimeout = null)
@@ -513,6 +438,7 @@ namespace Dapper
     }
 
     #endregion
+
     #region QueryFirst
     public static dynamic QueryFirst(this AnyDbConnection cnn, Select query,
       IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
