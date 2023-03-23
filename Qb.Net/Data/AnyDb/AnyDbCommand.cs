@@ -242,7 +242,10 @@ namespace Viten.QueryBuilder.Data.AnyDb
           if (!first)
             sb.Append(", ");
           first = false;
-          sb.Append($" {p.ParameterName}={(p.Value == null ? "null" : p.Value)}");
+          string value = p.Value == null ? "null" : Convert.ToString(p.Value);
+          if (value.Length > 50)
+            value = value.Substring(0, 50) + "...";
+          sb.Append($" {p.ParameterName}={value}");
         }
       }
       return sb.ToString();

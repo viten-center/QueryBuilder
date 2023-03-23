@@ -16,7 +16,7 @@
     <FileVersion>0.20.4</FileVersion>
     <RepositoryUrl>https://github.com/viten-center/QueryBuilder.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>0.20.4</Version>
+    <Version>0.20.5</Version>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
